@@ -234,7 +234,7 @@ class AppCardTitle extends StatelessWidget {
               ),
             ),
           ),
-          ...?[trailing],
+          if (trailing case final Widget trailing) trailing,
         ],
       ),
     );
