@@ -12,6 +12,10 @@ val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
     keystorePropertiesFile.inputStream().use(keystoreProperties::load)
 }
+val signingProperties = listOf("storeFile", "storePassword", "keyAlias", "keyPassword")
+val releaseSigningIsConfigured = signingProperties.all {
+    !keystoreProperties.getProperty(it).isNullOrBlank()
+}
 
 android {
     namespace = "icu.gxb.zfjw_toolkit"
@@ -40,8 +44,8 @@ android {
 
     signingConfigs {
         create("release") {
-            val storeFilePath = keystoreProperties.getProperty("storeFile")
-            if (storeFilePath != null) {
+            if (releaseSigningIsConfigured) {
+                val storeFilePath = checkNotNull(keystoreProperties.getProperty("storeFile"))
                 storeFile = rootProject.file(storeFilePath)
                 storePassword = keystoreProperties.getProperty("storePassword")
                 keyAlias = keystoreProperties.getProperty("keyAlias")
@@ -53,6 +57,14 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")
+        }
+    }
+}
+
+gradle.taskGraph.whenReady {
+    if (allTasks.any { it.name.contains("Release", ignoreCase = true) }) {
+        check(releaseSigningIsConfigured) {
+            "Release signing is not configured. Copy android/key.properties.example to android/key.properties and supply all four values."
         }
     }
 }

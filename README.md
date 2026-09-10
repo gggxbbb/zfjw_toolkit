@@ -31,7 +31,7 @@ flutter run
 
 ## Android 签名与 CI
 
-发布签名密钥不会提交到仓库。本地构建时，将 `android/key.properties.example` 复制为 `android/key.properties`，并填入对应的 JKS 路径、别名和密码。
+发布签名密钥不会以明文提交到仓库。CI 的加密副本保存在本仓库的 GitHub Actions repository secrets；请同时在团队认可的密码库或加密离线存储中保留恢复副本。本地构建时，将 `android/key.properties.example` 复制为 `android/key.properties`，并填入对应的 JKS 路径、别名和密码。
 
 GitHub Actions 在推送到 `main` 后会运行静态检查和测试，并使用下列 repository secrets 构建签名 APK：
 
