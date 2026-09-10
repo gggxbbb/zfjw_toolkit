@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:zfjw_toolkit/app/main_shell.dart';
 import 'package:zfjw_toolkit/app/theme.dart';
 
-/// 应用根组件：Material 3 亮/暗主题 + 中文本地化 + 主壳。
+/// 应用根组件：Material 主题（承载色板与明暗）+ 玻璃主壳。
+///
+/// 用 [MaterialApp] 而非 `CupertinoApp`：[AppTheme] 把
+/// [Brightness] 暴露给玻璃层的 `brightnessResolver`（见 `main.dart`），
+/// 同时为树内的 Material 组件提供一致的主题上下文。
 class ZfjwApp extends StatelessWidget {
   const ZfjwApp({super.key});
 

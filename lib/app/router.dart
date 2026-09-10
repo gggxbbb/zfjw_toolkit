@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:zfjw_toolkit/features/gpa/gpa_home_page.dart';
 import 'package:zfjw_toolkit/features/settings/settings_home_page.dart';
@@ -12,6 +12,7 @@ class AppTab {
     required this.id,
     required this.label,
     required this.icon,
+    this.selectedIcon,
     required this.page,
   });
 
@@ -21,8 +22,11 @@ class AppTab {
   /// 中文标签。
   final String label;
 
-  /// 图标。
+  /// 未选中态图标。
   final IconData icon;
+
+  /// 选中态图标（filled 变体）。
+  final IconData? selectedIcon;
 
   /// 首页构建器。
   final WidgetBuilder page;
@@ -33,13 +37,15 @@ final List<AppTab> appTabs = [
   AppTab(
     id: 'gpa',
     label: '成绩',
-    icon: Icons.grade_outlined,
+    icon: CupertinoIcons.chart_bar,
+    selectedIcon: CupertinoIcons.chart_bar_fill,
     page: (_) => const GpaHomePage(),
   ),
   AppTab(
     id: 'settings',
     label: '设置',
-    icon: Icons.settings_outlined,
+    icon: CupertinoIcons.settings,
+    selectedIcon: CupertinoIcons.settings_solid,
     page: (_) => const SettingsHomePage(),
   ),
 ];

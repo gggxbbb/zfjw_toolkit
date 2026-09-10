@@ -29,5 +29,11 @@ enum GradeParseFailureReason {
   incompleteColumns,
 
   /// HTML 文档中找不到 `#tabGrid`（结构不符），无法解析。
-  noTable,
+  noTable;
+
+  /// 面向用户的中文说明。
+  String get label => switch (this) {
+        GradeParseFailureReason.incompleteColumns => '页面缺少成绩列（sfxwkc/bfzcj），无法解析',
+        GradeParseFailureReason.noTable => '未找到成绩表格（#tabGrid）',
+      };
 }

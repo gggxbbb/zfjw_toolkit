@@ -1,12 +1,15 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:zfjw_toolkit/app/router.dart';
-import 'package:zfjw_toolkit/ui/glass/glass.dart';
+import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
-/// 应用主壳：持有底部 tab 选中态，装配玻璃脚手架、顶部栏与底部标签栏。
+/// 应用主壳：玻璃脚手架 + 顶部栏 + 底部玻璃标签栏。
 ///
-/// 背景为自动明暗纯色（[GlassWallpaper]）。
+/// 背景为自动明暗纯色（[AppWallpaper]），衬托玻璃材质。
+///
+/// 页面树内不需要 Material 祖先——各 feature 页统一使用本套玻璃/Cupertino
+/// 组件（`lib/ui/kit`），不依赖 Material 主题与墨水渲染。
 class MainShell extends ConsumerStatefulWidget {
   const MainShell({super.key});
 
@@ -20,23 +23,21 @@ class _MainShellState extends ConsumerState<MainShell> {
   @override
   Widget build(BuildContext context) {
     final tab = appTabs[_index];
-    return GlassScaffold(
-      background: const GlassWallpaper(),
-      appBar: GlassAppBar(title: Text(tab.label)),
-      bottomBar: GlassTabBar.bottom(
+    return AppGlassScaffold(
+      appBar: AppGlassAppBar(title: Text(tab.label)),
+      bottomBar: AppGlassTabBar(
         tabs: [
-          for (final t in appTabs) GlassTab(icon: Icon(t.icon), label: t.label),
+          for (final t in appTabs)
+            GlassTab(
+              icon: Icon(t.icon),
+              activeIcon: t.selectedIcon == null ? null : Icon(t.selectedIcon),
+              label: t.label,
+            ),
         ],
         selectedIndex: _index,
         onTabSelected: (i) => setState(() => _index = i),
       ),
-      // 玻璃脚手架是 Cupertino 系，树内无 Material 祖先；Material 组件
-      // （TextField/DropdownButton/Slider 等）需要 Material 提供墨水渲染与
-      // 主题上下文，此处用透明 Material 统一为所有 feature 页兜底。
-      body: Material(
-        type: MaterialType.transparency,
-        child: tab.page(context),
-      ),
+      body: tab.page(context),
     );
   }
 }

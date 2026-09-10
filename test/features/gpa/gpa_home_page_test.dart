@@ -63,7 +63,7 @@ void main() {
       expect(find.text('假设分析'), findsOneWidget);
       expect(find.text('各学期（1 个）'), findsOneWidget);
       // ListView 懒加载：滚屏外的分区用 skipOffstage:false 查找
-      expect(find.text('分数分布', skipOffstage: false), findsOneWidget);
+      expect(find.text('成绩分布', skipOffstage: false), findsOneWidget);
       // 有数据时不再显示空态引导
       expect(find.text('暂无成绩数据'), findsNothing);
     });
