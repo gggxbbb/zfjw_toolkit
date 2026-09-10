@@ -169,6 +169,13 @@ class AppWallpaper extends StatelessWidget {
 ///
 /// 配合 [AppGlassLargeTitle] 使用时，把同一个 [largeTitleController] 传进来：
 /// 滚动时页面内的大标题淡出、顶部栏的小标题淡入（App Store 式）。
+///
+/// **霜冻背景**：底层 [lg.GlassAppBar] 本身只是透明 `ColoredBox`（无模糊），
+/// 收起后小标题会直接叠在滚过的内容上。本封装在外层套
+/// `BackdropFilter` 模糊 + 半透明 tint，随 [lg.GlassLargeTitleController.
+/// collapseProgress] 从零渐入——大标题展开时全透明，收起后完全霜冻
+/// （对齐 UINavigationBar 的 material 行为）。无折叠联动时（[frosted] 默认
+/// true）常显全量霜冻。
 class AppGlassAppBar extends StatelessWidget {
   const AppGlassAppBar({
     super.key,
@@ -177,6 +184,7 @@ class AppGlassAppBar extends StatelessWidget {
     this.actions,
     this.centerTitle = true,
     this.largeTitleController,
+    this.frosted = true,
   });
 
   /// 标题（折叠后显示的小标题）。
@@ -194,14 +202,74 @@ class AppGlassAppBar extends StatelessWidget {
   /// 大标题折叠控制器；传 null 时顶部栏标题常显（无折叠联动）。
   final lg.GlassLargeTitleController? largeTitleController;
 
+  /// 是否启用霜冻背景。
+  ///
+  /// 有折叠联动时随进度渐入；无联动时常显全量。设 false 则与库默认一致
+  /// （全透明——仅当背景本身已足够实色、无需毛玻璃时使用）。
+  final bool frosted;
+
   @override
-  Widget build(BuildContext context) => lg.GlassAppBar(
-        title: title,
-        leading: leading,
-        actions: actions,
-        centerTitle: centerTitle,
-        largeTitleController: largeTitleController,
-      );
+  Widget build(BuildContext context) {
+    final tokens = AppTokens.of(context);
+    final bar = lg.GlassAppBar(
+      title: title,
+      leading: leading,
+      actions: actions,
+      centerTitle: centerTitle,
+      largeTitleController: largeTitleController,
+    );
+
+    if (!frosted) return bar;
+
+    // 无折叠联动（如采集页）：常显全量霜冻。
+    final controller = largeTitleController;
+    if (controller == null) {
+      return _AppBarFrost(tokens: tokens, strength: 1, child: bar);
+    }
+
+    // 随折叠进度渐入霜冻。
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (context, child) => _AppBarFrost(
+        tokens: tokens,
+        strength: controller.collapseProgress,
+        child: child!,
+      ),
+      child: bar,
+    );
+  }
+}
+
+/// 霜冻背景层：`BackdropFilter` 模糊 + 半透明画布色 tint。
+///
+/// [strength] 为 0 时完全透明（且不产生 BackdropFilter 渲染开销）；
+/// 1 时为全量霜冻。背景覆盖整个栏位（含状态栏区域），与库内部
+/// `ColoredBox + SafeArea` 的布局一致。
+class _AppBarFrost extends StatelessWidget {
+  const _AppBarFrost({
+    required this.tokens,
+    required this.strength,
+    required this.child,
+  });
+
+  final AppTokens tokens;
+  final double strength;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = Curves.easeOut.transform(strength.clamp(0.0, 1.0));
+    if (s <= 0) return child;
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 20 * s, sigmaY: 20 * s),
+        child: ColoredBox(
+          color: tokens.canvas.withAlpha((0.72 * s * 255).round()),
+          child: child,
+        ),
+      ),
+    );
+  }
 }
 
 /// 页面内嵌的大标题（iOS 26 / App Store 式 Large Title）。
