@@ -7,10 +7,11 @@ import 'package:zfjw_toolkit/features/settings/settings_home_page.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 void main() {
-  test('底部导航含「成绩」「设置」两个中文 tab', () {
-    expect(appTabs, hasLength(2));
+  test('底部导航含「成绩」「目标分析」「设置」三个中文 tab', () {
+    expect(appTabs, hasLength(3));
     expect(appTabs[0].label, '成绩');
-    expect(appTabs[1].label, '设置');
+    expect(appTabs[1].label, '目标分析');
+    expect(appTabs[2].label, '设置');
   });
 
   // 成绩页（空态/统计态）已由 test/features/gpa/gpa_home_page_test.dart 覆盖，

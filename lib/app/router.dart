@@ -41,18 +41,18 @@ class AppTab {
 /// 应用全部底部导航 tab（当前：成绩、设置）。
 final List<AppTab> appTabs = [
   AppTab(
-    id: 'target',
-    label: '目标分析',
-    icon: CupertinoIcons.scope,
-    selectedIcon: CupertinoIcons.scope,
-    page: (_, title) => TargetAnalysisPage(titleController: title),
-  ),
-  AppTab(
     id: 'gpa',
     label: '成绩',
     icon: CupertinoIcons.chart_bar,
     selectedIcon: CupertinoIcons.chart_bar_fill,
     page: (_, title) => GpaHomePage(titleController: title),
+  ),
+  AppTab(
+    id: 'target',
+    label: '目标分析',
+    icon: CupertinoIcons.scope,
+    selectedIcon: CupertinoIcons.scope,
+    page: (_, title) => TargetAnalysisPage(titleController: title),
   ),
   AppTab(
     id: 'settings',
