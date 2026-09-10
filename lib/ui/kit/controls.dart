@@ -181,6 +181,7 @@ class AppGlassSegmentedControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = AppTokens.of(context);
+    final isDark = tokens.brightness == Brightness.dark;
     return lg.GlassSegmentedControl(
       segments: [
         for (final s in segments) lg.GlassSegment(label: s),
@@ -188,6 +189,11 @@ class AppGlassSegmentedControl extends StatelessWidget {
       selectedIndex: selectedIndex,
       onSegmentSelected: onSegmentSelected,
       height: height,
+      // 库默认在暗色下轨道/选中块都接近不可见（轨道 12% 白、选中块为透明玻璃），
+      // 显式给语义填充色：轨道用弱填充，选中块用不透明的台面色（对齐 iOS 分段控件）。
+      backgroundColor: tokens.fill,
+      indicatorColor:
+          isDark ? const Color(0xFF636366) : CupertinoColors.white,
       selectedTextStyle: AppText.footnote.copyWith(
         color: tokens.labelPrimary,
         fontWeight: FontWeight.w600,

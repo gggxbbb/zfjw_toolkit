@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/widgets.dart';
@@ -356,6 +357,7 @@ class AppGlassTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     // 库的默认选中/未选中色在暗色下解析不可靠，显式给语义色。
     final tokens = AppTokens.of(context);
+    final isDark = tokens.brightness == Brightness.dark;
     return lg.GlassTabBar.bottom(
       tabs: tabs,
       selectedIndex: selectedIndex,
@@ -364,6 +366,21 @@ class AppGlassTabBar extends StatelessWidget {
       selectedLabelColor: tokens.accent,
       unselectedIconColor: tokens.labelSecondary,
       unselectedLabelColor: tokens.labelSecondary,
+      // 库默认玻璃色是 24% 白（kBottomBarGlassDefaults.glassColor），暗色下
+      // 整条底栏会泛白；暗色时换成深色玻璃，其余参数与库默认保持一致。
+      settings: isDark
+          ? lg.LiquidGlassSettings(
+              thickness: 30,
+              blur: 3,
+              chromaticAberration: 0.3,
+              lightIntensity: 0.6,
+              refractiveIndex: 1.59,
+              saturation: 0.7,
+              ambientStrength: 1,
+              lightAngle: 0.75 * math.pi,
+              glassColor: const Color(0x59000000),
+            )
+          : null,
       // Android 上指向触点的高亮会显得过大；保留轻微按压反馈即可。
       interactionBehavior: lg.GlassInteractionBehavior.scaleOnly,
     );
