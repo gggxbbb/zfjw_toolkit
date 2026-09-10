@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 /// iOS 设计令牌：一套自适应的语义色 + 排版 + 间距 + 圆角。
 ///
