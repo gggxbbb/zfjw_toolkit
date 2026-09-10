@@ -48,3 +48,6 @@ app.*.map.json
 /android/app/release
 /android/app/release.jks
 /android/key.properties
+
+# Agent tooling artifacts
+.codex-remote-attachments/
