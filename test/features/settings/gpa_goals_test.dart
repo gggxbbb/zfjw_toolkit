@@ -17,15 +17,17 @@ void main() {
   }
 
   group('GpaGoals', () {
-    test('默认：目标未设置，最低 GPA 均为 2.0', () async {
+    test('默认：目标 GPA 均为 3.0，最低 GPA 均为 2.0', () async {
       SharedPreferences.setMockInitialValues({});
       final container = ProviderContainer();
       addTearDown(container.dispose);
       final goals = await container.read(gpaGoalsProvider.future);
-      expect(goals.targetAll, isNull);
-      expect(goals.targetDegree, isNull);
+      expect(goals.targetAll, 3.0);
+      expect(goals.targetDegree, 3.0);
       expect(goals.minAll, 2.0);
       expect(goals.minDegree, 2.0);
+      expect(goals.targetFor(TargetScope.all), 3.0);
+      expect(goals.targetFor(TargetScope.degree), 3.0);
       expect(goals.minFor(TargetScope.all), 2.0);
       expect(goals.minFor(TargetScope.degree), 2.0);
     });
@@ -36,7 +38,7 @@ void main() {
       addTearDown(container.dispose);
       final goals = await container.read(gpaGoalsProvider.future);
       expect(goals.targetAll, 3.3);
-      expect(goals.targetDegree, isNull);
+      expect(goals.targetDegree, 3.0);
     });
 
     test('分范围设置目标与最低 GPA 并持久化', () async {
@@ -60,7 +62,7 @@ void main() {
       expect(prefs.getDouble('jwgpa.minGPA.degree'), 2.5);
     });
 
-    test('清除目标、最低 GPA 留空恢复默认 2.0', () async {
+    test('目标留空恢复默认 3.0、最低 GPA 留空恢复默认 2.0', () async {
       SharedPreferences.setMockInitialValues({
         'jwgpa.targetGPA': 3.5,
         'jwgpa.minGPA.degree': 2.8,
@@ -70,7 +72,7 @@ void main() {
       await notifier.setMin(TargetScope.degree, null);
 
       final goals = notifier.state.value!;
-      expect(goals.targetAll, isNull);
+      expect(goals.targetAll, 3.0);
       expect(goals.minDegree, 2.0);
 
       final prefs = await SharedPreferences.getInstance();

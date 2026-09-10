@@ -47,7 +47,7 @@ class _TargetAnalysisPageState extends ConsumerState<TargetAnalysisPage> {
                 if (s == null) return const _EmptyStats();
                 final goals =
                     ref.watch(gpaGoalsProvider).value ?? const GpaGoals();
-                final target = goals.targetFor(_scope) ?? 3.0;
+                final target = goals.targetFor(_scope);
                 final minGpa = goals.minFor(_scope);
                 final p = plan.value;
                 return Column(

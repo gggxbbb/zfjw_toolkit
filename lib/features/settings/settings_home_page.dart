@@ -271,13 +271,14 @@ class _GpaGoalsCardState extends ConsumerState<_GpaGoalsCard> {
 
     return AppGlassGroupedCard(
       title: '目标与最低 GPA',
-      footer: '目标 GPA 是个人期望（留空清除）；最低 GPA 是毕业/学位硬性要求，'
-          '留空恢复默认 2.0。设置后成绩页与目标分析页按范围分别展示差距。',
+      footer: '目标 GPA 是个人期望，最低 GPA 是毕业/学位硬性要求；'
+          '留空恢复默认（目标 3.0 / 最低 2.0）。'
+          '设置后成绩页与目标分析页按范围分别展示差距。',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          field('目标 GPA（全部课程）', _targetAll, '如 3.50'),
-          field('目标 GPA（学位课）', _targetDegree, '如 3.00'),
+          field('目标 GPA（全部课程）', _targetAll, '默认 3.00'),
+          field('目标 GPA（学位课）', _targetDegree, '默认 3.00'),
           const AppDivider(),
           field('最低 GPA（全部课程）', _minAll, '默认 2.00'),
           field('最低 GPA（学位课）', _minDegree, '默认 2.00'),

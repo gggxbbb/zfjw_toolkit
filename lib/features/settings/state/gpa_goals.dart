@@ -5,25 +5,26 @@ import 'package:zfjw_toolkit/core/stats/target_analysis.dart';
 
 /// 目标/最低 GPA 设置（分「全部课程」与「学位课」两个范围）。
 ///
-/// - 目标 GPA：个人期望刷到的绩点，未设置时界面按 3.0 展示差距。
+/// - 目标 GPA：个人期望刷到的绩点，默认 3.0。
 /// - 最低 GPA：学校毕业/学位授与的硬性要求（如学位课 2.0），默认 2.0。
 class GpaGoals {
   const GpaGoals({
-    this.targetAll,
-    this.targetDegree,
+    this.targetAll = kDefaultTargetGpa,
+    this.targetDegree = kDefaultTargetGpa,
     this.minAll = kDefaultMinGpa,
     this.minDegree = kDefaultMinGpa,
   });
 
+  static const double kDefaultTargetGpa = 3.0;
   static const double kDefaultMinGpa = 2.0;
 
-  final double? targetAll;
-  final double? targetDegree;
+  final double targetAll;
+  final double targetDegree;
   final double minAll;
   final double minDegree;
 
-  /// 范围对应的目标 GPA（未设置为 null，由界面决定回退值）。
-  double? targetFor(TargetScope scope) =>
+  /// 范围对应的目标 GPA。
+  double targetFor(TargetScope scope) =>
       scope == TargetScope.all ? targetAll : targetDegree;
 
   /// 范围对应的最低 GPA。
@@ -31,15 +32,14 @@ class GpaGoals {
       scope == TargetScope.all ? minAll : minDegree;
 
   GpaGoals copyWith({
-    double? Function()? targetAll,
-    double? Function()? targetDegree,
+    double? targetAll,
+    double? targetDegree,
     double? minAll,
     double? minDegree,
   }) =>
       GpaGoals(
-        targetAll: targetAll == null ? this.targetAll : targetAll(),
-        targetDegree:
-            targetDegree == null ? this.targetDegree : targetDegree(),
+        targetAll: targetAll ?? this.targetAll,
+        targetDegree: targetDegree ?? this.targetDegree,
         minAll: minAll ?? this.minAll,
         minDegree: minDegree ?? this.minDegree,
       );
@@ -63,14 +63,14 @@ class GpaGoalsNotifier extends AsyncNotifier<GpaGoals> {
     }
 
     return GpaGoals(
-      targetAll: target(_kTargetAllKey),
-      targetDegree: target(_kTargetDegreeKey),
+      targetAll: target(_kTargetAllKey) ?? GpaGoals.kDefaultTargetGpa,
+      targetDegree: target(_kTargetDegreeKey) ?? GpaGoals.kDefaultTargetGpa,
       minAll: prefs.getDouble(_kMinAllKey) ?? GpaGoals.kDefaultMinGpa,
       minDegree: prefs.getDouble(_kMinDegreeKey) ?? GpaGoals.kDefaultMinGpa,
     );
   }
 
-  /// 设定范围目标 GPA；null 或非法值清除。
+  /// 设定范围目标 GPA；null 或非法值恢复默认 3.0。
   Future<void> setTarget(TargetScope scope, double? value) =>
       _write(scope == TargetScope.all ? _kTargetAllKey : _kTargetDegreeKey,
           value, isMin: false);
@@ -91,9 +91,11 @@ class GpaGoalsNotifier extends AsyncNotifier<GpaGoals> {
     final current = state.value ?? const GpaGoals();
     GpaGoals next;
     if (key == _kTargetAllKey) {
-      next = current.copyWith(targetAll: () => valid ? value : null);
+      next = current.copyWith(
+          targetAll: valid ? value : GpaGoals.kDefaultTargetGpa);
     } else if (key == _kTargetDegreeKey) {
-      next = current.copyWith(targetDegree: () => valid ? value : null);
+      next = current.copyWith(
+          targetDegree: valid ? value : GpaGoals.kDefaultTargetGpa);
     } else if (key == _kMinAllKey) {
       next = current.copyWith(
           minAll: valid ? value : GpaGoals.kDefaultMinGpa);
