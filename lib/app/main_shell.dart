@@ -56,8 +56,13 @@ class _MainShellState extends ConsumerState<MainShell> {
         removeBottom: true,
         child: AppGlassScaffold(
           // 顶部栏：小标题常显，与大标题做折叠联动。
+          // 显式指定颜色——玻璃库默认的 Cupertino navTitleTextStyle 在本工程的
+          // 无色 textTheme 下暗色解析不可靠（会渲染成暗色字）。
           appBar: AppGlassAppBar(
-            title: Text(tab.label),
+            title: Text(
+              tab.label,
+              style: AppText.title.copyWith(color: tokens.labelPrimary),
+            ),
             largeTitleController: titleController,
           ),
           // 键盘打开时仍固定在屏幕底部，不随 viewInsets 上移。

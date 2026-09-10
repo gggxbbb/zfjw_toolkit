@@ -18,12 +18,20 @@ String diffText(double? gpa, double target) {
 ///
 /// 玻璃卡 + 超大数值锚点，对齐 iOS 26 玻璃卡片的层次感。
 class OverviewCard extends StatelessWidget {
-  const OverviewCard({super.key, required this.stats, this.targetGpa});
+  const OverviewCard({
+    super.key,
+    required this.stats,
+    this.targetGpaAll,
+    this.targetGpaDegree,
+  });
 
   final StatsResult stats;
 
-  /// 目标 GPA（可选，展示差距）。
-  final double? targetGpa;
+  /// 目标 GPA（全部课程，可选，展示差距）。
+  final double? targetGpaAll;
+
+  /// 目标 GPA（学位课，可选，展示差距）。
+  final double? targetGpaDegree;
 
   @override
   Widget build(BuildContext context) {
@@ -58,18 +66,18 @@ class OverviewCard extends StatelessWidget {
           AppDivider(),
           const SizedBox(height: AppTokens.space3),
           AppStatRow(label: '学位 GPA', value: fmt(d.gpa, 2), emphasize: true),
-          if (targetGpa != null) ...[
+          if (targetGpaAll != null)
             AppStatRow(
               label: '总 GPA 差距',
-              value: diffText(o.gpa, targetGpa!),
-              valueColor: _diffColor(context, o.gpa, targetGpa!),
+              value: diffText(o.gpa, targetGpaAll!),
+              valueColor: _diffColor(context, o.gpa, targetGpaAll!),
             ),
+          if (targetGpaDegree != null)
             AppStatRow(
               label: '学位 GPA 差距',
-              value: diffText(d.gpa, targetGpa!),
-              valueColor: _diffColor(context, d.gpa, targetGpa!),
+              value: diffText(d.gpa, targetGpaDegree!),
+              valueColor: _diffColor(context, d.gpa, targetGpaDegree!),
             ),
-          ],
           AppStatRow(
             label: '加权平均分',
             value: fmt(o.weightedAvg, 1),

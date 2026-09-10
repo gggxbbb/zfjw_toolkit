@@ -319,6 +319,9 @@ class AppGlassLargeTitle extends StatelessWidget {
           fontSize: 34,
           fontWeight: FontWeight.w700,
           letterSpacing: -0.5,
+          // 库的默认取色（CupertinoColors.label）在本工程的无色 textTheme 下
+          // 暗色解析不可靠，显式给语义色。
+          color: AppTokens.of(context).labelPrimary,
           padding: const EdgeInsetsDirectional.fromSTEB(
             AppTokens.pagePadding,
             0,
@@ -350,13 +353,21 @@ class AppGlassTabBar extends StatelessWidget {
   final ValueChanged<int> onTabSelected;
 
   @override
-  Widget build(BuildContext context) => lg.GlassTabBar.bottom(
-    tabs: tabs,
-    selectedIndex: selectedIndex,
-    onTabSelected: onTabSelected,
-    // Android 上指向触点的高亮会显得过大；保留轻微按压反馈即可。
-    interactionBehavior: lg.GlassInteractionBehavior.scaleOnly,
-  );
+  Widget build(BuildContext context) {
+    // 库的默认选中/未选中色在暗色下解析不可靠，显式给语义色。
+    final tokens = AppTokens.of(context);
+    return lg.GlassTabBar.bottom(
+      tabs: tabs,
+      selectedIndex: selectedIndex,
+      onTabSelected: onTabSelected,
+      selectedIconColor: tokens.accent,
+      selectedLabelColor: tokens.accent,
+      unselectedIconColor: tokens.labelSecondary,
+      unselectedLabelColor: tokens.labelSecondary,
+      // Android 上指向触点的高亮会显得过大；保留轻微按压反馈即可。
+      interactionBehavior: lg.GlassInteractionBehavior.scaleOnly,
+    );
+  }
 }
 
 /// 玻璃卡片：iOS 26 内容容器。

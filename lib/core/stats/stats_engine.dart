@@ -1,4 +1,5 @@
 import '../model/course_record.dart';
+import '../model/teaching_plan.dart';
 import '../rules/rule_preset.dart';
 import 'aggregate.dart';
 import 'result_types.dart';
@@ -46,26 +47,7 @@ StatsResult computeStats(List<CourseRecord> raw, RulePreset preset) {
   final degree = aggregate(degreeRows, preset);
 
   // 4. 学期分组（键 = xnmmc+' 第'+xqmmc+'学期'，排序 = xnm*100+xqm）。
-  final semMap = <String, _SemGroup>{};
-  for (final r in rows) {
-    final key = semesterKeyOf(r);
-    final group = semMap.putIfAbsent(
-      key,
-      () => _SemGroup(key: key, sort: semesterSortValOf(r)),
-    );
-    group.rows.add(r);
-  }
-  final semesters = semMap.values.map((g) {
-    final ag = aggregate(g.rows, preset);
-    return SemesterStat(
-      key: g.key,
-      sort: g.sort,
-      gpa: ag.gpa,
-      credits: ag.totalCredits,
-      count: ag.count,
-    );
-  }).toList()
-    ..sort((a, b) => a.sort.compareTo(b.sort));
+  final semesters = semesterStatsOf(rows, preset);
 
   // 5. 挂科列表：去重取最高分后仍不及格。
   final failing = <FailingItem>[];
@@ -110,38 +92,86 @@ StatsResult computeStats(List<CourseRecord> raw, RulePreset preset) {
   );
 }
 
-/// What-If：将指定课程替换为假设分数后重算，返回新旧总体与学位聚合对比。
+/// 学期分组统计：键 = xnmmc+' 第'+xqmmc+'学期'，按 xnm*100+xqm 升序。
 ///
-/// 绩点按规则包公式重估（对齐油猴 `simulate`：构造新记录令
-/// `gradePoint` 作用于假设分数）。[courseKey] 为记录 [CourseRecord.courseKey]
-/// （课程代码优先，缺失回退课程名）。
-SimulateResult simulate(
+/// 从 [computeStats] 提取为公共函数，供界面按子集（如仅学位课）重算学期表现。
+List<SemesterStat> semesterStatsOf(List<CourseRecord> rows, RulePreset preset) {
+  final semMap = <String, _SemGroup>{};
+  for (final r in rows) {
+    final key = semesterKeyOf(r);
+    final group = semMap.putIfAbsent(
+      key,
+      () => _SemGroup(key: key, sort: semesterSortValOf(r)),
+    );
+    group.rows.add(r);
+  }
+  return semMap.values.map((g) {
+    final ag = aggregate(g.rows, preset);
+    return SemesterStat(
+      key: g.key,
+      sort: g.sort,
+      gpa: ag.gpa,
+      credits: ag.totalCredits,
+      count: ag.count,
+    );
+  }).toList()
+    ..sort((a, b) => a.sort.compareTo(b.sort));
+}
+
+/// What-If：把多门课程替换为假设分数后重算，返回新旧总体与学位聚合对比。
+///
+/// [scores] 键为课程键（代码优先，缺失回退课程名）。命中有效记录集的课 →
+/// 替换分数（jd 置空 → 触发规则包公式重估，对齐油猴 `simulate`）；未命中的课
+/// 视为计划内未修课程，经 [planned] 提供学分/名称/学位标记后追加为新记录，
+/// 未在 [planned] 中找到的键被忽略。
+SimulateResult simulateAll(
   StatsResult stats,
-  String courseKey,
-  double score,
-) {
+  Map<String, double> scores, {
+  List<PlannedCourse> planned = const [],
+}) {
   final preset = stats.preset;
 
-  // 复制有效记录集，命中课程者替换为假设分数（jd 置空 → 触发公式重估）。
+  // 复制有效记录集，命中课程者替换为假设分数。
+  final pending = Map.of(scores);
   final sim = stats.rows.map<CourseRecord>((r) {
-    if (r.courseKey == courseKey) {
-      return CourseRecord(
-        kch: r.kch,
-        kcmc: r.kcmc,
-        xf: r.xf,
-        jd: null,
-        bfzcj: score.toString(),
-        cj: score.toString(),
-        cjbz: r.cjbz,
-        sfxwkc: r.sfxwkc,
-        xnm: r.xnm,
-        xqm: r.xqm,
-        xnmmc: r.xnmmc,
-        xqmmc: r.xqmmc,
-      );
-    }
-    return r;
+    final score = pending.remove(r.courseKey);
+    if (score == null) return r;
+    return CourseRecord(
+      kch: r.kch,
+      kcmc: r.kcmc,
+      xf: r.xf,
+      jd: null,
+      bfzcj: score.toString(),
+      cj: score.toString(),
+      cjbz: r.cjbz,
+      sfxwkc: r.sfxwkc,
+      xnm: r.xnm,
+      xqm: r.xqm,
+      xnmmc: r.xnmmc,
+      xqmmc: r.xqmmc,
+    );
   }).toList();
+
+  // 计划内未修课程：追加为新记录参与重估。
+  for (final entry in pending.entries) {
+    PlannedCourse? match;
+    for (final c in planned) {
+      if (plannedCourseKey(c) == entry.key) {
+        match = c;
+        break;
+      }
+    }
+    final c = match;
+    if (c == null) continue;
+    sim.add(CourseRecord(
+      kch: c.code,
+      kcmc: c.name,
+      xf: c.credits.toString(),
+      bfzcj: entry.value.toString(),
+      cj: entry.value.toString(),
+      sfxwkc: c.sfxwkc,
+    ));
+  }
 
   final simDegree = sim.where(preset.isDegreeCourse).toList();
 

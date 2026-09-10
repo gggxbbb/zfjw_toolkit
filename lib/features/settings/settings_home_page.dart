@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import 'package:zfjw_toolkit/features/settings/state/target_gpa.dart';
+import 'package:zfjw_toolkit/core/stats/target_analysis.dart';
+import 'package:zfjw_toolkit/features/settings/state/gpa_goals.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 /// 设置功能域首页：目标 GPA、规则包信息、关于。
@@ -17,7 +19,7 @@ class SettingsHomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final targetGpa = ref.watch(targetGpaProvider).value;
+    final goals = ref.watch(gpaGoalsProvider).value ?? const GpaGoals();
     final tokens = AppTokens.of(context);
 
     return CustomScrollView(
@@ -29,8 +31,8 @@ class SettingsHomePage extends ConsumerWidget {
           padding: AppPagePadding.body(context),
           sliver: SliverList.list(
             children: [
-              // ---- 目标 GPA ----
-              _TargetGpaCard(current: targetGpa),
+              // ---- 目标/最低 GPA ----
+              _GpaGoalsCard(goals: goals),
               const SizedBox(height: AppTokens.space4),
 
               // ---- 规则包信息 ----
@@ -62,17 +64,43 @@ class SettingsHomePage extends ConsumerWidget {
               AppGlassGroupedCard(
                 title: '关于',
                 child: Column(
-                  children: const [
-                    _InfoRow(
+                  children: [
+                    const _InfoRow(
                       icon: CupertinoIcons.app,
                       label: '应用',
                       value: '正方教务工具箱',
                     ),
-                    SizedBox(height: AppTokens.space3),
-                    _InfoRow(
+                    const SizedBox(height: AppTokens.space3),
+                    const _InfoRow(
                       icon: CupertinoIcons.info_circle,
                       label: '版本',
                       value: '1.0.0',
+                    ),
+                    const SizedBox(height: AppTokens.space3),
+                    const _InfoRow(
+                      icon: CupertinoIcons.person,
+                      label: '作者',
+                      value: 'gggxbbb',
+                    ),
+                    const SizedBox(height: AppTokens.space3),
+                    const _InfoRow(
+                      icon: CupertinoIcons.doc_text,
+                      label: '开源协议',
+                      value: 'MIT License',
+                    ),
+                    const SizedBox(height: AppTokens.space3),
+                    const _LinkRow(
+                      icon: CupertinoIcons.link,
+                      label: 'GitHub',
+                      value: 'gggxbbb/zfjw_toolkit',
+                      url: 'https://github.com/gggxbbb/zfjw_toolkit',
+                    ),
+                    const SizedBox(height: AppTokens.space3),
+                    const _LinkRow(
+                      icon: CupertinoIcons.arrow_down_circle,
+                      label: '获取最新版本',
+                      value: 'GitHub Releases',
+                      url: 'https://github.com/gggxbbb/zfjw_toolkit/releases',
                     ),
                   ],
                 ),
@@ -81,6 +109,50 @@ class SettingsHomePage extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// 外部链接行（点击在浏览器打开）。
+class _LinkRow extends StatelessWidget {
+  const _LinkRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.url,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = AppTokens.of(context);
+    return GestureDetector(
+      onTap: () =>
+          launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+      behavior: HitTestBehavior.opaque,
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: tokens.labelSecondary),
+          const SizedBox(width: AppTokens.space3),
+          Expanded(
+            child: Text(
+              label,
+              style: AppText.body.copyWith(color: tokens.labelPrimary),
+            ),
+          ),
+          Text(
+            value,
+            style: AppText.subhead.copyWith(color: tokens.accent),
+          ),
+          const SizedBox(width: AppTokens.space2),
+          Icon(CupertinoIcons.chevron_forward,
+              size: 16, color: tokens.labelTertiary),
+        ],
+      ),
     );
   }
 }
@@ -119,92 +191,102 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-/// 目标 GPA 设置卡：玻璃输入框 + 当前值展示。
-class _TargetGpaCard extends ConsumerStatefulWidget {
-  const _TargetGpaCard({this.current});
+/// 目标/最低 GPA 设置卡：全部课程与学位课分别设置。
+class _GpaGoalsCard extends ConsumerStatefulWidget {
+  const _GpaGoalsCard({required this.goals});
 
-  final double? current;
+  final GpaGoals goals;
 
   @override
-  ConsumerState<_TargetGpaCard> createState() => _TargetGpaCardState();
+  ConsumerState<_GpaGoalsCard> createState() => _GpaGoalsCardState();
 }
 
-class _TargetGpaCardState extends ConsumerState<_TargetGpaCard> {
-  late final TextEditingController _controller;
+class _GpaGoalsCardState extends ConsumerState<_GpaGoalsCard> {
+  late final TextEditingController _targetAll;
+  late final TextEditingController _targetDegree;
+  late final TextEditingController _minAll;
+  late final TextEditingController _minDegree;
+
+  String _fmt(double? v) => v == null ? '' : v.toStringAsFixed(2);
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(
-      text: widget.current?.toStringAsFixed(2) ?? '',
-    );
+    _targetAll = TextEditingController(text: _fmt(widget.goals.targetAll));
+    _targetDegree =
+        TextEditingController(text: _fmt(widget.goals.targetDegree));
+    _minAll = TextEditingController(text: _fmt(widget.goals.minAll));
+    _minDegree = TextEditingController(text: _fmt(widget.goals.minDegree));
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _targetAll.dispose();
+    _targetDegree.dispose();
+    _minAll.dispose();
+    _minDegree.dispose();
     super.dispose();
   }
 
-  void _submit(String v) {
-    final value = double.tryParse(v.trim());
-    ref.read(targetGpaProvider.notifier).setTarget(value);
+  double? _parse(TextEditingController c) => double.tryParse(c.text.trim());
+
+  void _save() {
+    final notifier = ref.read(gpaGoalsProvider.notifier);
+    notifier.setTarget(TargetScope.all, _parse(_targetAll));
+    notifier.setTarget(TargetScope.degree, _parse(_targetDegree));
+    notifier.setMin(TargetScope.all, _parse(_minAll));
+    notifier.setMin(TargetScope.degree, _parse(_minDegree));
   }
 
   @override
   Widget build(BuildContext context) {
     final tokens = AppTokens.of(context);
 
-    return AppGlassGroupedCard(
-      title: '目标 GPA',
-      footer: '设置后，成绩页会显示与目标的差距，趋势图叠加目标虚线。留空可清除。',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    Widget field(String label, TextEditingController controller,
+            String placeholder) =>
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppTokens.space2),
+          child: Row(
             children: [
               Expanded(
+                child: Text(
+                  label,
+                  style: AppText.body.copyWith(color: tokens.labelPrimary),
+                ),
+              ),
+              SizedBox(
+                width: 96,
                 child: AppGlassTextField(
-                  controller: _controller,
-                  placeholder: '如 3.50',
+                  controller: controller,
+                  placeholder: placeholder,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
-                  onSubmitted: _submit,
+                  onSubmitted: (_) => _save(),
                 ),
-              ),
-              const SizedBox(width: AppTokens.space3),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    widget.current == null
-                        ? '未设置'
-                        : widget.current!.toStringAsFixed(2),
-                    style: AppText.title.copyWith(
-                      fontSize: 22,
-                      color: widget.current == null
-                          ? tokens.labelTertiary
-                          : tokens.accent,
-                    ),
-                  ),
-                  if (widget.current != null)
-                    Text(
-                      '当前目标',
-                      style: AppText.caption.copyWith(
-                        color: tokens.labelSecondary,
-                      ),
-                    ),
-                ],
               ),
             ],
           ),
+        );
+
+    return AppGlassGroupedCard(
+      title: '目标与最低 GPA',
+      footer: '目标 GPA 是个人期望（留空清除）；最低 GPA 是毕业/学位硬性要求，'
+          '留空恢复默认 2.0。设置后成绩页与目标分析页按范围分别展示差距。',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          field('目标 GPA（全部课程）', _targetAll, '如 3.50'),
+          field('目标 GPA（学位课）', _targetDegree, '如 3.00'),
+          const AppDivider(),
+          field('最低 GPA（全部课程）', _minAll, '默认 2.00'),
+          field('最低 GPA（学位课）', _minDegree, '默认 2.00'),
           const SizedBox(height: AppTokens.space3),
           AppGlassButton(
-            label: '保存目标',
+            label: '保存',
             style: AppButtonStyle.regular,
             expand: true,
-            onTap: () => _submit(_controller.text),
+            onTap: _save,
           ),
         ],
       ),

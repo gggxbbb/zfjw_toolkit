@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zfjw_toolkit/core/model/course_record.dart';
+import 'package:zfjw_toolkit/core/model/teaching_plan.dart';
 import 'package:zfjw_toolkit/core/rules/presets/xzhmu.dart';
 import 'package:zfjw_toolkit/core/stats/stats_engine.dart';
 
@@ -140,8 +141,8 @@ void main() {
     });
   });
 
-  group('simulate (What-If)', () {
-    test('替换成绩后新旧 GPA 对比', () {
+  group('simulateAll (What-If)', () {
+    test('替换单门成绩后新旧 GPA 对比', () {
       // A001 学位课 60分(jd1.0, xf4)；B002 非学位 90分(jd4.0, xf2)
       // 原总体 GPA = (4·1.0+2·4.0)/6 = 12/6 = 2.0
       // 原学位 GPA = 4·1.0/4 = 1.0
@@ -156,7 +157,7 @@ void main() {
       // 假设 A001 考到 90（jd 重估为 4.0）
       // 新总体 GPA = (4·4.0+2·4.0)/6 = 24/6 = 4.0
       // 新学位 GPA = 4·4.0/4 = 4.0
-      final r = simulate(s, 'A001', 90);
+      final r = simulateAll(s, {'A001': 90});
       expect(r.oldOverall.gpa, closeTo(2.0, 1e-9));
       expect(r.newOverall.gpa, closeTo(4.0, 1e-9));
       expect(r.oldDegree.gpa, closeTo(1.0, 1e-9));
@@ -165,9 +166,36 @@ void main() {
       expect(s.overall.gpa, closeTo(2.0, 1e-9));
     });
 
+    test('多门同时假设：已修课改分 + 计划未修课预估', () {
+      final raw = [
+        rec(kch: 'A001', kcmc: '核心', xf: '4', bfzcj: '60', sfxwkc: '是'),
+        rec(kch: 'B002', kcmc: '选修', xf: '2', bfzcj: '90', sfxwkc: '否'),
+      ];
+      final s = computeStats(raw, preset);
+      const planned = [
+        PlannedCourse(
+          code: 'C003',
+          name: '未来的课',
+          credits: 3,
+          suggestedYear: '',
+          suggestedTerm: '',
+          sfxwkc: '是',
+        ),
+      ];
+      // A001→90(jd4.0)，C003 预估 80(jd3.0, xf3, 学位)
+      // 新总体 GPA = (4·4.0+2·4.0+3·3.0)/9 = 33/9 ≈ 3.667
+      // 新学位 GPA = (4·4.0+3·3.0)/7 = 25/7 ≈ 3.571
+      final r = simulateAll(s, {'A001': 90, 'C003': 80}, planned: planned);
+      expect(r.newOverall.gpa, closeTo(33 / 9, 1e-9));
+      expect(r.newDegree.gpa, closeTo(25 / 7, 1e-9));
+      // 未知键被忽略
+      final r2 = simulateAll(s, {'UNKNOWN': 100}, planned: planned);
+      expect(r2.newOverall.gpa, closeTo(2.0, 1e-9));
+    });
+
     test('空统计下模拟安全返回', () {
       final s = computeStats(const [], preset);
-      final r = simulate(s, 'X', 90);
+      final r = simulateAll(s, {'X': 90});
       expect(r.oldOverall.gpa, isNull);
       expect(r.newOverall.gpa, isNull);
     });

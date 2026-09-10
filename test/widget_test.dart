@@ -30,7 +30,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('目标 GPA'), findsOneWidget);
+    expect(find.text('目标与最低 GPA'), findsOneWidget);
     expect(find.text('成绩计算规则'), findsOneWidget);
     expect(find.text('徐医规则包（xzhmu）'), findsOneWidget);
   });

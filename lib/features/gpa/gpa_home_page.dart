@@ -7,8 +7,7 @@ import 'package:zfjw_toolkit/features/gpa/ui/capture_entry_button.dart';
 import 'package:zfjw_toolkit/features/gpa/ui/charts_sections.dart';
 import 'package:zfjw_toolkit/features/gpa/ui/import_entry_button.dart';
 import 'package:zfjw_toolkit/features/gpa/ui/stats_sections.dart';
-import 'package:zfjw_toolkit/features/gpa/ui/what_if_card.dart';
-import 'package:zfjw_toolkit/features/settings/state/target_gpa.dart';
+import 'package:zfjw_toolkit/features/settings/state/gpa_goals.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 /// 成绩功能域首页：空态引导 / 完整统计页。
@@ -141,20 +140,26 @@ class _StatsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = AppTokens.of(context);
-    final target = ref.watch(targetGpaProvider).value;
+    final goals = ref.watch(gpaGoalsProvider).value;
     return _PageScroll(
       titleController: titleController,
       slivers: [
-        OverviewCard(stats: stats, targetGpa: target),
+        OverviewCard(
+          stats: stats,
+          targetGpaAll: goals?.targetAll,
+          targetGpaDegree: goals?.targetDegree,
+        ),
         const SizedBox(height: AppTokens.space4),
         WarningsSection(stats: stats),
         if (stats.failing.isNotEmpty || stats.suspicious.isNotEmpty)
           const SizedBox(height: AppTokens.space4),
-        SemestersSection(semesters: stats.semesters, targetGpa: target),
+        SemestersSection(
+          stats: stats,
+          targetGpaAll: goals?.targetAll,
+          targetGpaDegree: goals?.targetDegree,
+        ),
         if (stats.semesters.isNotEmpty) const SizedBox(height: AppTokens.space4),
-        WhatIfCard(stats: stats),
-        if (stats.rows.isNotEmpty) const SizedBox(height: AppTokens.space4),
-        DistributionSection(overall: stats.overall),
+        DistributionSection(stats: stats),
         const SizedBox(height: AppTokens.space5),
         Text(
           '共 ${stats.attempts} 条成绩记录，同课程多次修读已按最高分去重；'
