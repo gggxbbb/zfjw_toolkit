@@ -5,7 +5,6 @@ import 'package:zfjw_toolkit/core/stats/result_types.dart';
 import 'package:zfjw_toolkit/features/gpa/state/gpa_providers.dart';
 import 'package:zfjw_toolkit/features/gpa/ui/capture_entry_button.dart';
 import 'package:zfjw_toolkit/features/gpa/ui/charts_sections.dart';
-import 'package:zfjw_toolkit/features/gpa/ui/import_entry_button.dart';
 import 'package:zfjw_toolkit/features/gpa/ui/stats_sections.dart';
 import 'package:zfjw_toolkit/features/settings/state/gpa_goals.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
@@ -117,14 +116,12 @@ class _EmptyState extends StatelessWidget {
         ),
         const SizedBox(height: AppTokens.space2),
         Text(
-          '从教务系统采集成绩，或导入已保存的成绩页面。',
+          '从教务系统采集成绩后，这里会展示完整的统计分析。',
           textAlign: TextAlign.center,
           style: AppText.subhead.copyWith(color: tokens.labelSecondary),
         ),
         const SizedBox(height: AppTokens.space5),
         const CaptureEntryButton(),
-        const SizedBox(height: AppTokens.space3),
-        const ImportEntryButton(),
       ],
     );
   }
@@ -170,13 +167,7 @@ class _StatsPage extends ConsumerWidget {
         ),
         const SizedBox(height: AppTokens.space4),
         // 有数据后的成绩更新入口（与空态大按钮同源）。
-        const Row(
-          children: [
-            Expanded(child: CaptureEntryButton(expand: true)),
-            SizedBox(width: AppTokens.space3),
-            Expanded(child: ImportEntryButton(expand: true)),
-          ],
-        ),
+        const CaptureEntryButton(expand: true),
       ],
     );
   }

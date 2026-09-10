@@ -53,7 +53,6 @@ void main() {
 
       expect(find.text('暂无成绩数据'), findsOneWidget);
       expect(find.text('去采集'), findsOneWidget);
-      expect(find.text('导入 HTML'), findsOneWidget);
     });
 
     testWidgets('有快照时显示统计分区', (tester) async {

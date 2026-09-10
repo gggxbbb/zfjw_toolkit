@@ -6,6 +6,7 @@ import 'package:zfjw_toolkit/core/stats/result_types.dart';
 import 'package:zfjw_toolkit/core/stats/target_analysis.dart';
 import 'package:zfjw_toolkit/data/teaching_plan_repository.dart';
 import 'package:zfjw_toolkit/features/gpa/state/gpa_providers.dart';
+import 'package:zfjw_toolkit/features/gpa/ui/capture_entry_button.dart';
 import 'package:zfjw_toolkit/features/settings/state/gpa_goals.dart';
 import 'package:zfjw_toolkit/features/target/plan_capture_page.dart';
 import 'package:zfjw_toolkit/features/target/ui/what_if_section.dart';
@@ -87,6 +88,32 @@ class _TargetAnalysisPageState extends ConsumerState<TargetAnalysisPage> {
                         textAlign: TextAlign.center,
                       ),
                     ],
+                    const SizedBox(height: AppTokens.space4),
+                    // 数据更新入口：重新采集成绩 / 教学计划（与成绩页同源）。
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: CaptureEntryButton(
+                            expand: true,
+                            label: '采集成绩',
+                          ),
+                        ),
+                        const SizedBox(width: AppTokens.space3),
+                        Expanded(
+                          child: AppGlassButton(
+                            label: p == null ? '采集教学计划' : '更新教学计划',
+                            icon: CupertinoIcons.square_list,
+                            style: AppButtonStyle.regular,
+                            expand: true,
+                            onTap: () => Navigator.of(context).push(
+                              CupertinoPageRoute<void>(
+                                builder: (_) => const PlanCapturePage(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 );
               },
@@ -255,10 +282,17 @@ class _EmptyStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AppGlassGroupedCard(
         title: '暂无成绩数据',
-        child: Text(
-          '请先在“成绩”页采集成绩，再进行目标分析。',
-          style: AppText.subhead
-              .copyWith(color: AppTokens.of(context).labelSecondary),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              '采集成绩后即可进行目标分析。',
+              style: AppText.subhead
+                  .copyWith(color: AppTokens.of(context).labelSecondary),
+            ),
+            const SizedBox(height: AppTokens.space3),
+            const CaptureEntryButton(label: '采集成绩', expand: true),
+          ],
         ),
       );
 }
