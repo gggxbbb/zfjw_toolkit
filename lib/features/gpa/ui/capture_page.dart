@@ -55,10 +55,10 @@ class _CapturePageState extends ConsumerState<CapturePage> {
         outcome.records!,
       );
       ref.invalidate(latestSnapshotProvider);
-      setState(() {
-        _state = CaptureState.done;
-        _message = '采集完成：${outcome.records!.length} 条记录';
-      });
+      // 采集成功后回到根级成绩页；从导入页进入时也一并跳过中间路由。
+      if (mounted) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
     } else {
       setState(() {
         _state = CaptureState.failed;
