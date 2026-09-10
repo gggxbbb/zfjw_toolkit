@@ -20,7 +20,8 @@ TargetAnalysis analyzeTarget({
   required double targetGpa,
 }) {
   final completed = current.totalCredits;
-  final remaining = (plan.graduationCredits - completed).clamp(0, double.infinity);
+  final remaining =
+      (plan.graduationCredits - completed).clamp(0, double.infinity).toDouble();
   final currentGpa = current.gpa ?? 0;
   double project(double remainingGpa) => plan.graduationCredits == 0
       ? currentGpa
