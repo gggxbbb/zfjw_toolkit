@@ -12,8 +12,8 @@ import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 /// 从 HTML 文件导入成绩的完整流程（选文件 → 解析 → 入库 → 提示）。
 ///
-/// 供 [ImportEntryButton]（空态大按钮）与 [ImportAppBarAction]（顶部栏
-/// 图标按钮）共用——有数据后用户仍可随时重新导入更新成绩。
+/// 供 [ImportEntryButton]（空态大按钮）与统计页底部的并排入口共用——
+/// 有数据后用户仍可随时重新导入更新成绩。
 Future<void> runGradeImport(BuildContext context, WidgetRef ref) async {
   final files = await FilePicker.pickFiles(
     type: FileType.custom,
@@ -69,17 +69,6 @@ class ImportEntryButton extends ConsumerWidget {
         icon: CupertinoIcons.doc_plaintext,
         style: AppButtonStyle.regular,
         expand: expand,
-        onTap: () => runGradeImport(context, ref),
-      );
-}
-
-/// 顶部栏图标版导入入口：有数据后的「重新导入/更新」常驻入口。
-class ImportAppBarAction extends ConsumerWidget {
-  const ImportAppBarAction({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) => AppGlassIconButton(
-        icon: CupertinoIcons.doc_plaintext,
         onTap: () => runGradeImport(context, ref),
       );
 }

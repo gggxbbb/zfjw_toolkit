@@ -164,7 +164,7 @@ class _StatsPage extends ConsumerWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppTokens.space4),
-        // 更新成绩入口：与顶部栏图标按钮同源，这里带文字便于发现。
+        // 有数据后的成绩更新入口（与空态大按钮同源）。
         const Row(
           children: [
             Expanded(child: CaptureEntryButton(expand: true)),

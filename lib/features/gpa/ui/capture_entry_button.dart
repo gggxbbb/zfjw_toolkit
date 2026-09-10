@@ -23,18 +23,6 @@ class CaptureEntryButton extends StatelessWidget {
       );
 }
 
-/// 顶部栏图标版采集入口：有数据后的「重新采集/更新」常驻入口。
-class CaptureAppBarAction extends StatelessWidget {
-  const CaptureAppBarAction({super.key});
-
-  @override
-  Widget build(BuildContext context) => AppGlassIconButton(
-        icon: CupertinoIcons.cloud_download,
-        style: AppButtonStyle.prominent,
-        onTap: () => _push(context),
-      );
-}
-
 void _push(BuildContext context) {
   Navigator.of(context).push(
     CupertinoPageRoute<void>(builder: (_) => const CapturePage()),

@@ -52,12 +52,10 @@ class _MainShellState extends ConsumerState<MainShell> {
     return DefaultTextStyle(
       style: AppText.body.copyWith(color: tokens.labelPrimary),
       child: AppGlassScaffold(
-        // 顶部栏：小标题常显，与大标题做折叠联动；actions 为该 tab 的
-        // 常驻动作（成绩页的重新采集/重新导入入口）。
+        // 顶部栏：小标题常显，与大标题做折叠联动。
         appBar: AppGlassAppBar(
           title: Text(tab.label),
           largeTitleController: titleController,
-          actions: tab.actions?.call(context),
         ),
         // 底部栏：内容从其下方穿过 → 全玻璃通透。
         bottomBar: AppGlassTabBar(
