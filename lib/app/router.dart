@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:zfjw_toolkit/features/gpa/gpa_home_page.dart';
 import 'package:zfjw_toolkit/features/settings/settings_home_page.dart';
+import 'package:zfjw_toolkit/features/target/target_analysis_page.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 /// 底部导航 tab 定义 —— 路由清单集中在 [appTabs]。
@@ -39,6 +40,13 @@ class AppTab {
 
 /// 应用全部底部导航 tab（当前：成绩、设置）。
 final List<AppTab> appTabs = [
+  AppTab(
+    id: 'target',
+    label: '目标分析',
+    icon: CupertinoIcons.scope,
+    selectedIcon: CupertinoIcons.scope,
+    page: (_, title) => TargetAnalysisPage(titleController: title),
+  ),
   AppTab(
     id: 'gpa',
     label: '成绩',

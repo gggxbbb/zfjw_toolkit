@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:zfjw_toolkit/capture/capture_flow.dart';
 import 'package:zfjw_toolkit/capture/capture_script.dart';
+import 'package:zfjw_toolkit/capture/teaching_plan_capture.dart';
 
 void main() {
   group('capture_script 内容完整性', () {
@@ -32,6 +33,28 @@ void main() {
     test('其他页面与 null 不命中', () {
       expect(isGradePageUrl('https://jwpt.xzhmu.edu.cn/'), isFalse);
       expect(isGradePageUrl(null), isFalse);
+    });
+  });
+
+  group('教学计划采集', () {
+    test('计划页脚本监听课程网格并扩展到全部分页', () {
+      expect(teachingPlanCaptureScript, contains(teachingPlanCaptureHandlerName));
+      expect(teachingPlanCaptureScript, contains("#kcxxGrid"));
+      expect(teachingPlanCaptureScript, contains('rowNum: 5000'));
+      expect(teachingPlanPageMarker, 'jxzxjhck_cxJxzxjhckIndex.html');
+    });
+
+    test('有效 payload 生成独立教学计划', () {
+      final plan = teachingPlanFromPayload({
+        'status': 'ok',
+        'programName': '2023麻醉学',
+        'courses': [
+          {'kch': 'PJ01', 'kcmc': '医学导论', 'xf': '2'},
+        ],
+      });
+      expect(plan?.programName, '2023麻醉学');
+      expect(plan?.courses.single.credits, 2);
+      expect(plan?.graduationCredits, 2);
     });
   });
 

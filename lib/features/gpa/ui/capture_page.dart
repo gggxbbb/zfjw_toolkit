@@ -69,7 +69,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
 
   String get _statusText => switch (_state) {
         CaptureState.loading => '页面加载中…',
-        CaptureState.awaitingLogin => '请在页面内完成教务登录',
+        CaptureState.awaitingLogin => '请完成教务登录并打开“学生成绩查询”页面',
         CaptureState.navigating => '正在进入成绩查询页…',
         CaptureState.capturing => '正在采集成绩数据…',
         CaptureState.done => _message ?? '采集完成',
