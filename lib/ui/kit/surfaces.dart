@@ -8,6 +8,12 @@ import 'tokens.dart';
 /// 全应用页面布局的唯一入口。底层 [lg.GlassScaffold] 已处理安全区与滚动边缘，
 /// 本封装只负责：装配统一背景、统一 `edgeFade` 行为（默认关闭——纯内容页
 /// 不需要顶/底莫名阴影条）。
+///
+/// **`extendBody` 默认 `false`**：正文页（ListView / Center 等自身管理布局的
+/// widget）不感知 appBar，若让它延伸到栏下，内容会顶进状态栏、压到底部
+/// tab bar——这正是「顶部/底部内容顶边」的根因。库文档明确要求此类场景设
+/// `false`，由 scaffold 把 body 精确摆在两栏之间。仅当页面自绘滚动 spacer
+/// （如大标题吸顶）时才传 `true`。
 class AppGlassScaffold extends StatelessWidget {
   const AppGlassScaffold({
     super.key,
@@ -17,7 +23,7 @@ class AppGlassScaffold extends StatelessWidget {
     this.bottomBar,
     this.statusBarStyle = lg.GlassStatusBarStyle.auto,
     this.edgeFade = false,
-    this.extendBody = true,
+    this.extendBody = false,
   });
 
   /// 主内容区。
@@ -39,6 +45,10 @@ class AppGlassScaffold extends StatelessWidget {
   final bool edgeFade;
 
   /// 内容是否延伸到栏下（玻璃需要内容衬托才有效果）。
+  ///
+  /// 默认 `false`：正文页精确占据两栏之间，不被状态栏/tab bar 遮挡。
+  /// 仅当页面自身在滚动视图内加了顶部 spacer（让内容能从玻璃栏下滚过）
+  /// 时才传 `true`。
   final bool extendBody;
 
   @override

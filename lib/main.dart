@@ -12,7 +12,11 @@ void main() async {
 
   // wrap() 桥接 Material 主题到玻璃明暗级联；brightnessResolver 让玻璃组件
   // 正确跟随 MaterialApp 的 ThemeMode（明/暗/跟随系统）。
-  // theme 参数注入本应用统一色板（消除玻璃库默认色板带来的配色混杂）。
+  //
+  // theme 只用于「非 Material 树」下的默认玻璃色板；真正的明暗切换由
+  // brightnessResolver(Theme.maybeBrightnessOf) 驱动——它在 MaterialApp 的
+  // theme/darkTheme 之间解析出当前 Brightness，玻璃层据此取
+  // GlassThemeData.light / .dark 变体。
   // ProviderScope 为 Riverpod 根容器（数据库/仓储/统计 provider 链）。
   runApp(
     LiquidGlassWidgets.wrap(

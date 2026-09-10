@@ -172,10 +172,18 @@ class AppTokens {
 
 /// iOS 排版刻度（对齐 HIG：大标题 34 / 标题 17 / 正文 17 / 脚注 13）。
 ///
-/// 全部使用系统默认字体族（Android 上是 Roboto，iOS 上是 SF Pro），
+/// 全部使用系统默认字体族（Android 上是 Roboto + Noto CJK，iOS 上是 SF Pro），
 /// 不引入自定义字体——"像系统 App"的前提就是不换字体。
+///
+/// **关键：所有样式都显式声明 `decoration: TextDecoration.none` 与
+/// `decorationColor/decorationStyle`**。Flutter 在字体回退（fallback）链条上
+/// 若遇到未显式声明装饰语义的 `TextStyle`，会用"黄色下划线"标记回退字形
+/// ——这正是中文全量黄色下划线的来源。显式声明后回退渲染不再画告警线。
 class AppText {
   AppText._();
+
+  /// 统一的装饰语义：无下划线，且颜色/样式显式给出，避免回退告警。
+  static const TextDecoration _noDecoration = TextDecoration.none;
 
   /// 超大数值（GPA 大字，对齐 Health 页指标）。
   static const TextStyle display = TextStyle(
@@ -183,6 +191,10 @@ class AppText {
     fontWeight: FontWeight.w700,
     letterSpacing: -1.5,
     height: 1.05,
+    decoration: _noDecoration,
+    decorationColor: Color(0x00000000),
+    decorationStyle: TextDecorationStyle.solid,
+    leadingDistribution: TextLeadingDistribution.even,
   );
 
   /// 大标题（页面主标题，iOS Large Title）。
@@ -191,6 +203,10 @@ class AppText {
     fontWeight: FontWeight.w700,
     letterSpacing: -0.5,
     height: 1.15,
+    decoration: _noDecoration,
+    decorationColor: Color(0x00000000),
+    decorationStyle: TextDecorationStyle.solid,
+    leadingDistribution: TextLeadingDistribution.even,
   );
 
   /// 标题（卡片标题、区域标题）。
@@ -198,6 +214,10 @@ class AppText {
     fontSize: 17,
     fontWeight: FontWeight.w600,
     height: 1.25,
+    decoration: _noDecoration,
+    decorationColor: Color(0x00000000),
+    decorationStyle: TextDecorationStyle.solid,
+    leadingDistribution: TextLeadingDistribution.even,
   );
 
   /// 小标题 / section header（iOS 分组列表小写灰字）。
@@ -205,6 +225,10 @@ class AppText {
     fontSize: 13,
     fontWeight: FontWeight.w400,
     height: 1.2,
+    decoration: _noDecoration,
+    decorationColor: Color(0x00000000),
+    decorationStyle: TextDecorationStyle.solid,
+    leadingDistribution: TextLeadingDistribution.even,
   );
 
   /// 正文。
@@ -212,6 +236,10 @@ class AppText {
     fontSize: 17,
     fontWeight: FontWeight.w400,
     height: 1.35,
+    decoration: _noDecoration,
+    decorationColor: Color(0x00000000),
+    decorationStyle: TextDecorationStyle.solid,
+    leadingDistribution: TextLeadingDistribution.even,
   );
 
   /// 次级正文（列表行副标题）。
@@ -219,6 +247,10 @@ class AppText {
     fontSize: 15,
     fontWeight: FontWeight.w400,
     height: 1.3,
+    decoration: _noDecoration,
+    decorationColor: Color(0x00000000),
+    decorationStyle: TextDecorationStyle.solid,
+    leadingDistribution: TextLeadingDistribution.even,
   );
 
   /// 脚注（说明文字、统计口径）。
@@ -226,6 +258,10 @@ class AppText {
     fontSize: 13,
     fontWeight: FontWeight.w400,
     height: 1.35,
+    decoration: _noDecoration,
+    decorationColor: Color(0x00000000),
+    decorationStyle: TextDecorationStyle.solid,
+    leadingDistribution: TextLeadingDistribution.even,
   );
 
   /// 极小注释（表格注脚、时间戳）。
@@ -233,6 +269,10 @@ class AppText {
     fontSize: 11,
     fontWeight: FontWeight.w400,
     height: 1.3,
+    decoration: _noDecoration,
+    decorationColor: Color(0x00000000),
+    decorationStyle: TextDecorationStyle.solid,
+    leadingDistribution: TextLeadingDistribution.even,
   );
 
   /// 数值（等宽数字，避免跳变）。
@@ -240,5 +280,26 @@ class AppText {
     fontSize: 15,
     fontWeight: FontWeight.w600,
     fontFeatures: [FontFeature.tabularFigures()],
+    decoration: _noDecoration,
+    decorationColor: Color(0x00000000),
+    decorationStyle: TextDecorationStyle.solid,
+    leadingDistribution: TextLeadingDistribution.even,
   );
+
+  /// 供 [AppTheme] 构造完整 `TextTheme` 用：把全部刻度一次性铺开，
+  /// 保证 Material 组件继承到同一套"无黄色下划线"的样式。
+  static TextTheme get textTheme => const TextTheme(
+        displayLarge: display,
+        displayMedium: largeTitle,
+        displaySmall: title,
+        headlineMedium: title,
+        titleLarge: title,
+        titleMedium: body,
+        bodyLarge: body,
+        bodyMedium: subhead,
+        bodySmall: footnote,
+        labelLarge: subhead,
+        labelMedium: footnote,
+        labelSmall: caption,
+      );
 }

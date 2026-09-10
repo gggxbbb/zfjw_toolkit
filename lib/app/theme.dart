@@ -43,7 +43,14 @@ class AppTheme {
       dividerColor: t.separator,
       splashFactory: NoSplash.splashFactory,
       highlightColor: const Color(0x00000000),
-      fontFamily: null, // 系统默认字体（iOS 上是 SF Pro）
+      // 系统默认字体（Android: Roboto + Noto CJK；iOS: SF Pro）。
+      // 关键：把 [AppText] 全量铺进 textTheme。Flutter 在字体回退链上若
+      // 遇到未显式声明 decoration 的 TextStyle，会用黄色下划线标记回退字形
+      // ——这就是"文字全是黄色下划线"的根因。AppText 已逐条声明
+      // decoration: none，通过 textTheme 覆盖 Material 默认样式后告警消失。
+      fontFamily: null,
+      textTheme: AppText.textTheme,
+      primaryTextTheme: AppText.textTheme,
     );
   }
 }
