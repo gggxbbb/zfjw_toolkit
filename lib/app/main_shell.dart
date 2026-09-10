@@ -51,28 +51,32 @@ class _MainShellState extends ConsumerState<MainShell> {
     // decoration: none，从而彻底消除该告警。
     return DefaultTextStyle(
       style: AppText.body.copyWith(color: tokens.labelPrimary),
-      child: AppGlassScaffold(
-        // 顶部栏：小标题常显，与大标题做折叠联动。
-        appBar: AppGlassAppBar(
-          title: Text(tab.label),
-          largeTitleController: titleController,
+      child: MediaQuery.removeViewInsets(
+        context: context,
+        removeBottom: true,
+        child: AppGlassScaffold(
+          // 顶部栏：小标题常显，与大标题做折叠联动。
+          appBar: AppGlassAppBar(
+            title: Text(tab.label),
+            largeTitleController: titleController,
+          ),
+          // 键盘打开时仍固定在屏幕底部，不随 viewInsets 上移。
+          bottomBar: AppGlassTabBar(
+            tabs: [
+              for (final t in appTabs)
+                GlassTab(
+                  icon: Icon(t.icon),
+                  activeIcon:
+                      t.selectedIcon == null ? null : Icon(t.selectedIcon),
+                  label: t.label,
+                ),
+            ],
+            selectedIndex: _index,
+            onTabSelected: (i) => setState(() => _index = i),
+          ),
+          // 页面接收标题滚动控制器以装配 Large Title。
+          body: tab.page(context, titleController),
         ),
-        // 底部栏：内容从其下方穿过 → 全玻璃通透。
-        bottomBar: AppGlassTabBar(
-          tabs: [
-            for (final t in appTabs)
-              GlassTab(
-                icon: Icon(t.icon),
-                activeIcon:
-                    t.selectedIcon == null ? null : Icon(t.selectedIcon),
-                label: t.label,
-              ),
-          ],
-          selectedIndex: _index,
-          onTabSelected: (i) => setState(() => _index = i),
-        ),
-        // 页面接收标题滚动控制器以装配 Large Title。
-        body: tab.page(context, titleController),
       ),
     );
   }
