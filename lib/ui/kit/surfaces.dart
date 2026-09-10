@@ -84,14 +84,14 @@ class AppGlassScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => lg.GlassScaffold(
-        body: body,
-        background: background ?? const AppWallpaper(),
-        appBar: appBar,
-        bottomBar: bottomBar,
-        statusBarStyle: statusBarStyle,
-        edgeFade: edgeFade,
-        extendBody: extendBody,
-      );
+    body: body,
+    background: background ?? const AppWallpaper(),
+    appBar: appBar,
+    bottomBar: bottomBar,
+    statusBarStyle: statusBarStyle,
+    edgeFade: edgeFade,
+    extendBody: extendBody,
+  );
 }
 
 /// 页面滚动内容的上下留白：让内容从玻璃栏下方滚过。
@@ -116,23 +116,21 @@ class AppPagePadding {
   ///
   /// 使用 [AppGlassLargeTitle] 时**不需要**它——Large Title 自身已占据
   /// 顶部空间并随滚动收起。
-  static EdgeInsets top(BuildContext context) => EdgeInsets.only(
-        top: AppGlassMetrics.topInset(context),
-      );
+  static EdgeInsets top(BuildContext context) =>
+      EdgeInsets.only(top: AppGlassMetrics.topInset(context));
 
   /// 顶部留白 + 页面左右内边距。
   static EdgeInsets topWithHorizontal(BuildContext context) => EdgeInsets.only(
-        top: AppGlassMetrics.topInset(context),
-        left: AppTokens.pagePadding,
-        right: AppTokens.pagePadding,
-      );
+    top: AppGlassMetrics.topInset(context),
+    left: AppTokens.pagePadding,
+    right: AppTokens.pagePadding,
+  );
 
   /// 底部留白：标签栏 + Home Indicator。
   ///
   /// 用作滚动内容最后的 padding，保证末屏内容完整露出、不被 tab bar 覆盖。
-  static EdgeInsets bottom(BuildContext context) => EdgeInsets.only(
-        bottom: AppGlassMetrics.bottomInset(context),
-      );
+  static EdgeInsets bottom(BuildContext context) =>
+      EdgeInsets.only(bottom: AppGlassMetrics.bottomInset(context));
 
   /// 底部留白 + 页面左右内边距。
   static EdgeInsets bottomWithHorizontal(BuildContext context) =>
@@ -144,10 +142,10 @@ class AppPagePadding {
 
   /// 页面主体的完整内边距（左右 + 底部），配合 Large Title 使用。
   static EdgeInsets body(BuildContext context) => EdgeInsets.only(
-        left: AppTokens.pagePadding,
-        right: AppTokens.pagePadding,
-        bottom: AppGlassMetrics.bottomInset(context),
-      );
+    left: AppTokens.pagePadding,
+    right: AppTokens.pagePadding,
+    bottom: AppGlassMetrics.bottomInset(context),
+  );
 }
 
 /// 自动明暗纯色背景。
@@ -353,10 +351,12 @@ class AppGlassTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => lg.GlassTabBar.bottom(
-        tabs: tabs,
-        selectedIndex: selectedIndex,
-        onTabSelected: onTabSelected,
-      );
+    tabs: tabs,
+    selectedIndex: selectedIndex,
+    onTabSelected: onTabSelected,
+    // Android 上指向触点的高亮会显得过大；保留轻微按压反馈即可。
+    interactionBehavior: lg.GlassInteractionBehavior.scaleOnly,
+  );
 }
 
 /// 玻璃卡片：iOS 26 内容容器。
