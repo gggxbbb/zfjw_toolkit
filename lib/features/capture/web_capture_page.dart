@@ -11,8 +11,9 @@ class WebCaptureResult {
 }
 
 class WebCapturePage extends StatefulWidget {
-  const WebCapturePage({super.key, required this.title, required this.instruction, required this.handlerName, required this.matchesPage, required this.script, required this.onPayload, required this.onSuccess});
-  final String title, instruction, handlerName, script;
+  const WebCapturePage({super.key, required this.title, required this.instruction, this.targetPageStatus = '正在采集数据…', this.progressMessage, required this.handlerName, required this.matchesPage, required this.script, required this.onPayload, required this.onSuccess});
+  final String title, instruction, targetPageStatus, handlerName, script;
+  final String? Function(Map<String, dynamic> payload)? progressMessage;
   final bool Function(String?) matchesPage;
   final Future<WebCaptureResult> Function(Map<String, dynamic>, InAppWebViewController) onPayload;
   final VoidCallback onSuccess;
@@ -27,7 +28,7 @@ class _WebCapturePageState extends State<WebCapturePage> {
       Container(width: double.infinity, padding: const EdgeInsets.symmetric(horizontal: AppTokens.space4, vertical: AppTokens.space3), decoration: BoxDecoration(color: _error ? tokens.danger.withAlpha(20) : tokens.accentSubtle, border: Border(bottom: BorderSide(color: tokens.separator, width: .5))), child: Row(children: [
         if (!_finished) const SizedBox(width:14,height:14,child:AppGlassProgress(size:14)) else Icon(_error ? CupertinoIcons.exclamationmark_circle : CupertinoIcons.check_mark_circled_solid, color: _error ? tokens.danger : tokens.success, size:16), const SizedBox(width:AppTokens.space2), Expanded(child: Text(text, style: AppText.footnote.copyWith(color: tokens.labelPrimary, fontWeight: FontWeight.w500))),
       ])),
-      Expanded(child: InAppWebView(initialUrlRequest: URLRequest(url: WebUri(zfjwDefaultEntryUrl)), initialSettings: InAppWebViewSettings(javaScriptEnabled:true, thirdPartyCookiesEnabled:true), onWebViewCreated: (c) { c.addJavaScriptHandler(handlerName: widget.handlerName, callback: (args) async { if (args.isEmpty || args.first is! Map) return null; final result = await widget.onPayload(Map<String,dynamic>.from(args.first as Map), c); if (!mounted) return null; setState(() { _message=result.message; _error=result.error; _finished=true; }); if (!result.error) widget.onSuccess(); return null; }); }, onLoadStop: (c,url) async { if (widget.matchesPage(url?.toString())) { setState(() => _message = '正在采集数据…'); await c.evaluateJavascript(source: widget.script); } else if (_message == null) { setState(() {}); } }, onReceivedError: (_, request, error) { if (request.isForMainFrame ?? false) setState(() { _message='网络错误：${error.description}'; _error=true; _finished=true; }); }))
+      Expanded(child: InAppWebView(initialUrlRequest: URLRequest(url: WebUri(zfjwDefaultEntryUrl)), initialSettings: InAppWebViewSettings(javaScriptEnabled:true, thirdPartyCookiesEnabled:true), onWebViewCreated: (c) { c.addJavaScriptHandler(handlerName: widget.handlerName, callback: (args) async { if (args.isEmpty || args.first is! Map) return null; final payload = Map<String,dynamic>.from(args.first as Map); final progress = widget.progressMessage?.call(payload); if (progress != null) { if (mounted) setState(() => _message = progress); return null; } final result = await widget.onPayload(payload, c); if (!mounted) return null; setState(() { _message=result.message; _error=result.error; _finished=true; }); if (!result.error) widget.onSuccess(); return null; }); }, onLoadStop: (c,url) async { if (widget.matchesPage(url?.toString())) { setState(() => _message = widget.targetPageStatus); await c.evaluateJavascript(source: widget.script); } else if (_message == null) { setState(() {}); } }, onReceivedError: (_, request, error) { if (request.isForMainFrame ?? false) setState(() { _message='网络错误：${error.description}'; _error=true; _finished=true; }); }))
     ]));
   }
 }

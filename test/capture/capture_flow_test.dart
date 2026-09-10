@@ -40,7 +40,10 @@ void main() {
     test('计划页脚本监听课程网格并扩展到全部分页', () {
       expect(teachingPlanCaptureScript, contains(teachingPlanCaptureHandlerName));
       expect(teachingPlanCaptureScript, contains("#kcxxGrid"));
+      expect(teachingPlanCaptureScript, contains("getElementById('messages')"));
       expect(teachingPlanCaptureScript, contains('rowNum: 5000'));
+      expect(teachingPlanCaptureScript, contains('kcxxGrid tr.jqgrow'));
+      expect(teachingPlanCaptureScript, contains('aria-describedby'));
       expect(teachingPlanPageMarker, 'jxzxjhck_cxJxzxjhckIndex.html');
     });
 

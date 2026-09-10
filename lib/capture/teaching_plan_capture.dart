@@ -35,17 +35,34 @@ const teachingPlanCaptureScript = r'''
     ticks++;
     var $ = window.jQuery;
     var grid = document.getElementById('kcxxGrid');
-    if (!grid || !$ || !$.fn.jqGrid) {
+    var coursePanel = document.getElementById('messages');
+    var courseTabIsActive = coursePanel && /(^|\s)active(\s|$)/.test(coursePanel.className);
+    if (!grid || !courseTabIsActive || !$ || !$.fn.jqGrid) {
       if (ticks > 600) { clearInterval(timer); report({status:'error', message:'请选定教学计划并打开“课程信息”页'}); }
       return;
     }
     var q = $('#kcxxGrid');
     if (!window.__zfjwPlanExpanded) {
       window.__zfjwPlanExpanded = true;
+      report({status:'progress', message:'正在采集全部课程信息…'});
       q.jqGrid('setGridParam', {rowNum: 5000, page: 1}).trigger('reloadGrid');
       return;
     }
     var rows = q.jqGrid('getGridParam', 'data') || [];
+    // 部分正方版本只渲染 jqGrid DOM，不填充 data 参数；此时按列名回退。
+    if (!rows.length) {
+      rows = [];
+      var domRows = document.querySelectorAll('#kcxxGrid tr.jqgrow');
+      for (var i = 0; i < domRows.length; i++) {
+        var domRow = {};
+        var cells = domRows[i].querySelectorAll('td[aria-describedby^="kcxxGrid_"]');
+        for (var j = 0; j < cells.length; j++) {
+          var key = cells[j].getAttribute('aria-describedby').slice('kcxxGrid_'.length);
+          domRow[key] = clean(cells[j].textContent);
+        }
+        if (domRow.kch || domRow.kcmc) rows.push(domRow);
+      }
+    }
     if (!rows.length) return;
     var result = rows.map(function (row) { var out = {}; for (var k in row) out[k] = clean(row[k]); return out; });
     var info = document.body.innerText || '';

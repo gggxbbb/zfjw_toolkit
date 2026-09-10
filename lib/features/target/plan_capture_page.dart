@@ -11,9 +11,13 @@ class PlanCapturePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => WebCapturePage(
         title: '采集教学计划',
         instruction: '登录后，打开“教学执行计划查看”，选定计划并进入“课程信息”页',
+        targetPageStatus: '请选定教学计划并进入“课程信息”页，应用将自动开始采集',
         handlerName: teachingPlanCaptureHandlerName,
         matchesPage: (url) => url?.contains(teachingPlanPageMarker) ?? false,
         script: teachingPlanCaptureScript,
+        progressMessage: (payload) => payload['status'] == 'progress'
+            ? payload['message'] as String? ?? '正在采集课程信息…'
+            : null,
         onPayload: (payload, _) async {
           final plan = teachingPlanFromPayload(payload);
           if (plan == null) return const WebCaptureResult.failure('未能读取教学计划课程，请确认已进入“课程信息”页');
