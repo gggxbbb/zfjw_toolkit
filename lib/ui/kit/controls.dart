@@ -144,7 +144,6 @@ class AppGlassIconButton extends StatelessWidget {
 
     return lg.GlassButton.custom(
       onTap: enabled ? (onTap ?? () {}) : () {},
-      child: Icon(icon, size: size, color: tokens.accent),
       shape: lg.LiquidRoundedSuperellipse(
         borderRadius: buttonSize / 2.6,
       ),
@@ -152,6 +151,7 @@ class AppGlassIconButton extends StatelessWidget {
       enabled: enabled,
       height: buttonSize,
       width: buttonSize,
+      child: Icon(icon, size: size, color: tokens.accent),
     );
   }
 }

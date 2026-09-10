@@ -70,14 +70,16 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // 总览：4 学分绩点 4.0 + 2 学分绩点 3.0 → GPA = (16+6)/6 ≈ 3.67
-      expect(find.text('3.67'), findsOneWidget);
-      // 「学位 GPA」出现在总览行与 What-If 对比行两处
-      expect(find.text('学位 GPA'), findsNWidgets(2));
-      expect(find.text('假设分析'), findsOneWidget);
+      // 总览：4 学分绩点 4.0 + 2 学分绩点 3.0 → GPA = (16+6)/6 ≈ 3.67。
+      // 样本全在同一学期 → 学期行 GPA 与总览相同，故出现两处 "3.67"。
+      expect(find.text('3.67'), findsNWidgets(2));
+      // 「学位 GPA」出现在总览行与 What-If 对比行两处（后者视口外、缓存区内）
+      expect(find.text('学位 GPA', skipOffstage: false), findsNWidgets(2));
+      expect(find.text('假设分析', skipOffstage: false), findsOneWidget);
       expect(find.text('各学期（1 个）'), findsOneWidget);
-      // 懒加载：滚屏外的分区用 skipOffstage:false 查找
-      expect(find.text('成绩分布', skipOffstage: false), findsOneWidget);
+      // 成绩分布分区超出缓存区不预构建，滚动到位后再断言
+      await tester.scrollUntilVisible(find.text('成绩分布'), 300);
+      expect(find.text('成绩分布'), findsOneWidget);
       // 有数据时不再显示空态引导
       expect(find.text('暂无成绩数据'), findsNothing);
     });
