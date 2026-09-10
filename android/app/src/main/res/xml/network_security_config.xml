@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 网络安全配置：正方教务部分页面走明文 HTTP（如登录跳转），
+     仅对教务域名放行 cleartext，其余流量维持默认策略。 -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">jwpt.xzhmu.edu.cn</domain>
+        <domain includeSubdomains="true">ehall.xzhmu.edu.cn</domain>
+    </domain-config>
+</network-security-config>
