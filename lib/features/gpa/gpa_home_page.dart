@@ -164,13 +164,13 @@ class _StatsPage extends ConsumerWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppTokens.space4),
-        Center(
-          child: AppGlassButton(
-            label: '重新加载',
-            icon: CupertinoIcons.refresh,
-            style: AppButtonStyle.plain,
-            onTap: () => ref.invalidate(latestSnapshotProvider),
-          ),
+        // 更新成绩入口：与顶部栏图标按钮同源，这里带文字便于发现。
+        const Row(
+          children: [
+            Expanded(child: CaptureEntryButton(expand: true)),
+            SizedBox(width: AppTokens.space3),
+            Expanded(child: ImportEntryButton(expand: true)),
+          ],
         ),
       ],
     );

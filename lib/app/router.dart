@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
 import 'package:zfjw_toolkit/features/gpa/gpa_home_page.dart';
+import 'package:zfjw_toolkit/features/gpa/ui/capture_entry_button.dart';
+import 'package:zfjw_toolkit/features/gpa/ui/import_entry_button.dart';
 import 'package:zfjw_toolkit/features/settings/settings_home_page.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
@@ -15,6 +17,7 @@ class AppTab {
     required this.icon,
     this.selectedIcon,
     required this.page,
+    this.actions,
   });
 
   /// 稳定标识，用于路由/状态。
@@ -35,6 +38,11 @@ class AppTab {
   /// [AppGlassLargeTitle]，并与顶部玻璃栏的小标题联动。
   final Widget Function(BuildContext context, GlassLargeTitleController title)
       page;
+
+  /// 顶部栏右侧动作（常驻，不随大标题折叠淡出）。
+  ///
+  /// 成绩页放「重新采集 / 重新导入」入口，保证有数据后仍能随时更新。
+  final List<Widget> Function(BuildContext context)? actions;
 }
 
 /// 应用全部底部导航 tab（当前：成绩、设置）。
@@ -45,6 +53,8 @@ final List<AppTab> appTabs = [
     icon: CupertinoIcons.chart_bar,
     selectedIcon: CupertinoIcons.chart_bar_fill,
     page: (_, title) => GpaHomePage(titleController: title),
+    // 常驻更新入口：无论滚动位置、无论有无数据，都可重新采集/导入。
+    actions: (_) => const [CaptureAppBarAction(), ImportAppBarAction()],
   ),
   AppTab(
     id: 'settings',

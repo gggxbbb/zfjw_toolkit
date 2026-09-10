@@ -81,11 +81,12 @@ class AppGlassButton extends StatelessWidget {
       ),
     );
 
-    // 撑满时用 Row 占满整宽并居中，避免 GlassButton 无法表达 max 宽度。
+    // 撑满时占满可用宽度（Expanded 在有界宽度下工作；高度仍由内容决定，
+    // 因此在 ListView/Column 等纵向无界上下文里也安全）。
     if (!expand) return button;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [Flexible(child: button)],
+      children: [Expanded(child: button)],
     );
   }
 }
@@ -100,6 +101,59 @@ enum AppButtonStyle {
 
   /// 纯操作：无背景，仅内容与交互反馈。
   plain,
+}
+
+/// 玻璃图标按钮：纯图标、无文字（顶部栏 actions、工具条场景）。
+///
+/// 尺寸紧凑（默认 36×36），放在 [AppGlassAppBar.actions] 里时长驻可见、
+/// 不随大标题折叠淡出（库的行为：只有 title 参与折叠联动）。
+class AppGlassIconButton extends StatelessWidget {
+  const AppGlassIconButton({
+    super.key,
+    required this.icon,
+    required this.onTap,
+    this.size = 20,
+    this.buttonSize = 36,
+    this.style = AppButtonStyle.regular,
+  });
+
+  /// 图标。
+  final IconData icon;
+
+  /// 点击回调；null 时禁用。
+  final VoidCallback? onTap;
+
+  /// 图标尺寸。
+  final double size;
+
+  /// 按钮占位尺寸（正方形）。
+  final double buttonSize;
+
+  /// 视觉风格。
+  final AppButtonStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = AppTokens.of(context);
+    final enabled = onTap != null;
+    final lgStyle = switch (style) {
+      AppButtonStyle.prominent => lg.GlassButtonStyle.prominent,
+      AppButtonStyle.regular => lg.GlassButtonStyle.filled,
+      AppButtonStyle.plain => lg.GlassButtonStyle.transparent,
+    };
+
+    return lg.GlassButton.custom(
+      onTap: enabled ? (onTap ?? () {}) : () {},
+      icon: Icon(icon, size: size, color: tokens.accent),
+      shape: lg.LiquidRoundedSuperellipse(
+        borderRadius: buttonSize / 2.6,
+      ),
+      style: lgStyle,
+      enabled: enabled,
+      height: buttonSize,
+      width: buttonSize,
+    );
+  }
 }
 
 /// 玻璃分段控件（iOS `UISegmentedControl`）。
