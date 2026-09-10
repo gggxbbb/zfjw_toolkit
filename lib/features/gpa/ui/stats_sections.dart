@@ -68,13 +68,13 @@ class OverviewCard extends StatelessWidget {
           AppStatRow(label: '学位 GPA', value: fmt(d.gpa, 2), emphasize: true),
           if (targetGpaAll != null)
             AppStatRow(
-              label: '总 GPA 差距',
+              label: '总 GPA 距目标',
               value: diffText(o.gpa, targetGpaAll!),
               valueColor: _diffColor(context, o.gpa, targetGpaAll!),
             ),
           if (targetGpaDegree != null)
             AppStatRow(
-              label: '学位 GPA 差距',
+              label: '学位 GPA 距目标',
               value: diffText(d.gpa, targetGpaDegree!),
               valueColor: _diffColor(context, d.gpa, targetGpaDegree!),
             ),
