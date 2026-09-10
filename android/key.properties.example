@@ -1,0 +1,6 @@
+# Copy this file to android/key.properties and replace every placeholder.
+# Do not commit android/key.properties or the referenced JKS file.
+storeFile=app/release.jks
+storePassword=REPLACE_WITH_KEYSTORE_PASSWORD
+keyAlias=zfjw-toolkit
+keyPassword=REPLACE_WITH_KEY_PASSWORD

@@ -29,6 +29,19 @@ flutter test
 flutter run
 ```
 
+## Android 签名与 CI
+
+发布签名密钥不会提交到仓库。本地构建时，将 `android/key.properties.example` 复制为 `android/key.properties`，并填入对应的 JKS 路径、别名和密码。
+
+GitHub Actions 在推送到 `main` 后会运行静态检查和测试，并使用下列 repository secrets 构建签名 APK：
+
+- `ANDROID_KEYSTORE_BASE64`：JKS 文件的 Base64 内容
+- `ANDROID_KEYSTORE_PASSWORD`：JKS 密码
+- `ANDROID_KEY_ALIAS`：密钥别名
+- `ANDROID_KEY_PASSWORD`：密钥密码
+
+生成的 APK 会作为 `zfjw-toolkit-release-apk` 构件保存 30 天。
+
 ## 项目结构
 
 - `lib/capture/`：教务页面成绩采集与 HTML 导入
