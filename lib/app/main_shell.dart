@@ -4,12 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zfjw_toolkit/app/router.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
-/// 应用主壳：玻璃脚手架 + 顶部栏 + 底部玻璃标签栏。
+/// 应用主壳：玻璃脚手架 + 顶部玻璃栏 + 底部玻璃标签栏。
 ///
-/// 背景为自动明暗纯色（[AppWallpaper]），衬托玻璃材质。
+/// **布局模型（iOS 26 / App Store 式）**：
+/// - 骨架 `extendBody: true`——页面内容从顶/底玻璃栏下方穿过，玻璃因内容
+///   衬托而通透（这是底栏"只有一半透明"的解药）。
+/// - 页面标题**嵌在滚动内容里**（[AppGlassLargeTitle] 作为首个 sliver），
+///   向上滚动时平滑收起，顶部玻璃栏的小标题同步淡入。
+/// - 留白由页面用 [AppPagePadding] 自算（骨架不做隐式 padding）。
 ///
-/// 页面树内不需要 Material 祖先——各 feature 页统一使用本套玻璃/Cupertino
-/// 组件（`lib/ui/kit`），不依赖 Material 主题与墨水渲染。
+/// 每个 tab 持有独立的 [GlassLargeTitleController]：切换 tab 时滚动位置与
+/// 折叠状态互不串扰。
 class MainShell extends ConsumerStatefulWidget {
   const MainShell({super.key});
 
@@ -20,9 +25,23 @@ class MainShell extends ConsumerStatefulWidget {
 class _MainShellState extends ConsumerState<MainShell> {
   var _index = 0;
 
+  /// 每个 tab 一份大标题控制器（含各自的 ScrollController）。
+  late final List<GlassLargeTitleController> _titleControllers = [
+    for (var i = 0; i < appTabs.length; i++) GlassLargeTitleController(),
+  ];
+
+  @override
+  void dispose() {
+    for (final c in _titleControllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final tab = appTabs[_index];
+    final titleController = _titleControllers[_index];
     final tokens = AppTokens.of(context);
 
     // 根级 DefaultTextStyle：兜住所有未被显式指定样式的 Text。
@@ -33,7 +52,12 @@ class _MainShellState extends ConsumerState<MainShell> {
     return DefaultTextStyle(
       style: AppText.body.copyWith(color: tokens.labelPrimary),
       child: AppGlassScaffold(
-        appBar: AppGlassAppBar(title: Text(tab.label)),
+        // 顶部栏：小标题常显，与大标题做折叠联动。
+        appBar: AppGlassAppBar(
+          title: Text(tab.label),
+          largeTitleController: titleController,
+        ),
+        // 底部栏：内容从其下方穿过 → 全玻璃通透。
         bottomBar: AppGlassTabBar(
           tabs: [
             for (final t in appTabs)
@@ -47,7 +71,8 @@ class _MainShellState extends ConsumerState<MainShell> {
           selectedIndex: _index,
           onTabSelected: (i) => setState(() => _index = i),
         ),
-        body: tab.page(context),
+        // 页面接收标题滚动控制器以装配 Large Title。
+        body: tab.page(context, titleController),
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:zfjw_toolkit/core/parser/parser.dart';
@@ -53,14 +53,17 @@ class ImportEntryButton extends ConsumerWidget {
   }
 
   /// iOS 风格提示弹窗（玻璃，无 Material 依赖）。
-  void _alert(BuildContext context, String title, String message) {
-    showAppAlert(context, title: title, message: message);
-  }
+  Future<void> _alert(
+    BuildContext context,
+    String title,
+    String message,
+  ) =>
+      showAppAlert(context, title: title, message: message);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => AppGlassButton(
         label: '导入 HTML',
-        icon: Icons.upload_file_outlined,
+        icon: CupertinoIcons.doc_plaintext,
         style: AppButtonStyle.regular,
         onTap: () => _import(context, ref),
       );

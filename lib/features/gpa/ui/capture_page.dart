@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,9 +14,8 @@ import 'package:zfjw_toolkit/ui/kit/kit.dart';
 /// 用户在 WebView 内自行完成教务登录（cookie 由 WebView 持久化，下次免登）；
 /// URL 命中成绩查询页后自动注入采集脚本，JS 桥回传后经解析器入库为快照。
 ///
-/// 安全区由 [AppGlassScaffold] 统一处理：顶部玻璃栏吃掉状态栏高度，
-/// 底部内容区吃掉 Home Indicator 高度——这是此前"内容顶进状态栏 /
-/// 底探小白条"的修复点。
+/// 本页是**推入的全屏路由**（非 tab），WebView 自身填满视口，因此
+/// `extendBody: false`——内容不需要从玻璃栏下穿过。顶部玻璃栏自带返回按钮。
 class CapturePage extends ConsumerStatefulWidget {
   const CapturePage({super.key});
 
@@ -84,6 +83,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
         _state == CaptureState.done || _state == CaptureState.failed;
 
     return AppGlassScaffold(
+      extendBody: false,
       appBar: AppGlassAppBar(
         title: const Text('成绩采集'),
         leading: finished
@@ -94,7 +94,10 @@ class _CapturePageState extends ConsumerState<CapturePage> {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: AppTokens.space2),
-                  child: Icon(Icons.arrow_back, color: tokens.accent),
+                  child: Icon(
+                    CupertinoIcons.back,
+                    color: tokens.accent,
+                  ),
                 ),
               ),
       ),
@@ -126,8 +129,8 @@ class _CapturePageState extends ConsumerState<CapturePage> {
                 else
                   Icon(
                     _state == CaptureState.done
-                        ? Icons.check_circle
-                        : Icons.error,
+                        ? CupertinoIcons.check_mark_circled_solid
+                        : CupertinoIcons.exclamationmark_circle,
                     size: 16,
                     color: _state == CaptureState.done
                         ? tokens.success

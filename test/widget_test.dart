@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:zfjw_toolkit/app/router.dart';
 import 'package:zfjw_toolkit/features/settings/settings_home_page.dart';
+import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 void main() {
   test('底部导航含「成绩」「设置」两个中文 tab', () {
@@ -16,9 +17,14 @@ void main() {
   // 此处不再重复（它需要 ProviderScope + 数据库 override）。
 
   testWidgets('设置页渲染目标 GPA/规则包分区', (tester) async {
+    final title = GlassLargeTitleController();
+    addTearDown(title.dispose);
+
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(home: Scaffold(body: SettingsHomePage())),
+      ProviderScope(
+        child: CupertinoApp(
+          home: SettingsHomePage(titleController: title),
+        ),
       ),
     );
     await tester.pumpAndSettle();

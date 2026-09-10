@@ -1,5 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:zfjw_toolkit/core/stats/result_types.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';

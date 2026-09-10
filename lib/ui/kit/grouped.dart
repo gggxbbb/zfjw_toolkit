@@ -149,7 +149,7 @@ class AppGlassListTile extends StatelessWidget {
     return lg.GlassListTile(
       leading: leading,
       title: Text(title),
-      subtitle: Text(subtitle!),
+      subtitle: subtitle == null ? null : Text(subtitle!),
       trailing: trailing,
       onTap: onTap,
       titleStyle: AppText.body.copyWith(color: tokens.labelPrimary),

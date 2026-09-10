@@ -19,10 +19,11 @@ export 'surfaces.dart';
 export 'grouped.dart';
 export 'controls.dart';
 
-// 透传业务代码构造 tab / 弹窗所需的类型。
+// 透传业务代码构造 tab / 大标题 / 弹窗所需的类型。
 export 'package:liquid_glass_widgets/liquid_glass_widgets.dart'
     show
         GlassTab,
         GlassStatusBarStyle,
+        GlassLargeTitleController,
         GlassDialog,
         GlassDialogAction;

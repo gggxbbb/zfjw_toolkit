@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:zfjw_toolkit/core/model/course_record.dart';
@@ -206,7 +206,7 @@ class _SimRow extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTokens.space2),
             child: Icon(
-              Icons.arrow_forward,
+              CupertinoIcons.chevron_forward,
               size: 12,
               color: tokens.labelTertiary,
             ),

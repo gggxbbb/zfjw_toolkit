@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:zfjw_toolkit/features/settings/state/target_gpa.dart';
@@ -7,66 +7,75 @@ import 'package:zfjw_toolkit/ui/kit/kit.dart';
 /// 设置功能域首页：目标 GPA、规则包信息、关于。
 ///
 /// 明暗模式跟随系统自动切换（无手动调色板）。
-/// 布局对齐 iOS「设置」页：玻璃分组卡片 + 玻璃列表行。
+/// 布局对齐 iOS「设置」页：内嵌大标题 + 玻璃分组卡片 + 玻璃列表行，
+/// 内容从顶/底玻璃栏下方穿过。
 class SettingsHomePage extends ConsumerWidget {
-  const SettingsHomePage({super.key});
+  const SettingsHomePage({super.key, required this.titleController});
+
+  /// 由主壳传入的大标题折叠控制器（驱动顶部栏小标题联动）。
+  final GlassLargeTitleController titleController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final targetGpa = ref.watch(targetGpaProvider).value;
     final tokens = AppTokens.of(context);
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        AppTokens.pagePadding,
-        AppTokens.space3,
-        AppTokens.pagePadding,
-        AppTokens.space6,
-      ),
-      children: [
-        // ---- 目标 GPA ----
-        _TargetGpaCard(current: targetGpa),
-        const SizedBox(height: AppTokens.space4),
-
-        // ---- 规则包信息 ----
-        AppGlassGroupedCard(
-          title: '成绩计算规则',
-          footer: '绩点取教务官方值，缺失按 (分数-50)/10 计算；重修与补考取历次最高分；'
-              '学位课按教务标记判定；免修不参与统计，学分单独展示。',
-          child: Row(
+    return CustomScrollView(
+      controller: titleController.scrollController,
+      slivers: [
+        // 页面内嵌标题（App Store 式），自带状态栏 + 导航栏留白。
+        AppGlassLargeTitle(text: '设置', controller: titleController),
+        SliverPadding(
+          padding: AppPagePadding.body(context),
+          sliver: SliverList.list(
             children: [
-              Icon(
-                Icons.rule_folder_outlined,
-                size: 22,
-                color: tokens.success,
-              ),
-              const SizedBox(width: AppTokens.space3),
-              Expanded(
-                child: Text(
-                  '徐医规则包（xzhmu）',
-                  style: AppText.body.copyWith(color: tokens.labelPrimary),
+              // ---- 目标 GPA ----
+              _TargetGpaCard(current: targetGpa),
+              const SizedBox(height: AppTokens.space4),
+
+              // ---- 规则包信息 ----
+              AppGlassGroupedCard(
+                title: '成绩计算规则',
+                footer: '绩点取教务官方值，缺失按 (分数-50)/10 计算；重修与补考取历次最高分；'
+                    '学位课按教务标记判定；免修不参与统计，学分单独展示。',
+                child: Row(
+                  children: [
+                    Icon(
+                      CupertinoIcons.checkmark_seal,
+                      size: 22,
+                      color: tokens.success,
+                    ),
+                    const SizedBox(width: AppTokens.space3),
+                    Expanded(
+                      child: Text(
+                        '徐医规则包（xzhmu）',
+                        style:
+                            AppText.body.copyWith(color: tokens.labelPrimary),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-        const SizedBox(height: AppTokens.space4),
+              const SizedBox(height: AppTokens.space4),
 
-        // ---- 关于 ----
-        AppGlassGroupedCard(
-          title: '关于',
-          child: Column(
-            children: [
-              _InfoRow(
-                icon: Icons.apps_outlined,
-                label: '应用',
-                value: '正方教务工具箱',
-              ),
-              const SizedBox(height: AppTokens.space3),
-              _InfoRow(
-                icon: Icons.info_outline,
-                label: '版本',
-                value: '1.0.0',
+              // ---- 关于 ----
+              AppGlassGroupedCard(
+                title: '关于',
+                child: Column(
+                  children: const [
+                    _InfoRow(
+                      icon: CupertinoIcons.app,
+                      label: '应用',
+                      value: '正方教务工具箱',
+                    ),
+                    SizedBox(height: AppTokens.space3),
+                    _InfoRow(
+                      icon: CupertinoIcons.info_circle,
+                      label: '版本',
+                      value: '1.0.0',
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -158,8 +167,9 @@ class _TargetGpaCardState extends ConsumerState<_TargetGpaCard> {
                 child: AppGlassTextField(
                   controller: _controller,
                   placeholder: '如 3.50',
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   onSubmitted: _submit,
                 ),
               ),
