@@ -2,6 +2,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:zfjw_toolkit/core/model/course_record.dart';
 import 'package:zfjw_toolkit/core/model/snapshot.dart';
@@ -36,6 +37,8 @@ void main() {
     late GlassLargeTitleController title;
 
     setUp(() {
+      // statsProvider 现在依赖 recordOverridesProvider（SharedPreferences）。
+      SharedPreferences.setMockInitialValues({});
       db = AppDatabase(NativeDatabase.memory());
       title = GlassLargeTitleController();
     });

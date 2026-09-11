@@ -4,16 +4,14 @@ import 'package:zfjw_toolkit/core/model/course_record.dart';
 import 'package:zfjw_toolkit/core/model/teaching_plan.dart';
 import 'package:zfjw_toolkit/core/stats/result_types.dart';
 import 'package:zfjw_toolkit/core/stats/target_analysis.dart';
-import 'package:zfjw_toolkit/data/teaching_plan_repository.dart';
 import 'package:zfjw_toolkit/features/gpa/state/gpa_providers.dart';
 import 'package:zfjw_toolkit/features/gpa/ui/capture_entry_button.dart';
+import 'package:zfjw_toolkit/features/manage/data_management_page.dart';
 import 'package:zfjw_toolkit/features/settings/state/gpa_goals.dart';
 import 'package:zfjw_toolkit/features/target/plan_capture_page.dart';
+import 'package:zfjw_toolkit/features/target/state/plan_providers.dart';
 import 'package:zfjw_toolkit/features/target/ui/what_if_section.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
-
-final teachingPlanProvider =
-    FutureProvider((ref) => TeachingPlanRepository().load());
 
 /// 目标分析页：按「全部课程 / 学位课」范围做目标达成分析，
 /// 并支持多课程 What-If 模拟（修改已修课 / 预估计划内未修课）。
@@ -31,7 +29,7 @@ class _TargetAnalysisPageState extends ConsumerState<TargetAnalysisPage> {
 
   @override
   Widget build(BuildContext context) {
-    final plan = ref.watch(teachingPlanProvider);
+    final plan = ref.watch(effectiveTeachingPlanProvider);
     final stats = ref.watch(statsProvider);
     return CustomScrollView(
       controller: widget.titleController.scrollController,
@@ -113,6 +111,19 @@ class _TargetAnalysisPageState extends ConsumerState<TargetAnalysisPage> {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: AppTokens.space3),
+                    // 数据管理入口：编辑/新增/删除成绩与教学计划（override 保存）。
+                    AppGlassButton(
+                      label: '管理与编辑数据',
+                      icon: CupertinoIcons.square_pencil,
+                      style: AppButtonStyle.regular,
+                      expand: true,
+                      onTap: () => Navigator.of(context).push(
+                        CupertinoPageRoute<void>(
+                          builder: (_) => const DataManagementPage(),
+                        ),
+                      ),
                     ),
                   ],
                 );

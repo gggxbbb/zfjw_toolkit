@@ -6,8 +6,18 @@ import 'package:zfjw_toolkit/features/gpa/state/gpa_providers.dart';
 import 'package:zfjw_toolkit/features/gpa/ui/capture_entry_button.dart';
 import 'package:zfjw_toolkit/features/gpa/ui/charts_sections.dart';
 import 'package:zfjw_toolkit/features/gpa/ui/stats_sections.dart';
+import 'package:zfjw_toolkit/features/manage/data_management_page.dart';
 import 'package:zfjw_toolkit/features/settings/state/gpa_goals.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
+
+/// 打开「数据管理」页（编辑/新增/删除成绩与教学计划，override 持久化）。
+void openDataManagement(BuildContext context, {int initialIndex = 0}) {
+  Navigator.of(context).push(
+    CupertinoPageRoute<void>(
+      builder: (_) => DataManagementPage(initialIndex: initialIndex),
+    ),
+  );
+}
 
 /// 成绩功能域首页：空态引导 / 完整统计页。
 ///
@@ -122,6 +132,13 @@ class _EmptyState extends StatelessWidget {
         ),
         const SizedBox(height: AppTokens.space5),
         const CaptureEntryButton(),
+        const SizedBox(height: AppTokens.space3),
+        AppGlassButton(
+          label: '手动添加成绩',
+          icon: CupertinoIcons.square_pencil,
+          style: AppButtonStyle.regular,
+          onTap: () => openDataManagement(context),
+        ),
       ],
     );
   }
@@ -168,6 +185,15 @@ class _StatsPage extends ConsumerWidget {
         const SizedBox(height: AppTokens.space4),
         // 有数据后的成绩更新入口（与空态大按钮同源）。
         const CaptureEntryButton(expand: true),
+        const SizedBox(height: AppTokens.space3),
+        // 数据管理入口：编辑/新增/删除成绩与教学计划（override 保存）。
+        AppGlassButton(
+          label: '管理与编辑数据',
+          icon: CupertinoIcons.square_pencil,
+          style: AppButtonStyle.regular,
+          expand: true,
+          onTap: () => openDataManagement(context),
+        ),
       ],
     );
   }

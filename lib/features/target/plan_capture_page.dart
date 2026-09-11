@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zfjw_toolkit/capture/teaching_plan_capture.dart';
 import 'package:zfjw_toolkit/data/teaching_plan_repository.dart';
 import 'package:zfjw_toolkit/features/capture/web_capture_page.dart';
-import 'package:zfjw_toolkit/features/target/target_analysis_page.dart';
+import 'package:zfjw_toolkit/features/target/state/plan_providers.dart';
 
 class PlanCapturePage extends ConsumerWidget {
   const PlanCapturePage({super.key});
