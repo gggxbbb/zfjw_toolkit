@@ -10,8 +10,8 @@ class PlanCapturePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => WebCapturePage(
         title: '采集教学计划',
-        instruction: '登录后，打开“教学执行计划查看”，选定计划并进入“课程信息”页',
-        targetPageStatus: '请选定教学计划并进入“课程信息”页，应用将自动开始采集',
+        instruction: '登录后，打开“教学执行计划查看”，选定计划，打开“修读要求”页确保数据完全加载后进入“课程信息”页',
+        targetPageStatus: '请选定教学计划，打开“修读要求”页确保数据完全加载后进入“课程信息”页，应用将自动开始采集',
         handlerName: teachingPlanCaptureHandlerName,
         matchesPage: (url) => url?.contains(teachingPlanPageMarker) ?? false,
         script: teachingPlanCaptureScript,
