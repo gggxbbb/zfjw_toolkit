@@ -143,15 +143,16 @@ class AppTokens {
     glassStroke: Color(0x1FFFFFFF),
   );
 
-  /// 按上下文取令牌（跟随系统明暗，或由上层 MediaQuery 覆写）。
-  static AppTokens of(BuildContext context) =>
-      MediaQuery.platformBrightnessOf(context) == Brightness.dark
-          ? dark
-          : light;
+  /// 按上下文取令牌：优先跟随应用主题，未提供 Material 主题时回退到系统明暗。
+  static AppTokens of(BuildContext context) {
+    final brightness =
+        Theme.maybeBrightnessOf(context) ??
+        MediaQuery.platformBrightnessOf(context);
+    return resolve(brightness);
+  }
 
   /// 按明暗值直接取。
-  static AppTokens resolve(Brightness b) =>
-      b == Brightness.dark ? dark : light;
+  static AppTokens resolve(Brightness b) => b == Brightness.dark ? dark : light;
 
   /// 圆角常量（对齐 iOS）。
   static const double radiusCard = 12;
@@ -289,17 +290,17 @@ class AppText {
   /// 供 [AppTheme] 构造完整 `TextTheme` 用：把全部刻度一次性铺开，
   /// 保证 Material 组件继承到同一套"无黄色下划线"的样式。
   static TextTheme get textTheme => const TextTheme(
-        displayLarge: display,
-        displayMedium: largeTitle,
-        displaySmall: title,
-        headlineMedium: title,
-        titleLarge: title,
-        titleMedium: body,
-        bodyLarge: body,
-        bodyMedium: subhead,
-        bodySmall: footnote,
-        labelLarge: subhead,
-        labelMedium: footnote,
-        labelSmall: caption,
-      );
+    displayLarge: display,
+    displayMedium: largeTitle,
+    displaySmall: title,
+    headlineMedium: title,
+    titleLarge: title,
+    titleMedium: body,
+    bodyLarge: body,
+    bodyMedium: subhead,
+    bodySmall: footnote,
+    labelLarge: subhead,
+    labelMedium: footnote,
+    labelSmall: caption,
+  );
 }

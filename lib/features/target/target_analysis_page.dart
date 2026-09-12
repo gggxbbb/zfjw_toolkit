@@ -319,28 +319,22 @@ class _EmptyPlan extends StatelessWidget {
   const _EmptyPlan();
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-      AppGlassGroupedCard(
-        title: '尚未采集教学计划',
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              '登录后打开“教学执行计划查看”，选择自己的计划并进入“课程信息”页，应用会自动读取全部课程。采集后可进行目标达成分析、预估未修课程。',
-            ),
-            const SizedBox(height: 12),
-            AppGlassButton(
-              label: '采集教学计划',
-              onTap: () => Navigator.of(context).push(
-                CupertinoPageRoute(builder: (_) => const PlanCapturePage()),
-              ),
-            ),
-          ],
+  Widget build(BuildContext context) => AppGlassGroupedCard(
+    title: '尚未采集教学计划',
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Text(
+          '登录后打开“教学执行计划查看”，选择自己的计划并进入“课程信息”页，应用会自动读取全部课程。采集后可进行目标达成分析、预估未修课程。',
         ),
-      ),
-      const SizedBox(height: AppTokens.space4),
-    ],
+        const SizedBox(height: 12),
+        AppGlassButton(
+          label: '采集教学计划',
+          onTap: () => Navigator.of(
+            context,
+          ).push(CupertinoPageRoute(builder: (_) => const PlanCapturePage())),
+        ),
+      ],
+    ),
   );
 }

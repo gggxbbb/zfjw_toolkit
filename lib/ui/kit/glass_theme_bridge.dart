@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as lg;
 
 import 'tokens.dart';
@@ -12,15 +11,13 @@ import 'tokens.dart';
 class GlassThemeBridge {
   GlassThemeBridge._();
 
-  /// 亮色玻璃主题。
-  static lg.GlassThemeData get light => _build(AppTokens.light);
+  /// 同时携带明暗变体，由 Material 主题或系统亮度动态选择。
+  static lg.GlassThemeData get adaptive => lg.GlassThemeData(
+    light: _variant(AppTokens.light),
+    dark: _variant(AppTokens.dark),
+  );
 
-  /// 暗色玻璃主题。
-  static lg.GlassThemeData get dark => _build(AppTokens.dark);
-
-  static lg.GlassThemeData _build(AppTokens t) {
-    final isDark = t.brightness == Brightness.dark;
-
+  static lg.GlassThemeVariant _variant(AppTokens t) {
     // 玻璃发光色板：直接对齐内容层的语义色。
     final glow = lg.GlassGlowColors(
       primary: t.accent,
@@ -31,18 +28,6 @@ class GlassThemeBridge {
       info: t.accent,
     );
 
-    final variant = lg.GlassThemeVariant(glowColors: glow);
-
-    return lg.GlassThemeData(
-      light: variant,
-      dark: variant,
-      brightness: isDark ? Brightness.dark : Brightness.light,
-    );
+    return lg.GlassThemeVariant(glowColors: glow);
   }
-
-  /// 系统明暗 → 玻璃主题（供 `LiquidGlassWidgets.wrap(theme:)` 使用）。
-  static lg.GlassThemeData resolve(BuildContext context) =>
-      MediaQuery.platformBrightnessOf(context) == Brightness.dark
-          ? dark
-          : light;
 }

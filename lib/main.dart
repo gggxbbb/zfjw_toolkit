@@ -23,7 +23,7 @@ void main() async {
   runApp(
     LiquidGlassWidgets.wrap(
       child: const ProviderScope(child: ZfjwApp()),
-      theme: GlassThemeBridge.light,
+      theme: GlassThemeBridge.adaptive,
       adaptiveQuality: true,
       brightnessResolver: Theme.maybeBrightnessOf,
     ),

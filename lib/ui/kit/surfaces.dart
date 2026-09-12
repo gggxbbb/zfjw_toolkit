@@ -159,18 +159,15 @@ class AppPagePadding {
 /// 自动明暗纯色背景。
 ///
 /// 风格对齐 Apple 系统应用：无调色板、无渐变，亮模式系统灰、暗模式石墨黑，
-/// 跟随系统主题自动切换。玻璃材质在这种干净底色上折射最自然。
+/// 跟随应用主题自动切换。玻璃材质在这种干净底色上折射最自然。
 class AppWallpaper extends StatelessWidget {
   const AppWallpaper({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
-    return ColoredBox(
-      color: isDark ? AppTokens.dark.canvas : AppTokens.light.canvas,
-      child: const SizedBox.expand(),
-    );
-  }
+  Widget build(BuildContext context) => ColoredBox(
+    color: AppTokens.of(context).canvas,
+    child: const SizedBox.expand(),
+  );
 }
 
 /// 顶部玻璃栏薄封装（iOS 26 navigation bar）。
