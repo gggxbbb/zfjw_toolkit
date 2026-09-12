@@ -45,6 +45,7 @@ dependencies:
   html: ^0.15.7
   drift_flutter: ^0.2.8
   url_launcher: ^6.3.2
+  package_info_plus: ^10.2.1
 
 dev_dependencies:
   flutter_test:

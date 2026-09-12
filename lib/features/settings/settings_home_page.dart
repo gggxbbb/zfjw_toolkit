@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:zfjw_toolkit/core/stats/target_analysis.dart';
+import 'package:zfjw_toolkit/features/settings/state/app_version.dart';
 import 'package:zfjw_toolkit/features/settings/state/gpa_goals.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
@@ -20,6 +21,7 @@ class SettingsHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final goals = ref.watch(gpaGoalsProvider).value ?? const GpaGoals();
+    final appVersion = ref.watch(appVersionProvider).value ?? '—';
     final tokens = AppTokens.of(context);
 
     return CustomScrollView(
@@ -71,10 +73,10 @@ class SettingsHomePage extends ConsumerWidget {
                       value: '正方教务工具箱',
                     ),
                     const SizedBox(height: AppTokens.space3),
-                    const _InfoRow(
+                    _InfoRow(
                       icon: CupertinoIcons.info_circle,
                       label: '版本',
-                      value: '1.0.0',
+                      value: appVersion,
                     ),
                     const SizedBox(height: AppTokens.space3),
                     const _InfoRow(
