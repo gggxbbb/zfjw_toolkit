@@ -4,6 +4,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/widgets.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as lg;
 
+import 'responsive.dart';
 import 'tokens.dart';
 
 /// 玻璃栏的几何常量，与 [AppGlassAppBar] / [AppGlassTabBar] 的实际尺寸对齐。
@@ -26,11 +27,17 @@ class AppGlassMetrics {
 
   /// 页面顶部的状态栏留白 + 导航栏高度。
   static double topInset(BuildContext context) =>
-      MediaQuery.paddingOf(context).top + appBarHeight;
+      MediaQuery.paddingOf(context).top +
+      (AppLayoutScope.usesNavigationRailOf(context)
+          ? AppTokens.space4
+          : appBarHeight);
 
   /// 页面底部的标签栏高度 + Home Indicator 留白。
   static double bottomInset(BuildContext context) =>
-      MediaQuery.paddingOf(context).bottom + tabBarHeight;
+      MediaQuery.paddingOf(context).bottom +
+      (AppLayoutScope.usesNavigationRailOf(context)
+          ? AppTokens.space6
+          : tabBarHeight);
 }
 
 /// 应用级玻璃页面骨架：背景 + 顶部玻璃栏 + 底部玻璃栏。

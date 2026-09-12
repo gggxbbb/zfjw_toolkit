@@ -20,8 +20,7 @@ class TargetAnalysisPage extends ConsumerStatefulWidget {
   final GlassLargeTitleController titleController;
 
   @override
-  ConsumerState<TargetAnalysisPage> createState() =>
-      _TargetAnalysisPageState();
+  ConsumerState<TargetAnalysisPage> createState() => _TargetAnalysisPageState();
 }
 
 class _TargetAnalysisPageState extends ConsumerState<TargetAnalysisPage> {
@@ -58,23 +57,26 @@ class _TargetAnalysisPageState extends ConsumerState<TargetAnalysisPage> {
                           setState(() => _scope = TargetScope.values[i]),
                     ),
                     const SizedBox(height: AppTokens.space4),
-                    if (p == null)
-                      const _EmptyPlan()
-                    else ...[
-                      _TargetCard(
+                    AppResponsiveColumns(
+                      children: [
+                        if (p == null)
+                          const _EmptyPlan()
+                        else
+                          _TargetCard(
+                            stats: s,
+                            plan: p,
+                            scope: _scope,
+                            target: target,
+                            minGpa: minGpa,
+                          ),
+                        WhatIfSection(
                           stats: s,
                           plan: p,
                           scope: _scope,
-                          target: target,
-                          minGpa: minGpa),
-                      const SizedBox(height: AppTokens.space4),
-                    ],
-                    WhatIfSection(
-                      stats: s,
-                      plan: p,
-                      scope: _scope,
-                      targetGpa: target,
-                      minGpa: minGpa,
+                          targetGpa: target,
+                          minGpa: minGpa,
+                        ),
+                      ],
                     ),
                     if (p != null) ...[
                       const SizedBox(height: AppTokens.space4),
@@ -195,20 +197,21 @@ class _TargetCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              Text('$scopeLabel GPA ${current == null ? '—' : f(current)}',
-                  style: AppText.title),
+              Text(
+                '$scopeLabel GPA ${current == null ? '—' : f(current)}',
+                style: AppText.title,
+              ),
               const Spacer(),
-              Text('目标 ${f(target)} · 最低 ${f(minGpa)}',
-                  style:
-                      AppText.subhead.copyWith(color: tokens.labelSecondary)),
+              Text(
+                '目标 ${f(target)} · 最低 ${f(minGpa)}',
+                style: AppText.subhead.copyWith(color: tokens.labelSecondary),
+              ),
             ],
           ),
           if (diff != null) ...[
             const SizedBox(height: AppTokens.space1),
             Text(
-              diff >= 0
-                  ? '已超出目标 ${f(diff)}'
-                  : '距目标还差 ${f(-diff)}',
+              diff >= 0 ? '已超出目标 ${f(diff)}' : '距目标还差 ${f(-diff)}',
               style: AppText.footnote.copyWith(
                 color: diff >= 0 ? tokens.success : tokens.danger,
               ),
@@ -237,9 +240,11 @@ class _TargetCard extends StatelessWidget {
               style: AppText.subhead.copyWith(color: tokens.labelSecondary),
             )
           else if (required == null)
-            Text(r.remainingCredits == 0 && r.completedCredits > 0
-                ? '$scopeLabel计划学分已完成'
-                : '暂无足够数据推算')
+            Text(
+              r.remainingCredits == 0 && r.completedCredits > 0
+                  ? '$scopeLabel计划学分已完成'
+                  : '暂无足够数据推算',
+            )
           else ...[
             if (required > maxPoint)
               Text(
@@ -256,15 +261,15 @@ class _TargetCard extends StatelessWidget {
                     ? Text(
                         '即使剩余课程全部满分（绩点 ${f(maxPoint)}），'
                         '$scopeLabel GPA 也无法达到最低要求 ${f(minGpa)}',
-                        style:
-                            AppText.subhead.copyWith(color: tokens.danger),
+                        style: AppText.subhead.copyWith(color: tokens.danger),
                       )
                     : Text(
                         requiredMin <= 0
                             ? '剩余课程及格即可满足最低 GPA ${f(minGpa)}'
                             : '保底需剩余课程平均至少 ${f(requiredMin)} 绩点（最低 GPA ${f(minGpa)}）',
-                        style: AppText.footnote
-                            .copyWith(color: tokens.labelSecondary),
+                        style: AppText.footnote.copyWith(
+                          color: tokens.labelSecondary,
+                        ),
                       ),
               ),
           ],
@@ -275,8 +280,9 @@ class _TargetCard extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 2),
                 child: Text(
                   '剩余${scopeAll ? '' : '学位'}课程平均 ${e.key} 分时，最终$scopeLabel GPA 预计 ${f(r.project(e.value))}',
-                  style:
-                      AppText.footnote.copyWith(color: tokens.labelSecondary),
+                  style: AppText.footnote.copyWith(
+                    color: tokens.labelSecondary,
+                  ),
                 ),
               ),
           ],
@@ -292,20 +298,21 @@ class _EmptyStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppGlassGroupedCard(
-        title: '暂无成绩数据',
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              '采集成绩后即可进行目标分析。',
-              style: AppText.subhead
-                  .copyWith(color: AppTokens.of(context).labelSecondary),
-            ),
-            const SizedBox(height: AppTokens.space3),
-            const CaptureEntryButton(label: '采集成绩', expand: true),
-          ],
+    title: '暂无成绩数据',
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          '采集成绩后即可进行目标分析。',
+          style: AppText.subhead.copyWith(
+            color: AppTokens.of(context).labelSecondary,
+          ),
         ),
-      );
+        const SizedBox(height: AppTokens.space3),
+        const CaptureEntryButton(label: '采集成绩', expand: true),
+      ],
+    ),
+  );
 }
 
 class _EmptyPlan extends StatelessWidget {
@@ -313,23 +320,27 @@ class _EmptyPlan extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          AppGlassGroupedCard(
-            title: '尚未采集教学计划',
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text('登录后打开“教学执行计划查看”，选择自己的计划并进入“课程信息”页，应用会自动读取全部课程。采集后可进行目标达成分析、预估未修课程。'),
-                const SizedBox(height: 12),
-                AppGlassButton(
-                    label: '采集教学计划',
-                    onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-                        builder: (_) => const PlanCapturePage()))),
-              ],
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      AppGlassGroupedCard(
+        title: '尚未采集教学计划',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              '登录后打开“教学执行计划查看”，选择自己的计划并进入“课程信息”页，应用会自动读取全部课程。采集后可进行目标达成分析、预估未修课程。',
             ),
-          ),
-          const SizedBox(height: AppTokens.space4),
-        ],
-      );
+            const SizedBox(height: 12),
+            AppGlassButton(
+              label: '采集教学计划',
+              onTap: () => Navigator.of(context).push(
+                CupertinoPageRoute(builder: (_) => const PlanCapturePage()),
+              ),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: AppTokens.space4),
+    ],
+  );
 }

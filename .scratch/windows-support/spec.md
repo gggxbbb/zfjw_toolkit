@@ -16,6 +16,9 @@ Android/iOS 行为不变。
   WebView 而崩溃。
 - 现有静态分析和 Flutter 测试全部通过。
 - README 记录 Windows 构建及运行前置条件。
+- 宽度达到 720 时将底部导航切换为左侧导航栏，超宽窗口显示展开标签。
+- 宽屏内容居中并限制最大宽度；成绩、目标分析和设置页的独立卡片可自适应
+  单列/双列显示，窄屏继续使用原有单列和底部导航。
 
 ## 非目标
 
@@ -26,7 +29,7 @@ Android/iOS 行为不变。
 ## 验证记录
 
 - `flutter analyze`：通过。
-- `flutter test`：现有 109 项通过；新增 WebView2 错误态组件测试通过。
+- `flutter test`：112 项全部通过，覆盖 WebView2 错误态、导航断点和单双列重排。
 - `flutter build windows`：通过，产物位于
   `build/windows/x64/runner/Release/zfjw_toolkit.exe`。
 - 启动冒烟：Release 进程启动 8 秒后仍正常运行，随后由测试命令主动结束。

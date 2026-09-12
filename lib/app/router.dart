@@ -5,10 +5,10 @@ import 'package:zfjw_toolkit/features/settings/settings_home_page.dart';
 import 'package:zfjw_toolkit/features/target/target_analysis_page.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
-/// 底部导航 tab 定义 —— 路由清单集中在 [appTabs]。
+/// 自适应导航 tab 定义 —— 路由清单集中在 [appTabs]。
 ///
 /// 每个 feature 暴露自己的首页工厂，新功能只需在此追加一条 [AppTab] 即可接入
-/// 底部导航，零侵入其它目录（符合 feature-first 布局）。
+/// 自适应导航，零侵入其它目录（符合 feature-first 布局）。
 class AppTab {
   const AppTab({
     required this.id,
@@ -38,7 +38,7 @@ class AppTab {
       page;
 }
 
-/// 应用全部底部导航 tab（当前：成绩、设置）。
+/// 应用全部导航 tab（当前：成绩、目标分析、设置）。
 final List<AppTab> appTabs = [
   AppTab(
     id: 'gpa',

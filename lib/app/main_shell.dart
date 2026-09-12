@@ -1,10 +1,10 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:zfjw_toolkit/app/router.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
-/// 应用主壳：玻璃脚手架 + 顶部玻璃栏 + 底部玻璃标签栏。
+/// 应用主壳：窄屏使用顶部/底部玻璃栏，宽屏切换为左侧导航栏。
 ///
 /// **布局模型（iOS 26 / App Store 式）**：
 /// - 骨架 `extendBody: true`——页面内容从顶/底玻璃栏下方穿过，玻璃因内容
@@ -43,46 +43,109 @@ class _MainShellState extends ConsumerState<MainShell> {
     final tab = appTabs[_index];
     final titleController = _titleControllers[_index];
     final tokens = AppTokens.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+    final usesNavigationRail = width >= AppBreakpoints.navigationRail;
+    final extendsNavigationRail =
+        width >= AppBreakpoints.extendedNavigationRail;
+
+    final page = AppContentFrame(child: tab.page(context, titleController));
 
     // 根级 DefaultTextStyle：兜住所有未被显式指定样式的 Text。
     // Flutter 在字体回退链上，若 TextStyle 未声明 decoration 语义，会为
     // 回退字形画"黄色下划线"告警——这就是全屏文字黄色下划线的来源。
     // 骨架内所有子组件（含 Material/玻璃库内部 Text）都从这里继承
     // decoration: none，从而彻底消除该告警。
-    return DefaultTextStyle(
-      style: AppText.body.copyWith(color: tokens.labelPrimary),
-      child: MediaQuery.removeViewInsets(
-        context: context,
-        removeBottom: true,
-        child: AppGlassScaffold(
-          // 顶部栏：小标题常显，与大标题做折叠联动。
-          // 显式指定颜色——玻璃库默认的 Cupertino navTitleTextStyle 在本工程的
-          // 无色 textTheme 下暗色解析不可靠（会渲染成暗色字）。
-          appBar: AppGlassAppBar(
-            title: Text(
-              tab.label,
-              style: AppText.title.copyWith(color: tokens.labelPrimary),
-            ),
-            largeTitleController: titleController,
+    return AppLayoutScope(
+      usesNavigationRail: usesNavigationRail,
+      child: DefaultTextStyle(
+        style: AppText.body.copyWith(color: tokens.labelPrimary),
+        child: MediaQuery.removeViewInsets(
+          context: context,
+          removeBottom: true,
+          child: AppGlassScaffold(
+            // 顶部栏：小标题常显，与大标题做折叠联动。
+            // 显式指定颜色——玻璃库默认的 Cupertino navTitleTextStyle 在本工程的
+            // 无色 textTheme 下暗色解析不可靠（会渲染成暗色字）。
+            appBar: usesNavigationRail
+                ? null
+                : AppGlassAppBar(
+                    title: Text(
+                      tab.label,
+                      style: AppText.title.copyWith(color: tokens.labelPrimary),
+                    ),
+                    largeTitleController: titleController,
+                  ),
+            bottomBar: usesNavigationRail
+                ? null
+                : AppGlassTabBar(
+                    tabs: [
+                      for (final t in appTabs)
+                        GlassTab(
+                          icon: Icon(t.icon),
+                          activeIcon: t.selectedIcon == null
+                              ? null
+                              : Icon(t.selectedIcon),
+                          label: t.label,
+                        ),
+                    ],
+                    selectedIndex: _index,
+                    onTabSelected: _selectTab,
+                  ),
+            body: usesNavigationRail
+                ? Row(
+                    children: [
+                      SafeArea(
+                        child: NavigationRail(
+                          extended: extendsNavigationRail,
+                          backgroundColor: Colors.transparent,
+                          selectedIndex: _index,
+                          onDestinationSelected: _selectTab,
+                          labelType: extendsNavigationRail
+                              ? NavigationRailLabelType.none
+                              : NavigationRailLabelType.all,
+                          groupAlignment: -0.75,
+                          selectedIconTheme: IconThemeData(
+                            color: tokens.accent,
+                            size: 24,
+                          ),
+                          unselectedIconTheme: IconThemeData(
+                            color: tokens.labelSecondary,
+                            size: 23,
+                          ),
+                          selectedLabelTextStyle: AppText.footnote.copyWith(
+                            color: tokens.accent,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          unselectedLabelTextStyle: AppText.footnote.copyWith(
+                            color: tokens.labelSecondary,
+                          ),
+                          destinations: [
+                            for (final t in appTabs)
+                              NavigationRailDestination(
+                                icon: Icon(t.icon),
+                                selectedIcon: Icon(t.selectedIcon ?? t.icon),
+                                label: Text(t.label),
+                              ),
+                          ],
+                        ),
+                      ),
+                      VerticalDivider(
+                        width: 1,
+                        thickness: .5,
+                        color: tokens.separator,
+                      ),
+                      Expanded(child: page),
+                    ],
+                  )
+                : page,
           ),
-          // 键盘打开时仍固定在屏幕底部，不随 viewInsets 上移。
-          bottomBar: AppGlassTabBar(
-            tabs: [
-              for (final t in appTabs)
-                GlassTab(
-                  icon: Icon(t.icon),
-                  activeIcon:
-                      t.selectedIcon == null ? null : Icon(t.selectedIcon),
-                  label: t.label,
-                ),
-            ],
-            selectedIndex: _index,
-            onTabSelected: (i) => setState(() => _index = i),
-          ),
-          // 页面接收标题滚动控制器以装配 Large Title。
-          body: tab.page(context, titleController),
         ),
       ),
     );
+  }
+
+  void _selectTab(int index) {
+    if (index == _index) return;
+    setState(() => _index = index);
   }
 }

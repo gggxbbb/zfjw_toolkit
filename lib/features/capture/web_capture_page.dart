@@ -52,10 +52,12 @@ class _WebCapturePageState extends State<WebCapturePage> {
       extendBody: false,
       appBar: AppGlassAppBar(
         title: Text(widget.title),
-        leading: AppGlassIconButton(
-          icon: CupertinoIcons.back,
-          onTap: () => Navigator.pop(context),
-        ),
+        leading: finished && initializationError == null
+            ? null
+            : AppGlassIconButton(
+                icon: CupertinoIcons.back,
+                onTap: () => Navigator.pop(context),
+              ),
       ),
       body: Column(
         children: [

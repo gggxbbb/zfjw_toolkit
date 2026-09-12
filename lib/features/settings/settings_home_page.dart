@@ -33,79 +33,84 @@ class SettingsHomePage extends ConsumerWidget {
           padding: AppPagePadding.body(context),
           sliver: SliverList.list(
             children: [
-              // ---- 目标/最低 GPA ----
-              _GpaGoalsCard(goals: goals),
-              const SizedBox(height: AppTokens.space4),
+              AppResponsiveColumns(
+                children: [
+                  // ---- 目标/最低 GPA ----
+                  _GpaGoalsCard(goals: goals),
 
-              // ---- 规则包信息 ----
-              AppGlassGroupedCard(
-                title: '成绩计算规则',
-                footer: '绩点取教务官方值，缺失按 (分数-50)/10 计算；重修与补考取历次最高分；'
-                    '学位课按教务标记判定；免修不参与统计，学分单独展示。',
-                child: Row(
-                  children: [
-                    Icon(
-                      CupertinoIcons.checkmark_seal,
-                      size: 22,
-                      color: tokens.success,
+                  // ---- 规则包信息 ----
+                  AppGlassGroupedCard(
+                    title: '成绩计算规则',
+                    footer:
+                        '绩点取教务官方值，缺失按 (分数-50)/10 计算；重修与补考取历次最高分；'
+                        '学位课按教务标记判定；免修不参与统计，学分单独展示。',
+                    child: Row(
+                      children: [
+                        Icon(
+                          CupertinoIcons.checkmark_seal,
+                          size: 22,
+                          color: tokens.success,
+                        ),
+                        const SizedBox(width: AppTokens.space3),
+                        Expanded(
+                          child: Text(
+                            '徐医规则包（xzhmu）',
+                            style: AppText.body.copyWith(
+                              color: tokens.labelPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: AppTokens.space3),
-                    Expanded(
-                      child: Text(
-                        '徐医规则包（xzhmu）',
-                        style:
-                            AppText.body.copyWith(color: tokens.labelPrimary),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppTokens.space4),
+                  ),
 
-              // ---- 关于 ----
-              AppGlassGroupedCard(
-                title: '关于',
-                child: Column(
-                  children: [
-                    const _InfoRow(
-                      icon: CupertinoIcons.app,
-                      label: '应用',
-                      value: '正方教务工具箱',
+                  // ---- 关于 ----
+                  AppGlassGroupedCard(
+                    title: '关于',
+                    child: Column(
+                      children: [
+                        const _InfoRow(
+                          icon: CupertinoIcons.app,
+                          label: '应用',
+                          value: '正方教务工具箱',
+                        ),
+                        const SizedBox(height: AppTokens.space3),
+                        _InfoRow(
+                          icon: CupertinoIcons.info_circle,
+                          label: '版本',
+                          value: appVersion,
+                        ),
+                        const SizedBox(height: AppTokens.space3),
+                        const _InfoRow(
+                          icon: CupertinoIcons.person,
+                          label: '作者',
+                          value: 'gggxbbb',
+                        ),
+                        const SizedBox(height: AppTokens.space3),
+                        const _InfoRow(
+                          icon: CupertinoIcons.doc_text,
+                          label: '开源协议',
+                          value: 'MIT License',
+                        ),
+                        const SizedBox(height: AppTokens.space3),
+                        const _LinkRow(
+                          icon: CupertinoIcons.link,
+                          label: 'GitHub',
+                          value: 'gggxbbb/zfjw_toolkit',
+                          url: 'https://github.com/gggxbbb/zfjw_toolkit',
+                        ),
+                        const SizedBox(height: AppTokens.space3),
+                        const _LinkRow(
+                          icon: CupertinoIcons.arrow_down_circle,
+                          label: '获取最新版本',
+                          value: 'GitHub Releases',
+                          url:
+                              'https://github.com/gggxbbb/zfjw_toolkit/releases',
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: AppTokens.space3),
-                    _InfoRow(
-                      icon: CupertinoIcons.info_circle,
-                      label: '版本',
-                      value: appVersion,
-                    ),
-                    const SizedBox(height: AppTokens.space3),
-                    const _InfoRow(
-                      icon: CupertinoIcons.person,
-                      label: '作者',
-                      value: 'gggxbbb',
-                    ),
-                    const SizedBox(height: AppTokens.space3),
-                    const _InfoRow(
-                      icon: CupertinoIcons.doc_text,
-                      label: '开源协议',
-                      value: 'MIT License',
-                    ),
-                    const SizedBox(height: AppTokens.space3),
-                    const _LinkRow(
-                      icon: CupertinoIcons.link,
-                      label: 'GitHub',
-                      value: 'gggxbbb/zfjw_toolkit',
-                      url: 'https://github.com/gggxbbb/zfjw_toolkit',
-                    ),
-                    const SizedBox(height: AppTokens.space3),
-                    const _LinkRow(
-                      icon: CupertinoIcons.arrow_down_circle,
-                      label: '获取最新版本',
-                      value: 'GitHub Releases',
-                      url: 'https://github.com/gggxbbb/zfjw_toolkit/releases',
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -146,13 +151,13 @@ class _LinkRow extends StatelessWidget {
               style: AppText.body.copyWith(color: tokens.labelPrimary),
             ),
           ),
-          Text(
-            value,
-            style: AppText.subhead.copyWith(color: tokens.accent),
-          ),
+          Text(value, style: AppText.subhead.copyWith(color: tokens.accent)),
           const SizedBox(width: AppTokens.space2),
-          Icon(CupertinoIcons.chevron_forward,
-              size: 16, color: tokens.labelTertiary),
+          Icon(
+            CupertinoIcons.chevron_forward,
+            size: 16,
+            color: tokens.labelTertiary,
+          ),
         ],
       ),
     );
@@ -215,8 +220,9 @@ class _GpaGoalsCardState extends ConsumerState<_GpaGoalsCard> {
   void initState() {
     super.initState();
     _targetAll = TextEditingController(text: _fmt(widget.goals.targetAll));
-    _targetDegree =
-        TextEditingController(text: _fmt(widget.goals.targetDegree));
+    _targetDegree = TextEditingController(
+      text: _fmt(widget.goals.targetDegree),
+    );
     _minAll = TextEditingController(text: _fmt(widget.goals.minAll));
     _minDegree = TextEditingController(text: _fmt(widget.goals.minDegree));
   }
@@ -244,36 +250,39 @@ class _GpaGoalsCardState extends ConsumerState<_GpaGoalsCard> {
   Widget build(BuildContext context) {
     final tokens = AppTokens.of(context);
 
-    Widget field(String label, TextEditingController controller,
-            String placeholder) =>
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppTokens.space2),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: AppText.body.copyWith(color: tokens.labelPrimary),
-                ),
-              ),
-              SizedBox(
-                width: 96,
-                child: AppGlassTextField(
-                  controller: controller,
-                  placeholder: placeholder,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  onSubmitted: (_) => _save(),
-                ),
-              ),
-            ],
+    Widget field(
+      String label,
+      TextEditingController controller,
+      String placeholder,
+    ) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppTokens.space2),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: AppText.body.copyWith(color: tokens.labelPrimary),
+            ),
           ),
-        );
+          SizedBox(
+            width: 96,
+            child: AppGlassTextField(
+              controller: controller,
+              placeholder: placeholder,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              onSubmitted: (_) => _save(),
+            ),
+          ),
+        ],
+      ),
+    );
 
     return AppGlassGroupedCard(
       title: '目标与最低 GPA',
-      footer: '目标 GPA 是个人期望，最低 GPA 是毕业/学位硬性要求；'
+      footer:
+          '目标 GPA 是个人期望，最低 GPA 是毕业/学位硬性要求；'
           '留空恢复默认（目标 3.0 / 最低 2.0）。'
           '设置后成绩页与目标分析页按范围分别展示差距。',
       child: Column(

@@ -111,11 +111,7 @@ class _EmptyState extends StatelessWidget {
       titleController: titleController,
       centerContent: true,
       slivers: [
-        Icon(
-          CupertinoIcons.book_solid,
-          size: 56,
-          color: tokens.labelTertiary,
-        ),
+        Icon(CupertinoIcons.book_solid, size: 56, color: tokens.labelTertiary),
         const SizedBox(height: AppTokens.space4),
         Text(
           '暂无成绩数据',
@@ -158,22 +154,23 @@ class _StatsPage extends ConsumerWidget {
     return _PageScroll(
       titleController: titleController,
       slivers: [
-        OverviewCard(
-          stats: stats,
-          targetGpaAll: goals?.targetAll,
-          targetGpaDegree: goals?.targetDegree,
+        AppResponsiveColumns(
+          children: [
+            OverviewCard(
+              stats: stats,
+              targetGpaAll: goals?.targetAll,
+              targetGpaDegree: goals?.targetDegree,
+            ),
+            if (stats.failing.isNotEmpty || stats.suspicious.isNotEmpty)
+              WarningsSection(stats: stats),
+            SemestersSection(
+              stats: stats,
+              targetGpaAll: goals?.targetAll,
+              targetGpaDegree: goals?.targetDegree,
+            ),
+            DistributionSection(stats: stats),
+          ],
         ),
-        const SizedBox(height: AppTokens.space4),
-        WarningsSection(stats: stats),
-        if (stats.failing.isNotEmpty || stats.suspicious.isNotEmpty)
-          const SizedBox(height: AppTokens.space4),
-        SemestersSection(
-          stats: stats,
-          targetGpaAll: goals?.targetAll,
-          targetGpaDegree: goals?.targetDegree,
-        ),
-        if (stats.semesters.isNotEmpty) const SizedBox(height: AppTokens.space4),
-        DistributionSection(stats: stats),
         const SizedBox(height: AppTokens.space5),
         Text(
           '共 ${stats.attempts} 条成绩记录，同课程多次修读已按最高分去重；'
