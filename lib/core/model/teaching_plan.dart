@@ -25,8 +25,10 @@ class PlannedCourse {
         code: cleanField(row['kch'] ?? row['kch_id'] ?? row['kcdm']),
         name: cleanField(row['kcmc'] ?? row['kcmc_id']),
         credits: parseNum(row['xf'] ?? row['xf_id']) ?? 0,
-        suggestedYear: cleanField(row['jynj'] ?? row['jxzxjhnj']),
-        suggestedTerm: cleanField(row['jyxq'] ?? row['jxzxjhxq']),
+        suggestedYear:
+            cleanField(row['jyxdxnm'] ?? row['jynj'] ?? row['jxzxjhnj']),
+        suggestedTerm:
+            cleanField(row['jyxdxqm'] ?? row['jyxq'] ?? row['jxzxjhxq']),
         sfxwkc: cleanField(row['sfxwkc'] ??
             row['sfxwkc_id'] ??
             row['sfxw'] ??

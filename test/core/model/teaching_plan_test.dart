@@ -3,6 +3,19 @@ import 'package:zfjw_toolkit/core/model/teaching_plan.dart';
 
 void main() {
   group('PlannedCourse.fromJson', () {
+    test('读取真实教学计划 grid 的建议修读学年和学期', () {
+      final c = PlannedCourse.fromJson(const {
+        'kch': 'PJ13152404',
+        'kcmc': '中医学',
+        'xf': '1.5',
+        'jyxdxnm': '2026-2027',
+        'jyxdxqm': '2',
+      });
+
+      expect(c.suggestedYear, '2026-2027');
+      expect(c.suggestedTerm, '2');
+    });
+
     test('从教学计划 grid 行读取 zyzgkcbj 学位课标记', () {
       // 正方教学执行计划课程信息 grid 的字段名是 zyzgkcbj（列名"是否学位课程"）。
       final c = PlannedCourse.fromJson(const {
