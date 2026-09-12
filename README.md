@@ -1,6 +1,6 @@
 # 正方教务工具箱
 
-一个面向正方教务平台的 Flutter 移动端工具箱，当前聚焦于成绩采集与统计。应用不会要求用户提供账号或密码；登录操作始终在校方教务页面中完成。
+一个面向正方教务平台的 Flutter 工具箱，支持 Android、iOS 和 Windows，当前聚焦于成绩采集与统计。应用不会要求用户提供账号或密码；登录操作始终在校方教务页面中完成。
 
 ## 功能
 
@@ -21,12 +21,20 @@
 
 ## 开发
 
-要求：Flutter SDK（Dart `^3.11.3`）和可用的 Android 或 iOS 开发环境。
+要求：Flutter SDK（Dart `^3.11.3`）和对应平台的开发环境。Windows
+构建还需要 Visual Studio 的“使用 C++ 的桌面开发”工作负载，以及 PATH 中
+可用的 NuGet CLI；运行时需要 Microsoft Edge WebView2 Runtime。
 
 ```bash
 flutter pub get
 flutter test
 flutter run
+```
+
+Windows 桌面版可使用以下命令构建：
+
+```bash
+flutter build windows
 ```
 
 ## Android 签名与 CI

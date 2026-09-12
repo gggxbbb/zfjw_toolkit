@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 import 'package:zfjw_toolkit/app/app.dart';
+import 'package:zfjw_toolkit/platform/webview_runtime.dart';
 import 'package:zfjw_toolkit/ui/kit/glass_theme_bridge.dart';
 
 void main() async {
   // 玻璃库需要引擎级初始化（预热着色器），必须在 runApp 前完成。
   WidgetsFlutterBinding.ensureInitialized();
+  await AppWebViewRuntime.initialize();
   await LiquidGlassWidgets.initialize();
 
   // wrap() 桥接 Material 主题到玻璃明暗级联；brightnessResolver 让玻璃组件

@@ -1,6 +1,6 @@
 # zfjw_toolkit
 
-面向正方教务平台的移动端工具箱（Flutter，Android/iOS）。当前唯一功能域是成绩统计；数据经 WebView 从正方教务页面采集。
+面向正方教务平台的跨平台工具箱（Flutter，Android/iOS/Windows）。当前唯一功能域是成绩统计；数据经 WebView 从正方教务页面采集。
 
 ## Language
 
