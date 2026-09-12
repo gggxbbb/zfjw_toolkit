@@ -29,7 +29,7 @@ Android/iOS 行为不变。
 ## 验证记录
 
 - `flutter analyze`：通过。
-- `flutter test`：112 项全部通过，覆盖 WebView2 错误态、导航断点和单双列重排。
+- `flutter test`：113 项全部通过，覆盖 WebView2 错误态、精确导航断点、单双列重排和深色主题语义色。
 - `flutter build windows`：通过，产物位于
   `build/windows/x64/runner/Release/zfjw_toolkit.exe`。
 - 启动冒烟：Release 进程启动 8 秒后仍正常运行，随后由测试命令主动结束。

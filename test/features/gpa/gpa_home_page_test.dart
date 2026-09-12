@@ -1,9 +1,12 @@
 import 'package:drift/native.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show MaterialApp, ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart' as lg;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:zfjw_toolkit/app/theme.dart';
 import 'package:zfjw_toolkit/core/model/course_record.dart';
 import 'package:zfjw_toolkit/core/model/snapshot.dart';
 import 'package:zfjw_toolkit/data/database.dart';
@@ -14,22 +17,48 @@ import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 /// 页面依赖主壳传入的大标题控制器；测试里造一个并负责释放。
 Widget _wrap(Widget child, {required AppDatabase db}) => ProviderScope(
-      overrides: [databaseProvider.overrideWithValue(db)],
-      child: CupertinoApp(home: child),
-    );
+  overrides: [databaseProvider.overrideWithValue(db)],
+  child: CupertinoApp(home: child),
+);
+
+Widget _wrapDark(Widget child, {required AppDatabase db}) => ProviderScope(
+  overrides: [databaseProvider.overrideWithValue(db)],
+  child: MaterialApp(
+    theme: AppTheme.light,
+    darkTheme: AppTheme.dark,
+    themeMode: ThemeMode.dark,
+    home: child,
+  ),
+);
 
 List<CourseRecord> _sampleRecords() => [
-      CourseRecord.fromRaw(
-        kch: 'A01', kcmc: '高等数学', xf: '4', jd: '4.0',
-        bfzcj: '90', cj: '90', sfxwkc: '是',
-        xnm: '2024', xqm: '1', xnmmc: '2024-2025', xqmmc: '1',
-      ),
-      CourseRecord.fromRaw(
-        kch: 'A02', kcmc: '大学英语', xf: '2', jd: '3.0',
-        bfzcj: '80', cj: '80', sfxwkc: '否',
-        xnm: '2024', xqm: '1', xnmmc: '2024-2025', xqmmc: '1',
-      ),
-    ];
+  CourseRecord.fromRaw(
+    kch: 'A01',
+    kcmc: '高等数学',
+    xf: '4',
+    jd: '4.0',
+    bfzcj: '90',
+    cj: '90',
+    sfxwkc: '是',
+    xnm: '2024',
+    xqm: '1',
+    xnmmc: '2024-2025',
+    xqmmc: '1',
+  ),
+  CourseRecord.fromRaw(
+    kch: 'A02',
+    kcmc: '大学英语',
+    xf: '2',
+    jd: '3.0',
+    bfzcj: '80',
+    cj: '80',
+    sfxwkc: '否',
+    xnm: '2024',
+    xqm: '1',
+    xnmmc: '2024-2025',
+    xqmmc: '1',
+  ),
+];
 
 void main() {
   group('GpaHomePage', () {
@@ -83,6 +112,32 @@ void main() {
       expect(find.text('成绩分布'), findsOneWidget);
       // 有数据时不再显示空态引导
       expect(find.text('暂无成绩数据'), findsNothing);
+    });
+
+    testWidgets('深色主题下总 GPA 标签和分隔线使用暗色语义色', (tester) async {
+      final repo = SnapshotRepository(db);
+      final profile = await repo.ensureDefaultProfile();
+      await repo.saveSnapshot(
+        profile.id,
+        SnapshotSource.webview,
+        _sampleRecords(),
+      );
+
+      await tester.pumpWidget(
+        _wrapDark(GpaHomePage(titleController: title), db: db),
+      );
+      await tester.pumpAndSettle();
+
+      final totalGpa = tester.widget<Text>(find.text('总 GPA'));
+      expect(totalGpa.style?.color, AppTokens.dark.labelSecondary);
+
+      final divider = tester.widget<lg.GlassDivider>(
+        find.descendant(
+          of: find.byType(AppDivider).first,
+          matching: find.byType(lg.GlassDivider),
+        ),
+      );
+      expect(divider.color, AppTokens.dark.separator);
     });
   });
 }

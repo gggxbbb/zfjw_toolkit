@@ -249,7 +249,8 @@ class AppDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => lg.GlassDivider(
-        thickness: 0.5,
-        indent: indent,
-      );
+    thickness: 0.5,
+    indent: indent,
+    color: AppTokens.of(context).separator,
+  );
 }
