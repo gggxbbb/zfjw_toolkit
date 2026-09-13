@@ -186,8 +186,18 @@ class AppText {
   /// 统一的装饰语义：无下划线，且颜色/样式显式给出，避免回退告警。
   static const TextDecoration _noDecoration = TextDecoration.none;
 
+  /// 中文界面字体回退链：Windows 优先微软雅黑，其余平台回退到原生中文字体。
+  static const List<String> _fontFallbacks = [
+    'Microsoft YaHei UI',
+    'Microsoft YaHei',
+    'PingFang SC',
+    'Noto Sans CJK SC',
+    'Noto Sans SC',
+  ];
+
   /// 超大数值（GPA 大字，对齐 Health 页指标）。
   static const TextStyle display = TextStyle(
+    fontFamilyFallback: _fontFallbacks,
     fontSize: 48,
     fontWeight: FontWeight.w700,
     letterSpacing: -1.5,
@@ -200,6 +210,7 @@ class AppText {
 
   /// 大标题（页面主标题，iOS Large Title）。
   static const TextStyle largeTitle = TextStyle(
+    fontFamilyFallback: _fontFallbacks,
     fontSize: 34,
     fontWeight: FontWeight.w700,
     letterSpacing: -0.5,
@@ -212,6 +223,7 @@ class AppText {
 
   /// 标题（卡片标题、区域标题）。
   static const TextStyle title = TextStyle(
+    fontFamilyFallback: _fontFallbacks,
     fontSize: 17,
     fontWeight: FontWeight.w600,
     height: 1.25,
@@ -223,6 +235,7 @@ class AppText {
 
   /// 小标题 / section header（iOS 分组列表小写灰字）。
   static const TextStyle sectionHeader = TextStyle(
+    fontFamilyFallback: _fontFallbacks,
     fontSize: 13,
     fontWeight: FontWeight.w400,
     height: 1.2,
@@ -234,6 +247,7 @@ class AppText {
 
   /// 正文。
   static const TextStyle body = TextStyle(
+    fontFamilyFallback: _fontFallbacks,
     fontSize: 17,
     fontWeight: FontWeight.w400,
     height: 1.35,
@@ -245,6 +259,7 @@ class AppText {
 
   /// 次级正文（列表行副标题）。
   static const TextStyle subhead = TextStyle(
+    fontFamilyFallback: _fontFallbacks,
     fontSize: 15,
     fontWeight: FontWeight.w400,
     height: 1.3,
@@ -256,6 +271,7 @@ class AppText {
 
   /// 脚注（说明文字、统计口径）。
   static const TextStyle footnote = TextStyle(
+    fontFamilyFallback: _fontFallbacks,
     fontSize: 13,
     fontWeight: FontWeight.w400,
     height: 1.35,
@@ -267,6 +283,7 @@ class AppText {
 
   /// 极小注释（表格注脚、时间戳）。
   static const TextStyle caption = TextStyle(
+    fontFamilyFallback: _fontFallbacks,
     fontSize: 11,
     fontWeight: FontWeight.w400,
     height: 1.3,
@@ -278,6 +295,7 @@ class AppText {
 
   /// 数值（等宽数字，避免跳变）。
   static const TextStyle numeric = TextStyle(
+    fontFamilyFallback: _fontFallbacks,
     fontSize: 15,
     fontWeight: FontWeight.w600,
     fontFeatures: [FontFeature.tabularFigures()],

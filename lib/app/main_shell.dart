@@ -104,8 +104,9 @@ class _MainShellState extends ConsumerState<MainShell> {
                               ? NavigationRailLabelType.none
                               : NavigationRailLabelType.all,
                           groupAlignment: -0.75,
+                          indicatorColor: tokens.accent,
                           selectedIconTheme: IconThemeData(
-                            color: tokens.accent,
+                            color: Colors.white,
                             size: 24,
                           ),
                           unselectedIconTheme: IconThemeData(

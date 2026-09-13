@@ -30,10 +30,12 @@ void main() {
     expect(find.byType(AppGlassTabBar), findsOneWidget);
 
     await pumpAt(720);
-    expect(
-      tester.widget<NavigationRail>(find.byType(NavigationRail)).extended,
-      isFalse,
+    final compactRail = tester.widget<NavigationRail>(
+      find.byType(NavigationRail),
     );
+    expect(compactRail.extended, isFalse);
+    expect(compactRail.indicatorColor, AppTokens.light.accent);
+    expect(compactRail.selectedIconTheme?.color, Colors.white);
     expect(find.byType(AppGlassTabBar), findsNothing);
 
     await pumpAt(1099);
