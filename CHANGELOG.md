@@ -61,3 +61,5 @@
 - `18ca91c` `fix: restore desktop navigation contrast and CJK font`
 - `0ed93e8` `docs: specify data backup and snapshot history`
 - `8ec561f` `feat: show release build metadata`
+- `f5a06a6` `fix(capture): wait for complete grid data`
+- `1f99415` `fix(ci): preserve clean release metadata`
