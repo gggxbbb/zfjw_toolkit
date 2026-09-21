@@ -9,22 +9,33 @@ class PlanCapturePage extends ConsumerWidget {
   const PlanCapturePage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) => WebCapturePage(
-        title: '采集教学计划',
-        instruction: '登录后，打开“教学执行计划查看”，选定计划，打开“修读要求”页确保数据完全加载后进入“课程信息”页',
-        targetPageStatus: '请选定教学计划，打开“修读要求”页确保数据完全加载后进入“课程信息”页，应用将自动开始采集',
-        handlerName: teachingPlanCaptureHandlerName,
-        matchesPage: (url) => url?.contains(teachingPlanPageMarker) ?? false,
-        script: teachingPlanCaptureScript,
-        progressMessage: (payload) => payload['status'] == 'progress'
-            ? payload['message'] as String? ?? '正在采集课程信息…'
-            : null,
-        onPayload: (payload, _) async {
-          final plan = teachingPlanFromPayload(payload);
-          if (plan == null) return const WebCaptureResult.failure('未能读取教学计划课程，请确认已进入“课程信息”页');
+    title: '采集教学计划',
+    instruction: '登录后，打开“教学执行计划查看”，选定计划，打开“修读要求”页确保数据完全加载后进入“课程信息”页',
+    targetPageStatus: '请选定教学计划，打开“修读要求”页确保数据完全加载后进入“课程信息”页，应用将自动开始采集',
+    handlerName: teachingPlanCaptureHandlerName,
+    matchesPage: (url) => url?.contains(teachingPlanPageMarker) ?? false,
+    script: teachingPlanCaptureScript,
+    progressMessage: (payload) => payload['status'] == 'progress'
+        ? payload['message'] as String? ?? '正在采集课程信息…'
+        : null,
+    onPayload: (payload, _) async {
+      final plan = teachingPlanFromPayload(payload);
+      if (plan == null) {
+        return const WebCaptureResult.failure('未能读取教学计划课程，请确认已进入“课程信息”页');
+      }
+      return WebCaptureResult.review(
+        '读取完成，请确认本次结果',
+        overview: [
+          if (plan.programName.trim().isNotEmpty) '教学计划：${plan.programName}',
+          '计划课程：${plan.courses.length} 门',
+          '毕业学分：${plan.graduationCredits.toStringAsFixed(1)}',
+        ],
+        commit: () async {
           await TeachingPlanRepository().save(plan);
           ref.invalidate(teachingPlanProvider);
-          return WebCaptureResult.success('已采集 ${plan.courses.length} 门计划课程');
         },
-        onSuccess: () => Navigator.of(context).pop(),
       );
+    },
+    onSuccess: () => Navigator.of(context).pop(),
+  );
 }

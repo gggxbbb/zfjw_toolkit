@@ -25,12 +25,19 @@ TeachingPlan? teachingPlanFromPayload(Map<String, dynamic> payload) {
 /// jqGrid 扩为单页并回传全部课程。不会点击查询、提交或修改教务数据。
 const teachingPlanCaptureScript = r'''
 (function () {
-  if (window.__zfjwPlanCapture) return;
-  window.__zfjwPlanCapture = true;
+  if (window.__zfjwPlanTimer) clearInterval(window.__zfjwPlanTimer);
+  var runId = (window.__zfjwPlanRunId || 0) + 1;
+  window.__zfjwPlanRunId = runId;
+  window.__zfjwPlanExpanded = false;
+  window.__zfjwPlanLoaded = false;
+  window.__zfjwPlanIncomplete = null;
   function clean(v) { return String(v == null ? '' : v).replace(/[\s\u200b-\u200f\ufeff]/g, '').trim(); }
-  function report(p) { try { window.flutter_inappwebview.callHandler('zfjwTeachingPlanCapture', p); } catch (_) {} }
-  var ticks = 0, sent = false;
-  var timer = setInterval(function () {
+  function report(p) {
+    if (window.__zfjwPlanRunId !== runId) return;
+    try { window.flutter_inappwebview.callHandler('zfjwTeachingPlanCapture', p); } catch (_) {}
+  }
+  var ticks = 0, reloadTicks = 0, sent = false;
+  var timer = window.__zfjwPlanTimer = setInterval(function () {
     if (sent) return clearInterval(timer);
     ticks++;
     var $ = window.jQuery;
@@ -44,15 +51,37 @@ const teachingPlanCaptureScript = r'''
     var q = $('#kcxxGrid');
     if (!window.__zfjwPlanExpanded) {
       window.__zfjwPlanExpanded = true;
+      reloadTicks = 0;
       report({status:'progress', message:'正在采集全部课程信息…'});
+      q.one('jqGridLoadComplete.zfjwPlanCapture', function () {
+        if (window.__zfjwPlanRunId === runId) window.__zfjwPlanLoaded = true;
+      });
       q.jqGrid('setGridParam', {rowNum: 5000, page: 1}).trigger('reloadGrid');
       return;
     }
+    reloadTicks++;
+    if (!window.__zfjwPlanLoaded) {
+      if (reloadTicks > 120) {
+        clearInterval(timer);
+        report({status:'error', message:'等待全量课程加载超时，请重新采集'});
+      }
+      return;
+    }
     var rows = q.jqGrid('getGridParam', 'data') || [];
+    var expected = Number(q.jqGrid('getGridParam', 'records')) || 0;
+    var lastPage = Number(q.jqGrid('getGridParam', 'lastpage')) || 1;
+    if ((expected && rows.length < expected) || lastPage > 1) {
+      window.__zfjwPlanIncomplete = {actual: rows.length, expected: expected};
+      rows = [];
+    }
     // 部分正方版本只渲染 jqGrid DOM，不填充 data 参数；此时按列名回退。
     if (!rows.length) {
       rows = [];
       var domRows = document.querySelectorAll('#kcxxGrid tr.jqgrow');
+      if ((expected && domRows.length < expected) || lastPage > 1) {
+        window.__zfjwPlanIncomplete = {actual: domRows.length, expected: expected};
+        domRows = [];
+      }
       for (var i = 0; i < domRows.length; i++) {
         var domRow = {};
         var cells = domRows[i].querySelectorAll('td[aria-describedby^="kcxxGrid_"]');
@@ -63,7 +92,17 @@ const teachingPlanCaptureScript = r'''
         if (domRow.kch || domRow.kcmc) rows.push(domRow);
       }
     }
-    if (!rows.length) return;
+    if (!rows.length) {
+      if (reloadTicks > 120 && window.__zfjwPlanIncomplete) {
+        var partial = window.__zfjwPlanIncomplete;
+        clearInterval(timer);
+        report({
+          status:'error',
+          message:'课程尚未完整加载：已加载 ' + partial.actual + ' / ' + partial.expected + ' 门，请重新采集'
+        });
+      }
+      return;
+    }
     var result = rows.map(function (row) { var out = {}; for (var k in row) out[k] = clean(row[k]); return out; });
     var info = document.body.innerText || '';
     var program = (info.match(/年级：([^\s]+)\s*专业：([^\s]+)/) || []);

@@ -21,7 +21,11 @@ void main() {
           handlerName: 'capture',
           matchesPage: (_) => false,
           script: '',
-          onPayload: (_, _) async => const WebCaptureResult.success(),
+          onPayload: (_, _) async => WebCaptureResult.review(
+            '采集完成',
+            overview: const [],
+            commit: () async {},
+          ),
           onSuccess: () {},
         ),
       ),
@@ -34,4 +38,43 @@ void main() {
     );
     expect(find.byIcon(CupertinoIcons.back), findsOneWidget);
   });
+
+  testWidgets('采集概览显示数据范围并可选择重新采集', (tester) async {
+    Future<CaptureReviewAction?>? pendingDecision;
+
+    await tester.pumpWidget(
+      CupertinoApp(
+        home: Builder(
+          builder: (context) => CupertinoButton(
+            onPressed: () {
+              pendingDecision = showCaptureOverview(
+                context,
+                const WebCaptureResult.review(
+                  '读取完成',
+                  overview: ['成绩记录：40 条', '覆盖学期：6 个'],
+                  commit: _noOpCommit,
+                ),
+              );
+            },
+            child: const Text('打开概览'),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('打开概览'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('采集概览'), findsOneWidget);
+    expect(find.textContaining('成绩记录：40 条'), findsOneWidget);
+    expect(find.textContaining('覆盖学期：6 个'), findsOneWidget);
+    expect(find.text('重新采集'), findsOneWidget);
+    expect(find.text('使用本次数据'), findsOneWidget);
+
+    await tester.tap(find.text('重新采集'));
+    await tester.pumpAndSettle();
+    expect(await pendingDecision, CaptureReviewAction.retry);
+  });
 }
+
+Future<void> _noOpCommit() async {}

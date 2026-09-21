@@ -5,11 +5,50 @@ import 'package:zfjw_toolkit/platform/webview_runtime.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 class WebCaptureResult {
-  const WebCaptureResult.success([this.message = '采集完成']) : error = false;
-  const WebCaptureResult.failure(this.message) : error = true;
+  const WebCaptureResult.review(
+    this.message, {
+    required this.overview,
+    required this.commit,
+  }) : error = false;
+  const WebCaptureResult.failure(this.message)
+    : error = true,
+      overview = const [],
+      commit = null;
   final String message;
   final bool error;
+  final List<String> overview;
+  final Future<void> Function()? commit;
 }
+
+enum CaptureReviewAction { retry, accept }
+
+Future<CaptureReviewAction?> showCaptureOverview(
+  BuildContext context,
+  WebCaptureResult result,
+) => showCupertinoDialog<CaptureReviewAction>(
+  context: context,
+  barrierDismissible: false,
+  builder: (dialogContext) => CupertinoAlertDialog(
+    title: const Text('采集概览'),
+    content: Padding(
+      padding: const EdgeInsets.only(top: AppTokens.space3),
+      child: Text([result.message, ...result.overview].join('\n')),
+    ),
+    actions: [
+      CupertinoDialogAction(
+        onPressed: () =>
+            Navigator.of(dialogContext).pop(CaptureReviewAction.retry),
+        child: const Text('重新采集'),
+      ),
+      CupertinoDialogAction(
+        isDefaultAction: true,
+        onPressed: () =>
+            Navigator.of(dialogContext).pop(CaptureReviewAction.accept),
+        child: const Text('使用本次数据'),
+      ),
+    ],
+  ),
+);
 
 class WebCapturePage extends StatefulWidget {
   const WebCapturePage({
@@ -143,12 +182,15 @@ class _WebCapturePageState extends State<WebCapturePage> {
             }
             final result = await widget.onPayload(payload, controller);
             if (!mounted) return null;
+            if (!result.error) {
+              await _reviewSuccessfulCapture(result, controller);
+              return null;
+            }
             setState(() {
               _message = result.message;
               _error = result.error;
               _finished = true;
             });
-            if (!result.error) widget.onSuccess();
             return null;
           },
         );
@@ -171,5 +213,42 @@ class _WebCapturePageState extends State<WebCapturePage> {
         }
       },
     );
+  }
+
+  Future<void> _reviewSuccessfulCapture(
+    WebCaptureResult result,
+    InAppWebViewController controller,
+  ) async {
+    setState(() {
+      _message = result.message;
+      _error = false;
+      _finished = true;
+    });
+
+    final action = await showCaptureOverview(context, result);
+    if (!mounted) return;
+
+    if (action != CaptureReviewAction.accept) {
+      setState(() {
+        _message = '正在重新采集…';
+        _error = false;
+        _finished = false;
+      });
+      await controller.evaluateJavascript(source: widget.script);
+      return;
+    }
+
+    try {
+      await result.commit!.call();
+      if (!mounted) return;
+      widget.onSuccess();
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _message = '保存采集结果失败：$error';
+        _error = true;
+        _finished = true;
+      });
+    }
   }
 }

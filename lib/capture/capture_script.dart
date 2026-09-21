@@ -21,10 +21,15 @@ const String zfjwDefaultEntryUrl = 'https://ehall.xzhmu.edu.cn/';
 const String zfjwCaptureScript = r'''
 (function () {
   'use strict';
-  if (window.__zfjwCaptureLoaded) return;
-  window.__zfjwCaptureLoaded = true;
+  if (window.__zfjwCaptureTimer) clearInterval(window.__zfjwCaptureTimer);
+  var runId = (window.__zfjwCaptureRunId || 0) + 1;
+  window.__zfjwCaptureRunId = runId;
+  window.__zfjwQueried = false;
+  window.__zfjwQueryLoaded = false;
+  window.__zfjwIncomplete = null;
 
   function report(payload) {
+    if (window.__zfjwCaptureRunId !== runId) return;
     try {
       window.flutter_inappwebview.callHandler('zfjwCapture', payload);
     } catch (e) { /* 桥未就绪则静默 */ }
@@ -40,8 +45,15 @@ const String zfjwCaptureScript = r'''
     try {
       var jq = window.jQuery;
       if (jq && jq.fn && jq.fn.jqGrid) {
-        var data = jq('#tabGrid').jqGrid('getGridParam', 'data');
+        var q = jq('#tabGrid');
+        var data = q.jqGrid('getGridParam', 'data');
         if (data && data.length) {
+          var expected = Number(q.jqGrid('getGridParam', 'records')) || 0;
+          var lastPage = Number(q.jqGrid('getGridParam', 'lastpage')) || 1;
+          if ((expected && data.length < expected) || lastPage > 1) {
+            window.__zfjwIncomplete = { actual: data.length, expected: expected };
+            return null;
+          }
           var rows = [];
           for (var i = 0; i < data.length; i++) {
             var row = {};
@@ -61,6 +73,15 @@ const String zfjwCaptureScript = r'''
 
     var trs = document.querySelectorAll('#tabGrid tr.jqgrow');
     if (!trs.length) return null;
+    try {
+      var domGrid = window.jQuery('#tabGrid');
+      var domExpected = Number(domGrid.jqGrid('getGridParam', 'records')) || 0;
+      var domLastPage = Number(domGrid.jqGrid('getGridParam', 'lastpage')) || 1;
+      if ((domExpected && trs.length < domExpected) || domLastPage > 1) {
+        window.__zfjwIncomplete = { actual: trs.length, expected: domExpected };
+        return null;
+      }
+    } catch (e) { /* 无总数时仍允许 DOM 回退 */ }
     var domRows = [];
     for (var t = 0; t < trs.length; t++) {
       var cells = trs[t].querySelectorAll('td[aria-describedby^="tabGrid_"]');
@@ -91,7 +112,13 @@ const String zfjwCaptureScript = r'''
         }
       }
       if (jq && jq.fn && jq.fn.jqGrid) {
-        jq('#tabGrid').jqGrid('setGridParam', { rowNum: 10000, page: 1 });
+        var q = jq('#tabGrid');
+        q.one('jqGridLoadComplete.zfjwCapture', function () {
+          if (window.__zfjwCaptureRunId === runId) {
+            window.__zfjwQueryLoaded = true;
+          }
+        });
+        q.jqGrid('setGridParam', { rowNum: 10000, page: 1 });
       }
       var btn = document.getElementById('search_go');
       if (btn) btn.click();
@@ -99,7 +126,7 @@ const String zfjwCaptureScript = r'''
     } catch (e) { /* 配置失败不阻断监听 */ }
   }
 
-  var timer = setInterval(function () {
+  var timer = window.__zfjwCaptureTimer = setInterval(function () {
     if (reported) { clearInterval(timer); return; }
     tries++;
 
@@ -121,14 +148,28 @@ const String zfjwCaptureScript = r'''
       return;
     }
 
+    if (!window.__zfjwQueryLoaded) {
+      if (tries > 100) {
+        clearInterval(timer);
+        report({ status: 'error', message: '等待全量成绩加载超时，请重新采集' });
+      }
+      return;
+    }
+
     var result = extract();
     if (result) {
       reported = true;
       clearInterval(timer);
       report(result);
-    } else if (tries > 50) {
+    } else if (tries > 100) {
       clearInterval(timer);
-      report({ status: 'error', message: '成绩表格存在但无数据行，请先在页面完成查询' });
+      var partial = window.__zfjwIncomplete;
+      report({
+        status: 'error',
+        message: partial
+          ? '成绩尚未完整加载：已加载 ' + partial.actual + ' / ' + partial.expected + ' 条，请重新采集'
+          : '成绩表格存在但无数据行，请先在页面完成查询'
+      });
     }
   }, 300);
 })();
