@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:zfjw_toolkit/app/router.dart';
 import 'package:zfjw_toolkit/features/settings/settings_home_page.dart';
 import 'package:zfjw_toolkit/features/settings/state/app_version.dart';
+import 'package:zfjw_toolkit/features/settings/state/build_metadata.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 void main() {
@@ -32,9 +33,11 @@ void main() {
     expect(find.text('目标与最低 GPA'), findsOneWidget);
     expect(find.text('成绩计算规则'), findsOneWidget);
     expect(find.text('徐医规则包（xzhmu）'), findsOneWidget);
+    expect(find.text('提交'), findsNothing);
+    expect(find.text('构建时间'), findsNothing);
   });
 
-  testWidgets('设置页展示实际安装包版本', (tester) async {
+  testWidgets('设置页展示安装包版本和构建信息', (tester) async {
     final title = GlassLargeTitleController();
     addTearDown(title.dispose);
 
@@ -43,6 +46,12 @@ void main() {
         overrides: [
           appVersionProvider.overrideWithValue(
             const AsyncValue.data('1.2.3 (45)'),
+          ),
+          buildMetadataProvider.overrideWithValue(
+            const BuildMetadata(
+              gitHash: '0123456789ab',
+              buildTime: '2026-09-21T03:04:05Z',
+            ),
           ),
         ],
         child: CupertinoApp(home: SettingsHomePage(titleController: title)),
@@ -57,5 +66,9 @@ void main() {
 
     expect(find.text('1.2.3 (45)'), findsOneWidget);
     expect(find.text('1.0.0'), findsNothing);
+    expect(find.text('提交'), findsOneWidget);
+    expect(find.text('0123456789ab'), findsOneWidget);
+    expect(find.text('构建时间'), findsOneWidget);
+    expect(find.text('2026-09-21 03:04:05 UTC'), findsOneWidget);
   });
 }

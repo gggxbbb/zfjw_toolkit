@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:zfjw_toolkit/core/stats/target_analysis.dart';
 import 'package:zfjw_toolkit/features/settings/state/app_version.dart';
+import 'package:zfjw_toolkit/features/settings/state/build_metadata.dart';
 import 'package:zfjw_toolkit/features/settings/state/gpa_goals.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
@@ -22,6 +23,7 @@ class SettingsHomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final goals = ref.watch(gpaGoalsProvider).value ?? const GpaGoals();
     final appVersion = ref.watch(appVersionProvider).value ?? '—';
+    final buildMetadata = ref.watch(buildMetadataProvider);
     final tokens = AppTokens.of(context);
 
     return CustomScrollView(
@@ -80,6 +82,21 @@ class SettingsHomePage extends ConsumerWidget {
                           label: '版本',
                           value: appVersion,
                         ),
+                        if (buildMetadata.isAvailable) ...[
+                          const SizedBox(height: AppTokens.space3),
+                          _InfoRow(
+                            icon:
+                                CupertinoIcons.chevron_left_slash_chevron_right,
+                            label: '提交',
+                            value: buildMetadata.displayGitHash,
+                          ),
+                          const SizedBox(height: AppTokens.space3),
+                          _InfoRow(
+                            icon: CupertinoIcons.clock,
+                            label: '构建时间',
+                            value: buildMetadata.displayBuildTime,
+                          ),
+                        ],
                         const SizedBox(height: AppTokens.space3),
                         const _InfoRow(
                           icon: CupertinoIcons.person,
