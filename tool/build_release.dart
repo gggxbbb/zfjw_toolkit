@@ -75,8 +75,8 @@ Future<String> _readGitHash() async {
 
 void _printUsage() {
   stdout.writeln(
-    '用法: dart run tool/build_release.dart <flutter-build-target> [build options]\n'
-    '示例: dart run tool/build_release.dart apk --split-per-abi\n'
-    '      dart run tool/build_release.dart windows',
+    '用法: dart tool/build_release.dart <flutter-build-target> [build options]\n'
+    '示例: dart tool/build_release.dart apk --split-per-abi\n'
+    '      dart tool/build_release.dart windows',
   );
 }

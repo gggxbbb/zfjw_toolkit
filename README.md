@@ -36,12 +36,12 @@ release 包请通过统一构建入口生成，它会把当前 Git 提交和 UTC
 构建时间注入应用，并在「设置 → 关于」中显示：
 
 ```bash
-dart run tool/build_release.dart apk
-dart run tool/build_release.dart windows
+dart tool/build_release.dart apk
+dart tool/build_release.dart windows
 ```
 
 可在目标后继续传递 Flutter 构建参数，例如
-`dart run tool/build_release.dart apk --split-per-abi`。直接运行
+`dart tool/build_release.dart apk --split-per-abi`。直接运行
 `flutter build` 不会注入这两项构建信息。为保证提交哈希能唯一对应
 产物源码，统一构建入口会拒绝在存在未提交更改时生成 release 包。
 

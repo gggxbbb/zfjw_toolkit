@@ -21,6 +21,7 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+      - run: node --test test/capture/capture_script_timing_test.mjs
       - run: flutter analyze
       - run: flutter test
 
@@ -36,7 +37,6 @@ jobs:
         with:
           channel: stable
           cache: true
-      - run: flutter pub get
       - name: Restore Android signing key
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -52,7 +52,7 @@ jobs:
           keyPassword=$ANDROID_KEY_PASSWORD
           EOF
       - name: Build release APK with Git metadata
-        run: dart run tool/build_release.dart apk
+        run: dart tool/build_release.dart apk
       # v4.6.2
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
