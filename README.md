@@ -42,7 +42,8 @@ dart run tool/build_release.dart windows
 
 可在目标后继续传递 Flutter 构建参数，例如
 `dart run tool/build_release.dart apk --split-per-abi`。直接运行
-`flutter build` 不会注入这两项构建信息。
+`flutter build` 不会注入这两项构建信息。为保证提交哈希能唯一对应
+产物源码，统一构建入口会拒绝在存在未提交更改时生成 release 包。
 
 ## Android 签名与 CI
 

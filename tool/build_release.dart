@@ -13,6 +13,14 @@ Future<void> main(List<String> args) async {
     return;
   }
 
+  if (!await _isWorkingTreeClean()) {
+    stderr.writeln(
+      '工作树存在未提交更改，无法生成可追溯的 release 包。'
+      '请先提交或处理这些更改。',
+    );
+    exitCode = 1;
+    return;
+  }
   final gitHash = await _readGitHash();
   final buildTime = DateTime.now().toUtc().toIso8601String();
   final flutterExecutable = Platform.isWindows ? 'flutter.bat' : 'flutter';
@@ -37,6 +45,16 @@ Future<void> main(List<String> args) async {
     runInShell: Platform.isWindows,
   );
   exitCode = await process.exitCode;
+}
+
+Future<bool> _isWorkingTreeClean() async {
+  final result = await Process.run('git', const ['status', '--porcelain']);
+  if (result.exitCode != 0) {
+    stderr.write(result.stderr);
+    throw StateError('无法检查 Git 工作树状态。');
+  }
+
+  return (result.stdout as String).trim().isEmpty;
 }
 
 Future<String> _readGitHash() async {
