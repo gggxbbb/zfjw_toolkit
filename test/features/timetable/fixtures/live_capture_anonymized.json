@@ -1,0 +1,1248 @@
+{
+  "explicitEmpty": false,
+  "label": "2026-2027学年第1学期",
+  "rows": [
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)2周",
+      "title": "【调】课程01★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)3周",
+      "title": "【调】课程01★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)4周",
+      "title": "【调】课程01★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)7周",
+      "title": "【调】课程01★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)8周",
+      "title": "【调】课程01★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)9周",
+      "title": "【调】课程01★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)10周",
+      "title": "【调】课程01★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)11周",
+      "title": "【调】课程01★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)10周",
+      "title": "课程02★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)11周",
+      "title": "课程02★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)12周",
+      "title": "课程02★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)13周",
+      "title": "课程02★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)14周",
+      "title": "课程02★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)15周",
+      "title": "课程02★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)16周",
+      "title": "课程02★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)17-18周",
+      "title": "课程02★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)2周",
+      "title": "【调】课程03★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)3-4周",
+      "title": "【调】课程03★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)7周",
+      "title": "【调】课程03★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)8周",
+      "title": "【调】课程03★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)17周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)18周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)2周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)3周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)4周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)5周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)7周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)8周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)9周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)10周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)11周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)12周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)13周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)14周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)15周",
+      "title": "课程04★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)16周",
+      "title": "课程04★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)2周",
+      "title": "课程05★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)3周",
+      "title": "课程05★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)6周,9周",
+      "title": "课程05★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)7周,14周",
+      "title": "课程05★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)8周",
+      "title": "课程05★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)10-12周(双)",
+      "title": "课程05★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)11周",
+      "title": "课程05★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)13周",
+      "title": "课程05★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)15周",
+      "title": "课程05★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-2节)16周",
+      "title": "课程05★"
+    },
+    {
+      "day": 6,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)6周",
+      "title": "课程06○"
+    },
+    {
+      "day": 6,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)6周,9周,14周",
+      "title": "课程06○"
+    },
+    {
+      "day": 6,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)7-8周",
+      "title": "课程06○"
+    },
+    {
+      "day": 6,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)11周",
+      "title": "课程06○"
+    },
+    {
+      "day": 6,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)13周",
+      "title": "课程06○"
+    },
+    {
+      "day": 7,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(1-3节)6周",
+      "title": "【调】课程03★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(2-5节)3周",
+      "title": "课程07※"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(2-5节)4周,7周",
+      "title": "课程07※"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(2-5节)8-9周",
+      "title": "课程07※"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(2-5节)8周",
+      "title": "课程07※"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(2-5节)9-10周",
+      "title": "课程07※"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(2-5节)10周",
+      "title": "课程07※"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(2-5节)11周",
+      "title": "课程07※"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(2-5节)12周",
+      "title": "课程07※"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(2-5节)13周",
+      "title": "课程07※"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(2-5节)14周",
+      "title": "课程07※"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)2周",
+      "title": "课程07★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)3周",
+      "title": "课程07★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)4周",
+      "title": "课程07★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)5周",
+      "title": "课程07★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)7周",
+      "title": "课程07★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)8-9周",
+      "title": "课程07★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)10-11周",
+      "title": "课程07★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)12周",
+      "title": "课程07★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)13周",
+      "title": "课程07★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)14周",
+      "title": "课程07★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)2-3周,6-7周,15-17周(单)",
+      "title": "课程08★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)8周",
+      "title": "课程08★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)9周",
+      "title": "课程08★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)10周",
+      "title": "课程08★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)11周",
+      "title": "课程08★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)12周",
+      "title": "课程08★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)13周",
+      "title": "课程08★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)14周",
+      "title": "课程08★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(3-4节)16周",
+      "title": "课程08★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)2周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)3周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)4周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)5周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)7周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)8周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)9周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)10-11周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)12周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)13周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)14周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)15周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)16周",
+      "title": "课程05★"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)17周",
+      "title": "课程05★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)2周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)3周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)4周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)7周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)8周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)9周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)10周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)11周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)12周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)13周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)14周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)15周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)16周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)17周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(4-5节)18周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-8节)2周",
+      "title": "课程09○"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-10节)3周",
+      "title": "课程09○"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-10节)4周",
+      "title": "课程09○"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-10节)5周",
+      "title": "课程09○"
+    },
+    {
+      "day": 1,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-10节)7-12周",
+      "title": "课程09○"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-10节)3周,7周,11-15周(单),16周",
+      "title": "课程05※"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-10节)3周",
+      "title": "课程05※"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-10节)11周",
+      "title": "课程05※"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-10节)13周",
+      "title": "课程05※"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-10节)15周",
+      "title": "课程05※"
+    },
+    {
+      "day": 2,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-10节)16周",
+      "title": "课程05※"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-9节)9周",
+      "title": "课程04※"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-9节)10周",
+      "title": "课程04※"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-9节)11周",
+      "title": "课程04※"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-9节)12周",
+      "title": "课程04※"
+    },
+    {
+      "day": 3,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-9节)13周",
+      "title": "课程04※"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)2周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)3周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)6周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)7周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)8周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)9周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)10周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)11周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)12周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)13周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)14周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)15周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)16周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)17周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)3周",
+      "title": "课程08※"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-9节)10周",
+      "title": "课程08※"
+    },
+    {
+      "day": 5,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-9节)15周",
+      "title": "课程08※"
+    },
+    {
+      "day": 6,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(6-7节)6周",
+      "title": "【调】课程06★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(8-9节)2周",
+      "title": "课程07★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(8-9节)3周",
+      "title": "课程07★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(8-9节)4周",
+      "title": "课程07★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(8-9节)6周",
+      "title": "课程07★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(8-9节)7-8周",
+      "title": "课程07★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(8-9节)9周",
+      "title": "课程07★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(8-9节)10周",
+      "title": "课程07★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(8-9节)11-12周",
+      "title": "课程07★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(8-9节)13周",
+      "title": "课程07★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(8-9节)14周",
+      "title": "课程07★"
+    },
+    {
+      "day": 4,
+      "group": "教学班样本",
+      "location": "地点样本",
+      "teacher": "教师样本",
+      "time": "(11-13节)7-9周",
+      "title": "课程10★"
+    }
+  ],
+  "status": "ok",
+  "term": "2026/3"
+}

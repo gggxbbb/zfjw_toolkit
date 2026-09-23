@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:zfjw_toolkit/features/gpa/gpa_home_page.dart';
 import 'package:zfjw_toolkit/features/settings/settings_home_page.dart';
 import 'package:zfjw_toolkit/features/target/target_analysis_page.dart';
+import 'package:zfjw_toolkit/features/timetable/page.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 /// 自适应导航 tab 定义 —— 路由清单集中在 [appTabs]。
@@ -35,10 +36,10 @@ class AppTab {
   /// 第二个参数是大标题折叠控制器——页面用它驱动内容里内嵌的
   /// [AppGlassLargeTitle]，并与顶部玻璃栏的小标题联动。
   final Widget Function(BuildContext context, GlassLargeTitleController title)
-      page;
+  page;
 }
 
-/// 应用全部导航 tab（当前：成绩、目标分析、设置）。
+/// 应用全部导航 tab（当前：成绩、目标分析、课表、设置）。
 final List<AppTab> appTabs = [
   AppTab(
     id: 'gpa',
@@ -53,6 +54,12 @@ final List<AppTab> appTabs = [
     icon: CupertinoIcons.scope,
     selectedIcon: CupertinoIcons.scope,
     page: (_, title) => TargetAnalysisPage(titleController: title),
+  ),
+  AppTab(
+    id: 'timetable',
+    label: '课表',
+    icon: CupertinoIcons.calendar,
+    page: (_, title) => TimetablePage(titleController: title),
   ),
   AppTab(
     id: 'settings',

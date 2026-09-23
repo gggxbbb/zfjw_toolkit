@@ -477,7 +477,7 @@ class SnapshotRow extends DataClass implements Insertable<SnapshotRow> {
   /// 采集时间戳。
   final DateTime capturedAt;
 
-  /// 完整成绩记录列表（List<CourseRecord> 序列化后的 JSON）。
+  /// 完整成绩记录列表（`List<CourseRecord>` 序列化后的 JSON）。
   final List<CourseRecord> records;
   const SnapshotRow({
     required this.id,
@@ -695,16 +695,688 @@ class SnapshotsCompanion extends UpdateCompanion<SnapshotRow> {
   }
 }
 
+class $TimetableTermsTable extends TimetableTerms
+    with TableInfo<$TimetableTermsTable, TimetableTerm> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TimetableTermsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mondayMeta = const VerificationMeta('monday');
+  @override
+  late final GeneratedColumn<DateTime> monday = GeneratedColumn<DateTime>(
+    'monday',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _weeksMeta = const VerificationMeta('weeks');
+  @override
+  late final GeneratedColumn<int> weeks = GeneratedColumn<int>(
+    'weeks',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _checkedAtMeta = const VerificationMeta(
+    'checkedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> checkedAt = GeneratedColumn<DateTime>(
+    'checked_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, label, monday, weeks, checkedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'timetable_terms';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TimetableTerm> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('monday')) {
+      context.handle(
+        _mondayMeta,
+        monday.isAcceptableOrUnknown(data['monday']!, _mondayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mondayMeta);
+    }
+    if (data.containsKey('weeks')) {
+      context.handle(
+        _weeksMeta,
+        weeks.isAcceptableOrUnknown(data['weeks']!, _weeksMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_weeksMeta);
+    }
+    if (data.containsKey('checked_at')) {
+      context.handle(
+        _checkedAtMeta,
+        checkedAt.isAcceptableOrUnknown(data['checked_at']!, _checkedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_checkedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TimetableTerm map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TimetableTerm(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      monday: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}monday'],
+      )!,
+      weeks: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}weeks'],
+      )!,
+      checkedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}checked_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TimetableTermsTable createAlias(String alias) {
+    return $TimetableTermsTable(attachedDatabase, alias);
+  }
+}
+
+class TimetableTerm extends DataClass implements Insertable<TimetableTerm> {
+  final String id;
+  final String label;
+  final DateTime monday;
+  final int weeks;
+  final DateTime checkedAt;
+  const TimetableTerm({
+    required this.id,
+    required this.label,
+    required this.monday,
+    required this.weeks,
+    required this.checkedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['label'] = Variable<String>(label);
+    map['monday'] = Variable<DateTime>(monday);
+    map['weeks'] = Variable<int>(weeks);
+    map['checked_at'] = Variable<DateTime>(checkedAt);
+    return map;
+  }
+
+  TimetableTermsCompanion toCompanion(bool nullToAbsent) {
+    return TimetableTermsCompanion(
+      id: Value(id),
+      label: Value(label),
+      monday: Value(monday),
+      weeks: Value(weeks),
+      checkedAt: Value(checkedAt),
+    );
+  }
+
+  factory TimetableTerm.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TimetableTerm(
+      id: serializer.fromJson<String>(json['id']),
+      label: serializer.fromJson<String>(json['label']),
+      monday: serializer.fromJson<DateTime>(json['monday']),
+      weeks: serializer.fromJson<int>(json['weeks']),
+      checkedAt: serializer.fromJson<DateTime>(json['checkedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'label': serializer.toJson<String>(label),
+      'monday': serializer.toJson<DateTime>(monday),
+      'weeks': serializer.toJson<int>(weeks),
+      'checkedAt': serializer.toJson<DateTime>(checkedAt),
+    };
+  }
+
+  TimetableTerm copyWith({
+    String? id,
+    String? label,
+    DateTime? monday,
+    int? weeks,
+    DateTime? checkedAt,
+  }) => TimetableTerm(
+    id: id ?? this.id,
+    label: label ?? this.label,
+    monday: monday ?? this.monday,
+    weeks: weeks ?? this.weeks,
+    checkedAt: checkedAt ?? this.checkedAt,
+  );
+  TimetableTerm copyWithCompanion(TimetableTermsCompanion data) {
+    return TimetableTerm(
+      id: data.id.present ? data.id.value : this.id,
+      label: data.label.present ? data.label.value : this.label,
+      monday: data.monday.present ? data.monday.value : this.monday,
+      weeks: data.weeks.present ? data.weeks.value : this.weeks,
+      checkedAt: data.checkedAt.present ? data.checkedAt.value : this.checkedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TimetableTerm(')
+          ..write('id: $id, ')
+          ..write('label: $label, ')
+          ..write('monday: $monday, ')
+          ..write('weeks: $weeks, ')
+          ..write('checkedAt: $checkedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, label, monday, weeks, checkedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TimetableTerm &&
+          other.id == this.id &&
+          other.label == this.label &&
+          other.monday == this.monday &&
+          other.weeks == this.weeks &&
+          other.checkedAt == this.checkedAt);
+}
+
+class TimetableTermsCompanion extends UpdateCompanion<TimetableTerm> {
+  final Value<String> id;
+  final Value<String> label;
+  final Value<DateTime> monday;
+  final Value<int> weeks;
+  final Value<DateTime> checkedAt;
+  final Value<int> rowid;
+  const TimetableTermsCompanion({
+    this.id = const Value.absent(),
+    this.label = const Value.absent(),
+    this.monday = const Value.absent(),
+    this.weeks = const Value.absent(),
+    this.checkedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TimetableTermsCompanion.insert({
+    required String id,
+    required String label,
+    required DateTime monday,
+    required int weeks,
+    required DateTime checkedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       label = Value(label),
+       monday = Value(monday),
+       weeks = Value(weeks),
+       checkedAt = Value(checkedAt);
+  static Insertable<TimetableTerm> custom({
+    Expression<String>? id,
+    Expression<String>? label,
+    Expression<DateTime>? monday,
+    Expression<int>? weeks,
+    Expression<DateTime>? checkedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (label != null) 'label': label,
+      if (monday != null) 'monday': monday,
+      if (weeks != null) 'weeks': weeks,
+      if (checkedAt != null) 'checked_at': checkedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TimetableTermsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? label,
+    Value<DateTime>? monday,
+    Value<int>? weeks,
+    Value<DateTime>? checkedAt,
+    Value<int>? rowid,
+  }) {
+    return TimetableTermsCompanion(
+      id: id ?? this.id,
+      label: label ?? this.label,
+      monday: monday ?? this.monday,
+      weeks: weeks ?? this.weeks,
+      checkedAt: checkedAt ?? this.checkedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (monday.present) {
+      map['monday'] = Variable<DateTime>(monday.value);
+    }
+    if (weeks.present) {
+      map['weeks'] = Variable<int>(weeks.value);
+    }
+    if (checkedAt.present) {
+      map['checked_at'] = Variable<DateTime>(checkedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TimetableTermsCompanion(')
+          ..write('id: $id, ')
+          ..write('label: $label, ')
+          ..write('monday: $monday, ')
+          ..write('weeks: $weeks, ')
+          ..write('checkedAt: $checkedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TimetableVersionsTable extends TimetableVersions
+    with TableInfo<$TimetableVersionsTable, TimetableVersion> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TimetableVersionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _termMeta = const VerificationMeta('term');
+  @override
+  late final GeneratedColumn<String> term = GeneratedColumn<String>(
+    'term',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES timetable_terms (id)',
+    ),
+  );
+  static const VerificationMeta _capturedAtMeta = const VerificationMeta(
+    'capturedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> capturedAt = GeneratedColumn<DateTime>(
+    'captured_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sessionsMeta = const VerificationMeta(
+    'sessions',
+  );
+  @override
+  late final GeneratedColumn<String> sessions = GeneratedColumn<String>(
+    'sessions',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, term, capturedAt, sessions];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'timetable_versions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TimetableVersion> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('term')) {
+      context.handle(
+        _termMeta,
+        term.isAcceptableOrUnknown(data['term']!, _termMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_termMeta);
+    }
+    if (data.containsKey('captured_at')) {
+      context.handle(
+        _capturedAtMeta,
+        capturedAt.isAcceptableOrUnknown(data['captured_at']!, _capturedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_capturedAtMeta);
+    }
+    if (data.containsKey('sessions')) {
+      context.handle(
+        _sessionsMeta,
+        sessions.isAcceptableOrUnknown(data['sessions']!, _sessionsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TimetableVersion map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TimetableVersion(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      term: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}term'],
+      )!,
+      capturedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}captured_at'],
+      )!,
+      sessions: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sessions'],
+      )!,
+    );
+  }
+
+  @override
+  $TimetableVersionsTable createAlias(String alias) {
+    return $TimetableVersionsTable(attachedDatabase, alias);
+  }
+}
+
+class TimetableVersion extends DataClass
+    implements Insertable<TimetableVersion> {
+  final String id;
+  final String term;
+  final DateTime capturedAt;
+  final String sessions;
+  const TimetableVersion({
+    required this.id,
+    required this.term,
+    required this.capturedAt,
+    required this.sessions,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['term'] = Variable<String>(term);
+    map['captured_at'] = Variable<DateTime>(capturedAt);
+    map['sessions'] = Variable<String>(sessions);
+    return map;
+  }
+
+  TimetableVersionsCompanion toCompanion(bool nullToAbsent) {
+    return TimetableVersionsCompanion(
+      id: Value(id),
+      term: Value(term),
+      capturedAt: Value(capturedAt),
+      sessions: Value(sessions),
+    );
+  }
+
+  factory TimetableVersion.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TimetableVersion(
+      id: serializer.fromJson<String>(json['id']),
+      term: serializer.fromJson<String>(json['term']),
+      capturedAt: serializer.fromJson<DateTime>(json['capturedAt']),
+      sessions: serializer.fromJson<String>(json['sessions']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'term': serializer.toJson<String>(term),
+      'capturedAt': serializer.toJson<DateTime>(capturedAt),
+      'sessions': serializer.toJson<String>(sessions),
+    };
+  }
+
+  TimetableVersion copyWith({
+    String? id,
+    String? term,
+    DateTime? capturedAt,
+    String? sessions,
+  }) => TimetableVersion(
+    id: id ?? this.id,
+    term: term ?? this.term,
+    capturedAt: capturedAt ?? this.capturedAt,
+    sessions: sessions ?? this.sessions,
+  );
+  TimetableVersion copyWithCompanion(TimetableVersionsCompanion data) {
+    return TimetableVersion(
+      id: data.id.present ? data.id.value : this.id,
+      term: data.term.present ? data.term.value : this.term,
+      capturedAt: data.capturedAt.present
+          ? data.capturedAt.value
+          : this.capturedAt,
+      sessions: data.sessions.present ? data.sessions.value : this.sessions,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TimetableVersion(')
+          ..write('id: $id, ')
+          ..write('term: $term, ')
+          ..write('capturedAt: $capturedAt, ')
+          ..write('sessions: $sessions')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, term, capturedAt, sessions);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TimetableVersion &&
+          other.id == this.id &&
+          other.term == this.term &&
+          other.capturedAt == this.capturedAt &&
+          other.sessions == this.sessions);
+}
+
+class TimetableVersionsCompanion extends UpdateCompanion<TimetableVersion> {
+  final Value<String> id;
+  final Value<String> term;
+  final Value<DateTime> capturedAt;
+  final Value<String> sessions;
+  final Value<int> rowid;
+  const TimetableVersionsCompanion({
+    this.id = const Value.absent(),
+    this.term = const Value.absent(),
+    this.capturedAt = const Value.absent(),
+    this.sessions = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TimetableVersionsCompanion.insert({
+    required String id,
+    required String term,
+    required DateTime capturedAt,
+    required String sessions,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       term = Value(term),
+       capturedAt = Value(capturedAt),
+       sessions = Value(sessions);
+  static Insertable<TimetableVersion> custom({
+    Expression<String>? id,
+    Expression<String>? term,
+    Expression<DateTime>? capturedAt,
+    Expression<String>? sessions,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (term != null) 'term': term,
+      if (capturedAt != null) 'captured_at': capturedAt,
+      if (sessions != null) 'sessions': sessions,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TimetableVersionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? term,
+    Value<DateTime>? capturedAt,
+    Value<String>? sessions,
+    Value<int>? rowid,
+  }) {
+    return TimetableVersionsCompanion(
+      id: id ?? this.id,
+      term: term ?? this.term,
+      capturedAt: capturedAt ?? this.capturedAt,
+      sessions: sessions ?? this.sessions,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (term.present) {
+      map['term'] = Variable<String>(term.value);
+    }
+    if (capturedAt.present) {
+      map['captured_at'] = Variable<DateTime>(capturedAt.value);
+    }
+    if (sessions.present) {
+      map['sessions'] = Variable<String>(sessions.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TimetableVersionsCompanion(')
+          ..write('id: $id, ')
+          ..write('term: $term, ')
+          ..write('capturedAt: $capturedAt, ')
+          ..write('sessions: $sessions, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $ProfilesTable profiles = $ProfilesTable(this);
   late final $SnapshotsTable snapshots = $SnapshotsTable(this);
+  late final $TimetableTermsTable timetableTerms = $TimetableTermsTable(this);
+  late final $TimetableVersionsTable timetableVersions =
+      $TimetableVersionsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [profiles, snapshots];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    profiles,
+    snapshots,
+    timetableTerms,
+    timetableVersions,
+  ];
 }
 
 typedef $$ProfilesTableCreateCompanionBuilder =
@@ -1313,6 +1985,640 @@ typedef $$SnapshotsTableProcessedTableManager =
       SnapshotRow,
       PrefetchHooks Function({bool profileId})
     >;
+typedef $$TimetableTermsTableCreateCompanionBuilder =
+    TimetableTermsCompanion Function({
+      required String id,
+      required String label,
+      required DateTime monday,
+      required int weeks,
+      required DateTime checkedAt,
+      Value<int> rowid,
+    });
+typedef $$TimetableTermsTableUpdateCompanionBuilder =
+    TimetableTermsCompanion Function({
+      Value<String> id,
+      Value<String> label,
+      Value<DateTime> monday,
+      Value<int> weeks,
+      Value<DateTime> checkedAt,
+      Value<int> rowid,
+    });
+
+final class $$TimetableTermsTableReferences
+    extends BaseReferences<_$AppDatabase, $TimetableTermsTable, TimetableTerm> {
+  $$TimetableTermsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$TimetableVersionsTable, List<TimetableVersion>>
+  _timetableVersionsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.timetableVersions,
+        aliasName: $_aliasNameGenerator(
+          db.timetableTerms.id,
+          db.timetableVersions.term,
+        ),
+      );
+
+  $$TimetableVersionsTableProcessedTableManager get timetableVersionsRefs {
+    final manager = $$TimetableVersionsTableTableManager(
+      $_db,
+      $_db.timetableVersions,
+    ).filter((f) => f.term.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _timetableVersionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$TimetableTermsTableFilterComposer
+    extends Composer<_$AppDatabase, $TimetableTermsTable> {
+  $$TimetableTermsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get monday => $composableBuilder(
+    column: $table.monday,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get weeks => $composableBuilder(
+    column: $table.weeks,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> timetableVersionsRefs(
+    Expression<bool> Function($$TimetableVersionsTableFilterComposer f) f,
+  ) {
+    final $$TimetableVersionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.timetableVersions,
+      getReferencedColumn: (t) => t.term,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TimetableVersionsTableFilterComposer(
+            $db: $db,
+            $table: $db.timetableVersions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$TimetableTermsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TimetableTermsTable> {
+  $$TimetableTermsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get monday => $composableBuilder(
+    column: $table.monday,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get weeks => $composableBuilder(
+    column: $table.weeks,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get checkedAt => $composableBuilder(
+    column: $table.checkedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TimetableTermsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TimetableTermsTable> {
+  $$TimetableTermsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get monday =>
+      $composableBuilder(column: $table.monday, builder: (column) => column);
+
+  GeneratedColumn<int> get weeks =>
+      $composableBuilder(column: $table.weeks, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get checkedAt =>
+      $composableBuilder(column: $table.checkedAt, builder: (column) => column);
+
+  Expression<T> timetableVersionsRefs<T extends Object>(
+    Expression<T> Function($$TimetableVersionsTableAnnotationComposer a) f,
+  ) {
+    final $$TimetableVersionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.timetableVersions,
+          getReferencedColumn: (t) => t.term,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$TimetableVersionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.timetableVersions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$TimetableTermsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TimetableTermsTable,
+          TimetableTerm,
+          $$TimetableTermsTableFilterComposer,
+          $$TimetableTermsTableOrderingComposer,
+          $$TimetableTermsTableAnnotationComposer,
+          $$TimetableTermsTableCreateCompanionBuilder,
+          $$TimetableTermsTableUpdateCompanionBuilder,
+          (TimetableTerm, $$TimetableTermsTableReferences),
+          TimetableTerm,
+          PrefetchHooks Function({bool timetableVersionsRefs})
+        > {
+  $$TimetableTermsTableTableManager(
+    _$AppDatabase db,
+    $TimetableTermsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TimetableTermsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TimetableTermsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TimetableTermsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<DateTime> monday = const Value.absent(),
+                Value<int> weeks = const Value.absent(),
+                Value<DateTime> checkedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TimetableTermsCompanion(
+                id: id,
+                label: label,
+                monday: monday,
+                weeks: weeks,
+                checkedAt: checkedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String label,
+                required DateTime monday,
+                required int weeks,
+                required DateTime checkedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => TimetableTermsCompanion.insert(
+                id: id,
+                label: label,
+                monday: monday,
+                weeks: weeks,
+                checkedAt: checkedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$TimetableTermsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({timetableVersionsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (timetableVersionsRefs) db.timetableVersions,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (timetableVersionsRefs)
+                    await $_getPrefetchedData<
+                      TimetableTerm,
+                      $TimetableTermsTable,
+                      TimetableVersion
+                    >(
+                      currentTable: table,
+                      referencedTable: $$TimetableTermsTableReferences
+                          ._timetableVersionsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$TimetableTermsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).timetableVersionsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.term == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TimetableTermsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TimetableTermsTable,
+      TimetableTerm,
+      $$TimetableTermsTableFilterComposer,
+      $$TimetableTermsTableOrderingComposer,
+      $$TimetableTermsTableAnnotationComposer,
+      $$TimetableTermsTableCreateCompanionBuilder,
+      $$TimetableTermsTableUpdateCompanionBuilder,
+      (TimetableTerm, $$TimetableTermsTableReferences),
+      TimetableTerm,
+      PrefetchHooks Function({bool timetableVersionsRefs})
+    >;
+typedef $$TimetableVersionsTableCreateCompanionBuilder =
+    TimetableVersionsCompanion Function({
+      required String id,
+      required String term,
+      required DateTime capturedAt,
+      required String sessions,
+      Value<int> rowid,
+    });
+typedef $$TimetableVersionsTableUpdateCompanionBuilder =
+    TimetableVersionsCompanion Function({
+      Value<String> id,
+      Value<String> term,
+      Value<DateTime> capturedAt,
+      Value<String> sessions,
+      Value<int> rowid,
+    });
+
+final class $$TimetableVersionsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $TimetableVersionsTable,
+          TimetableVersion
+        > {
+  $$TimetableVersionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TimetableTermsTable _termTable(_$AppDatabase db) =>
+      db.timetableTerms.createAlias(
+        $_aliasNameGenerator(db.timetableVersions.term, db.timetableTerms.id),
+      );
+
+  $$TimetableTermsTableProcessedTableManager get term {
+    final $_column = $_itemColumn<String>('term')!;
+
+    final manager = $$TimetableTermsTableTableManager(
+      $_db,
+      $_db.timetableTerms,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_termTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$TimetableVersionsTableFilterComposer
+    extends Composer<_$AppDatabase, $TimetableVersionsTable> {
+  $$TimetableVersionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sessions => $composableBuilder(
+    column: $table.sessions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TimetableTermsTableFilterComposer get term {
+    final $$TimetableTermsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.term,
+      referencedTable: $db.timetableTerms,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TimetableTermsTableFilterComposer(
+            $db: $db,
+            $table: $db.timetableTerms,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TimetableVersionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TimetableVersionsTable> {
+  $$TimetableVersionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sessions => $composableBuilder(
+    column: $table.sessions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TimetableTermsTableOrderingComposer get term {
+    final $$TimetableTermsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.term,
+      referencedTable: $db.timetableTerms,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TimetableTermsTableOrderingComposer(
+            $db: $db,
+            $table: $db.timetableTerms,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TimetableVersionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TimetableVersionsTable> {
+  $$TimetableVersionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sessions =>
+      $composableBuilder(column: $table.sessions, builder: (column) => column);
+
+  $$TimetableTermsTableAnnotationComposer get term {
+    final $$TimetableTermsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.term,
+      referencedTable: $db.timetableTerms,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TimetableTermsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.timetableTerms,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TimetableVersionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TimetableVersionsTable,
+          TimetableVersion,
+          $$TimetableVersionsTableFilterComposer,
+          $$TimetableVersionsTableOrderingComposer,
+          $$TimetableVersionsTableAnnotationComposer,
+          $$TimetableVersionsTableCreateCompanionBuilder,
+          $$TimetableVersionsTableUpdateCompanionBuilder,
+          (TimetableVersion, $$TimetableVersionsTableReferences),
+          TimetableVersion,
+          PrefetchHooks Function({bool term})
+        > {
+  $$TimetableVersionsTableTableManager(
+    _$AppDatabase db,
+    $TimetableVersionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TimetableVersionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TimetableVersionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TimetableVersionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> term = const Value.absent(),
+                Value<DateTime> capturedAt = const Value.absent(),
+                Value<String> sessions = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TimetableVersionsCompanion(
+                id: id,
+                term: term,
+                capturedAt: capturedAt,
+                sessions: sessions,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String term,
+                required DateTime capturedAt,
+                required String sessions,
+                Value<int> rowid = const Value.absent(),
+              }) => TimetableVersionsCompanion.insert(
+                id: id,
+                term: term,
+                capturedAt: capturedAt,
+                sessions: sessions,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$TimetableVersionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({term = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (term) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.term,
+                                referencedTable:
+                                    $$TimetableVersionsTableReferences
+                                        ._termTable(db),
+                                referencedColumn:
+                                    $$TimetableVersionsTableReferences
+                                        ._termTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TimetableVersionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TimetableVersionsTable,
+      TimetableVersion,
+      $$TimetableVersionsTableFilterComposer,
+      $$TimetableVersionsTableOrderingComposer,
+      $$TimetableVersionsTableAnnotationComposer,
+      $$TimetableVersionsTableCreateCompanionBuilder,
+      $$TimetableVersionsTableUpdateCompanionBuilder,
+      (TimetableVersion, $$TimetableVersionsTableReferences),
+      TimetableVersion,
+      PrefetchHooks Function({bool term})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1321,4 +2627,8 @@ class $AppDatabaseManager {
       $$ProfilesTableTableManager(_db, _db.profiles);
   $$SnapshotsTableTableManager get snapshots =>
       $$SnapshotsTableTableManager(_db, _db.snapshots);
+  $$TimetableTermsTableTableManager get timetableTerms =>
+      $$TimetableTermsTableTableManager(_db, _db.timetableTerms);
+  $$TimetableVersionsTableTableManager get timetableVersions =>
+      $$TimetableVersionsTableTableManager(_db, _db.timetableVersions);
 }

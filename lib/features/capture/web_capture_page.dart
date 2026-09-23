@@ -62,6 +62,8 @@ class WebCapturePage extends StatefulWidget {
     required this.script,
     required this.onPayload,
     required this.onSuccess,
+    this.manualCapture = false,
+    this.review,
   });
   final String title, instruction, targetPageStatus, handlerName, script;
   final String? Function(Map<String, dynamic> payload)? progressMessage;
@@ -72,6 +74,9 @@ class WebCapturePage extends StatefulWidget {
   )
   onPayload;
   final VoidCallback onSuccess;
+  final bool manualCapture;
+  final Future<CaptureReviewAction?> Function(BuildContext, WebCaptureResult)?
+  review;
   @override
   State<WebCapturePage> createState() => _WebCapturePageState();
 }
@@ -80,6 +85,8 @@ class _WebCapturePageState extends State<WebCapturePage> {
   String? _message;
   bool _finished = false;
   bool _error = false;
+  InAppWebViewController? _controller;
+  bool _targetReady = false;
   @override
   Widget build(BuildContext context) {
     final tokens = AppTokens.of(context);
@@ -91,7 +98,7 @@ class _WebCapturePageState extends State<WebCapturePage> {
       extendBody: false,
       appBar: AppGlassAppBar(
         title: Text(widget.title),
-        leading: finished && initializationError == null
+        leading: finished && !error
             ? null
             : AppGlassIconButton(
                 icon: CupertinoIcons.back,
@@ -141,6 +148,25 @@ class _WebCapturePageState extends State<WebCapturePage> {
               ],
             ),
           ),
+          if (widget.manualCapture)
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: AppGlassButton(
+                label: '采集当前学期',
+                onTap: _targetReady && _controller != null
+                    ? () async {
+                        setState(() {
+                          _finished = false;
+                          _error = false;
+                          _message = '正在读取课表…';
+                        });
+                        await _controller!.evaluateJavascript(
+                          source: widget.script,
+                        );
+                      }
+                    : null,
+              ),
+            ),
           Expanded(child: _buildWebView(tokens, initializationError)),
         ],
       ),
@@ -170,6 +196,7 @@ class _WebCapturePageState extends State<WebCapturePage> {
         thirdPartyCookiesEnabled: true,
       ),
       onWebViewCreated: (controller) {
+        _controller = controller;
         controller.addJavaScriptHandler(
           handlerName: widget.handlerName,
           callback: (args) async {
@@ -196,9 +223,14 @@ class _WebCapturePageState extends State<WebCapturePage> {
         );
       },
       onLoadStop: (controller, url) async {
+        if (mounted) {
+          setState(() => _targetReady = widget.matchesPage(url?.toString()));
+        }
         if (widget.matchesPage(url?.toString())) {
           setState(() => _message = widget.targetPageStatus);
-          await controller.evaluateJavascript(source: widget.script);
+          if (!widget.manualCapture) {
+            await controller.evaluateJavascript(source: widget.script);
+          }
         } else if (_message == null) {
           setState(() {});
         }
@@ -225,10 +257,20 @@ class _WebCapturePageState extends State<WebCapturePage> {
       _finished = true;
     });
 
-    final action = await showCaptureOverview(context, result);
+    final action = await (widget.review ?? showCaptureOverview)(
+      context,
+      result,
+    );
     if (!mounted) return;
 
     if (action != CaptureReviewAction.accept) {
+      if (widget.manualCapture) {
+        setState(() {
+          _finished = false;
+          _message = widget.instruction;
+        });
+        return;
+      }
       setState(() {
         _message = '正在重新采集…';
         _error = false;

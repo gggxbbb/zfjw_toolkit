@@ -52,9 +52,10 @@ class SnapshotSourceConverter extends TypeConverter<SnapshotSource, String> {
   const SnapshotSourceConverter();
 
   @override
-  SnapshotSource fromSql(String fromDb) =>
-      SnapshotSource.values.firstWhere((e) => e.name == fromDb,
-          orElse: () => SnapshotSource.webview);
+  SnapshotSource fromSql(String fromDb) => SnapshotSource.values.firstWhere(
+    (e) => e.name == fromDb,
+    orElse: () => SnapshotSource.webview,
+  );
 
   @override
   String toSql(SnapshotSource value) => value.name;
@@ -63,19 +64,19 @@ class SnapshotSourceConverter extends TypeConverter<SnapshotSource, String> {
 /// [CourseRecord] 与 JSON 之间的转换（[core/model] 未提供 toJson，
 /// 序列化逻辑集中在 data 层，避免改动核心模型）。
 Map<String, dynamic> courseRecordToJson(CourseRecord r) => {
-      'kch': r.kch,
-      'kcmc': r.kcmc,
-      'xf': r.xf,
-      'jd': r.jd,
-      'bfzcj': r.bfzcj,
-      'cj': r.cj,
-      'cjbz': r.cjbz,
-      'sfxwkc': r.sfxwkc,
-      'xnm': r.xnm,
-      'xqm': r.xqm,
-      'xnmmc': r.xnmmc,
-      'xqmmc': r.xqmmc,
-    };
+  'kch': r.kch,
+  'kcmc': r.kcmc,
+  'xf': r.xf,
+  'jd': r.jd,
+  'bfzcj': r.bfzcj,
+  'cj': r.cj,
+  'cjbz': r.cjbz,
+  'sfxwkc': r.sfxwkc,
+  'xnm': r.xnm,
+  'xqm': r.xqm,
+  'xnmmc': r.xnmmc,
+  'xqmmc': r.xqmmc,
+};
 
 /// [List<CourseRecord>] 与存储 JSON 字符串之间的转换。
 class CourseRecordListConverter
@@ -94,16 +95,41 @@ class CourseRecordListConverter
 }
 
 /// 应用持久化数据库（drift）。
-@DriftDatabase(tables: [Profiles, Snapshots])
+class TimetableTerms extends Table {
+  TextColumn get id => text()();
+  TextColumn get label => text()();
+  DateTimeColumn get monday => dateTime()();
+  IntColumn get weeks => integer()();
+  DateTimeColumn get checkedAt => dateTime()();
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+class TimetableVersions extends Table {
+  TextColumn get id => text()();
+  TextColumn get term => text().references(TimetableTerms, #id)();
+  DateTimeColumn get capturedAt => dateTime()();
+  TextColumn get sessions => text()();
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+@DriftDatabase(tables: [Profiles, Snapshots, TimetableTerms, TimetableVersions])
 class AppDatabase extends _$AppDatabase {
   /// 使用指定执行器构造（测试可注入 [NativeDatabase.memory]）。
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) async => m.createAll(),
-      );
+    onCreate: (m) async => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.createTable(timetableTerms);
+        await m.createTable(timetableVersions);
+      }
+    },
+  );
 }
