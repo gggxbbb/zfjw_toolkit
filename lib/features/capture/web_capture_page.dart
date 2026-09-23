@@ -29,22 +29,42 @@ Future<CaptureReviewAction?> showCaptureOverview(
   context: context,
   barrierDismissible: false,
   builder: (dialogContext) => CupertinoAlertDialog(
-    title: const Text('采集概览'),
+    title: Text(
+      '采集概览',
+      style: AppText.title.copyWith(
+        color: AppTokens.of(dialogContext).labelPrimary,
+      ),
+    ),
     content: Padding(
       padding: const EdgeInsets.only(top: AppTokens.space3),
-      child: Text([result.message, ...result.overview].join('\n')),
+      child: Text(
+        [result.message, ...result.overview].join('\n'),
+        style: AppText.subhead.copyWith(
+          color: AppTokens.of(dialogContext).labelPrimary,
+        ),
+      ),
     ),
     actions: [
       CupertinoDialogAction(
         onPressed: () =>
             Navigator.of(dialogContext).pop(CaptureReviewAction.retry),
-        child: const Text('重新采集'),
+        child: Text(
+          '重新采集',
+          style: AppText.body.copyWith(
+            color: AppTokens.of(dialogContext).accent,
+          ),
+        ),
       ),
       CupertinoDialogAction(
         isDefaultAction: true,
         onPressed: () =>
             Navigator.of(dialogContext).pop(CaptureReviewAction.accept),
-        child: const Text('使用本次数据'),
+        child: Text(
+          '使用本次数据',
+          style: AppText.body.copyWith(
+            color: AppTokens.of(dialogContext).accent,
+          ),
+        ),
       ),
     ],
   ),
@@ -97,7 +117,12 @@ class _WebCapturePageState extends State<WebCapturePage> {
     return AppGlassScaffold(
       extendBody: false,
       appBar: AppGlassAppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: AppText.title.copyWith(
+            color: AppTokens.of(context).labelPrimary,
+          ),
+        ),
         leading: finished && !error
             ? null
             : AppGlassIconButton(

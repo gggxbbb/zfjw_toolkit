@@ -39,7 +39,12 @@ class _TargetAnalysisPageState extends ConsumerState<TargetAnalysisPage> {
           sliver: SliverToBoxAdapter(
             child: stats.when(
               loading: () => const Center(child: AppGlassProgress()),
-              error: (e, _) => Text('成绩加载失败：$e'),
+              error: (e, _) => Text(
+                '成绩加载失败：$e',
+                style: AppText.body.copyWith(
+                  color: AppTokens.of(context).danger,
+                ),
+              ),
               data: (s) {
                 if (s == null) return const _EmptyStats();
                 final goals =
@@ -199,7 +204,7 @@ class _TargetCard extends StatelessWidget {
             children: [
               Text(
                 '$scopeLabel GPA ${current == null ? '—' : f(current)}',
-                style: AppText.title,
+                style: AppText.title.copyWith(color: tokens.labelPrimary),
               ),
               const Spacer(),
               Text(
@@ -244,6 +249,7 @@ class _TargetCard extends StatelessWidget {
               r.remainingCredits == 0 && r.completedCredits > 0
                   ? '$scopeLabel计划学分已完成'
                   : '暂无足够数据推算',
+              style: AppText.subhead.copyWith(color: tokens.labelSecondary),
             )
           else ...[
             if (required > maxPoint)
@@ -253,7 +259,12 @@ class _TargetCard extends StatelessWidget {
                 style: AppText.subhead.copyWith(color: tokens.danger),
               )
             else
-              Text('达到目标需剩余课程平均至少 ${f(required)} 绩点'),
+              Text(
+                '达到目标需剩余课程平均至少 ${f(required)} 绩点',
+                style: AppText.body.copyWith(
+                  color: AppTokens.of(context).labelPrimary,
+                ),
+              ),
             if (requiredMin != null)
               Padding(
                 padding: const EdgeInsets.only(top: 2),
@@ -324,8 +335,11 @@ class _EmptyPlan extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
+        Text(
           '登录后打开“教学执行计划查看”，选择自己的计划并进入“课程信息”页，应用会自动读取全部课程。采集后可进行目标达成分析、预估未修课程。',
+          style: AppText.subhead.copyWith(
+            color: AppTokens.of(context).labelSecondary,
+          ),
         ),
         const SizedBox(height: 12),
         AppGlassButton(

@@ -15,17 +15,26 @@ Future<T?> chooseTimetableItem<T>(
 ) => showCupertinoModalPopup<T>(
   context: context,
   builder: (c) => CupertinoActionSheet(
-    title: Text(title),
+    title: Text(
+      title,
+      style: AppText.footnote.copyWith(color: AppTokens.of(c).labelSecondary),
+    ),
     actions: [
       for (final item in items)
         CupertinoActionSheetAction(
           onPressed: () => Navigator.pop(c, item.value),
-          child: Text(item.label),
+          child: Text(
+            item.label,
+            style: AppText.body.copyWith(color: AppTokens.of(c).accent),
+          ),
         ),
     ],
     cancelButton: CupertinoActionSheetAction(
       onPressed: () => Navigator.pop(c),
-      child: const Text('取消'),
+      child: Text(
+        '取消',
+        style: AppText.body.copyWith(color: AppTokens.of(context).accent),
+      ),
     ),
   ),
 );
@@ -89,35 +98,68 @@ class _TermSettingsDialogState extends State<_TermSettingsDialog> {
 
   @override
   Widget build(BuildContext context) => CupertinoAlertDialog(
-    title: const Text('学期设置'),
+    title: Text(
+      '学期设置',
+      style: AppText.title.copyWith(color: AppTokens.of(context).labelPrimary),
+    ),
     content: Column(
       children: [
         const SizedBox(height: 12),
-        const Text('第 1 周的周一日期'),
+        Text(
+          '第 1 周的周一日期',
+          style: AppText.subhead.copyWith(
+            color: AppTokens.of(context).labelPrimary,
+          ),
+        ),
         CupertinoTextField(
           controller: date,
+          style: AppText.body.copyWith(
+            color: AppTokens.of(context).labelPrimary,
+          ),
+          placeholderStyle: AppText.body.copyWith(
+            color: AppTokens.of(context).labelTertiary,
+          ),
           placeholder: 'YYYY-MM-DD',
           keyboardType: TextInputType.datetime,
         ),
         const SizedBox(height: 12),
-        const Text('学期总周数'),
+        Text(
+          '学期总周数',
+          style: AppText.subhead.copyWith(
+            color: AppTokens.of(context).labelPrimary,
+          ),
+        ),
         CupertinoTextField(
           controller: weeks,
+          style: AppText.body.copyWith(
+            color: AppTokens.of(context).labelPrimary,
+          ),
           keyboardType: TextInputType.number,
         ),
         if (error != null)
           Text(
             error!,
-            style: const TextStyle(color: CupertinoColors.systemRed),
+            style: AppText.footnote.copyWith(
+              color: AppTokens.of(context).danger,
+            ),
           ),
       ],
     ),
     actions: [
       CupertinoDialogAction(
         onPressed: () => Navigator.pop(context),
-        child: const Text('取消'),
+        child: Text(
+          '取消',
+          style: AppText.body.copyWith(color: AppTokens.of(context).accent),
+        ),
       ),
-      CupertinoDialogAction(onPressed: submit, child: const Text('确定')),
+      CupertinoDialogAction(
+        onPressed: submit,
+        child: Text(
+          '确定',
+          style: AppText.body.copyWith(color: AppTokens.of(context).accent),
+        ),
+      ),
     ],
   );
 }
@@ -192,7 +234,12 @@ class TimetableDiffPage extends StatelessWidget {
     return AppGlassScaffold(
       extendBody: false,
       appBar: AppGlassAppBar(
-        title: const Text('课表差异'),
+        title: Text(
+          '课表差异',
+          style: AppText.title.copyWith(
+            color: AppTokens.of(context).labelPrimary,
+          ),
+        ),
         leading: AppGlassIconButton(
           icon: CupertinoIcons.back,
           onTap: () => Navigator.pop(context, false),

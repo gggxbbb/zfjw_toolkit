@@ -125,7 +125,17 @@ class _MainShellState extends ConsumerState<MainShell> {
                               NavigationRailDestination(
                                 icon: Icon(t.icon),
                                 selectedIcon: Icon(t.selectedIcon ?? t.icon),
-                                label: Text(t.label),
+                                label: Text(
+                                  t.label,
+                                  style: AppText.footnote.copyWith(
+                                    color: t == tab
+                                        ? tokens.accent
+                                        : tokens.labelSecondary,
+                                    fontWeight: t == tab
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                  ),
+                                ),
                               ),
                           ],
                         ),

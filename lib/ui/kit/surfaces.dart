@@ -316,22 +316,28 @@ class AppGlassLargeTitle extends StatelessWidget {
         SliverToBoxAdapter(
           child: SizedBox(height: AppGlassMetrics.topInset(context)),
         ),
-        lg.GlassLargeTitle(
-          text: text,
-          controller: controller,
-          trailing: trailing,
-          searchBar: searchBar,
-          fontSize: 34,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.5,
-          // 库的默认取色（CupertinoColors.label）在本工程的无色 textTheme 下
-          // 暗色解析不可靠，显式给语义色。
-          color: AppTokens.of(context).labelPrimary,
-          padding: const EdgeInsetsDirectional.fromSTEB(
-            AppTokens.pagePadding,
-            0,
-            AppTokens.pagePadding,
-            AppTokens.space3,
+        // 库只暴露字号等参数，其内部 Text 从这里继承字体回退和装饰。
+        DefaultTextStyle(
+          style: AppText.largeTitle.copyWith(
+            color: AppTokens.of(context).labelPrimary,
+          ),
+          child: lg.GlassLargeTitle(
+            text: text,
+            controller: controller,
+            trailing: trailing,
+            searchBar: searchBar,
+            fontSize: AppText.largeTitle.fontSize!,
+            fontWeight: AppText.largeTitle.fontWeight!,
+            letterSpacing: AppText.largeTitle.letterSpacing!,
+            // 库的默认取色（CupertinoColors.label）在本工程的无色 textTheme 下
+            // 暗色解析不可靠，显式给语义色。
+            color: AppTokens.of(context).labelPrimary,
+            padding: const EdgeInsetsDirectional.fromSTEB(
+              AppTokens.pagePadding,
+              0,
+              AppTokens.pagePadding,
+              AppTokens.space3,
+            ),
           ),
         ),
       ],
@@ -366,6 +372,13 @@ class AppGlassTabBar extends StatelessWidget {
       tabs: tabs,
       selectedIndex: selectedIndex,
       onTabSelected: onTabSelected,
+      selectedLabelStyle: AppText.caption.copyWith(
+        color: tokens.accent,
+        fontWeight: FontWeight.w600,
+      ),
+      unselectedLabelStyle: AppText.caption.copyWith(
+        color: tokens.labelSecondary,
+      ),
       selectedIconColor: tokens.accent,
       selectedLabelColor: tokens.accent,
       unselectedIconColor: tokens.labelSecondary,

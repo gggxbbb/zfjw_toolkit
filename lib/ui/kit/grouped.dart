@@ -148,8 +148,18 @@ class AppGlassListTile extends StatelessWidget {
     final tokens = AppTokens.of(context);
     return lg.GlassListTile(
       leading: leading,
-      title: Text(title),
-      subtitle: subtitle == null ? null : Text(subtitle!),
+      title: Text(
+        title,
+        style: AppText.body.copyWith(color: AppTokens.of(context).labelPrimary),
+      ),
+      subtitle: subtitle == null
+          ? null
+          : Text(
+              subtitle!,
+              style: AppText.caption.copyWith(
+                color: AppTokens.of(context).labelSecondary,
+              ),
+            ),
       trailing: trailing,
       onTap: onTap,
       titleStyle: AppText.body.copyWith(color: tokens.labelPrimary),

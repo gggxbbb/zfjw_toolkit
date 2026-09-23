@@ -43,7 +43,12 @@ class _TimetablePageState extends ConsumerState<TimetablePage> {
               loading: () => const Center(child: AppGlassProgress()),
               error: (e, _) => Column(
                 children: [
-                  Text('课表加载失败：$e'),
+                  Text(
+                    '课表加载失败：$e',
+                    style: AppText.body.copyWith(
+                      color: AppTokens.of(context).danger,
+                    ),
+                  ),
                   AppGlassButton(
                     label: '重试',
                     onTap: () => ref.invalidate(timetableTermsProvider),
@@ -57,9 +62,19 @@ class _TimetablePageState extends ConsumerState<TimetablePage> {
                       const SizedBox(height: 64),
                       const Icon(CupertinoIcons.calendar, size: 56),
                       const SizedBox(height: 20),
-                      const Text('把整个学期的课表带到这里'),
+                      Text(
+                        '把整个学期的课表带到这里',
+                        style: AppText.title.copyWith(
+                          color: AppTokens.of(context).labelPrimary,
+                        ),
+                      ),
                       const SizedBox(height: 12),
-                      const Text('采集后可离线查看，更新前对比变化。'),
+                      Text(
+                        '采集后可离线查看，更新前对比变化。',
+                        style: AppText.subhead.copyWith(
+                          color: AppTokens.of(context).labelSecondary,
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       AppGlassButton(label: '采集课表', onTap: capture),
                     ],
@@ -146,12 +161,16 @@ class _TimetablePageState extends ConsumerState<TimetablePage> {
                     const SizedBox(height: 12),
                     Text(
                       '最后检查 ${timestampLabel(term.checkedAt)}',
-                      style: AppText.footnote,
+                      style: AppText.footnote.copyWith(
+                        color: AppTokens.of(context).labelSecondary,
+                      ),
                     ),
                     if (actualWeek < 1 || actualWeek > term.weeks)
                       Text(
                         actualWeek < 1 ? '本学期尚未开始' : '本学期已结束',
-                        style: AppText.footnote,
+                        style: AppText.footnote.copyWith(
+                          color: AppTokens.of(context).labelSecondary,
+                        ),
                       ),
                     Row(
                       children: [
@@ -166,7 +185,12 @@ class _TimetablePageState extends ConsumerState<TimetablePage> {
                           child: CupertinoButton(
                             padding: const EdgeInsets.symmetric(horizontal: 4),
                             child: FittedBox(
-                              child: Text('第 $week / ${term.weeks} 周'),
+                              child: Text(
+                                '第 $week / ${term.weeks} 周',
+                                style: AppText.body.copyWith(
+                                  color: AppTokens.of(context).accent,
+                                ),
+                              ),
                             ),
                             onPressed: () async {
                               final w =
@@ -183,7 +207,12 @@ class _TimetablePageState extends ConsumerState<TimetablePage> {
                         CupertinoButton(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           onPressed: () => setState(() => selectedWeek = null),
-                          child: const Text('本周'),
+                          child: Text(
+                            '本周',
+                            style: AppText.body.copyWith(
+                              color: AppTokens.of(context).accent,
+                            ),
+                          ),
                         ),
                         CupertinoButton(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -199,16 +228,28 @@ class _TimetablePageState extends ConsumerState<TimetablePage> {
                         .when(
                           loading: () =>
                               const Center(child: AppGlassProgress()),
-                          error: (e, _) => Text('课表读取失败：$e'),
+                          error: (e, _) => Text(
+                            '课表读取失败：$e',
+                            style: AppText.body.copyWith(
+                              color: AppTokens.of(context).danger,
+                            ),
+                          ),
                           data: (versions) => Column(
                             children: [
                               if (!(versions.firstOrNull?.sessions.any(
                                     (s) => s.week == week,
                                   ) ??
                                   false))
-                                const Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: Text('本周没有课程'),
+                                Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Text(
+                                    '本周没有课程',
+                                    style: AppText.subhead.copyWith(
+                                      color: AppTokens.of(
+                                        context,
+                                      ).labelSecondary,
+                                    ),
+                                  ),
                                 ),
                               TimetableWeekGrid(
                                 term: term,
