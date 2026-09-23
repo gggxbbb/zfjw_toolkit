@@ -137,7 +137,11 @@ test('waits for the full-range jqGrid reload before reporting rows', () => {
   assert.equal(success.rows.length, 40);
 });
 
-function createTeachingPlanHarness({ initiallyReady = true } = {}) {
+function createTeachingPlanHarness({
+  initiallyReady = true,
+  initiallyLoading = false,
+  initiallyInitialized = true,
+} = {}) {
   const reports = [];
   const timers = [];
   let loadComplete;
@@ -147,7 +151,11 @@ function createTeachingPlanHarness({ initiallyReady = true } = {}) {
   }));
   let records = 15;
   let coursePageReady = initiallyReady;
+  let lastPage = 1;
   const params = { rowNum: 15, page: 1 };
+  const element = { p: params, grid: { hDiv: { loading: initiallyLoading } } };
+  if (!initiallyInitialized) delete element.grid;
+  const requests = [];
 
   const grid = {
     jqGrid(method, arg) {
@@ -159,7 +167,7 @@ function createTeachingPlanHarness({ initiallyReady = true } = {}) {
         if (arg === 'data') return data;
         if (arg === 'records') return records;
         if (arg === 'reccount') return data.length;
-        if (arg === 'lastpage') return 1;
+        if (arg === 'lastpage') return lastPage;
         return params[arg];
       }
       throw new Error(`unexpected jqGrid call: ${method}`);
@@ -169,7 +177,13 @@ function createTeachingPlanHarness({ initiallyReady = true } = {}) {
       loadComplete = callback;
       return grid;
     },
-    trigger() {
+    trigger(event) {
+      assert.equal(event, 'reloadGrid');
+      // jqGrid populate() ignores reloads while an earlier request is running.
+      if (element.grid && !element.grid.hDiv.loading) {
+        requests.push({ ...params });
+        element.grid.hDiv.loading = true;
+      }
       return grid;
     },
   };
@@ -190,7 +204,7 @@ function createTeachingPlanHarness({ initiallyReady = true } = {}) {
     document: {
       body: { innerText: '' },
       getElementById(id) {
-        if (id === 'kcxxGrid') return coursePageReady ? {} : null;
+        if (id === 'kcxxGrid') return coursePageReady ? element : null;
         if (id === 'messages') {
           return coursePageReady ? { className: 'active' } : null;
         }
@@ -214,6 +228,7 @@ function createTeachingPlanHarness({ initiallyReady = true } = {}) {
 
   return {
     reports,
+    requests,
     tick() {
       assert.ok(timers.length, 'capture script did not start a timer');
       timers.at(-1)();
@@ -221,14 +236,20 @@ function createTeachingPlanHarness({ initiallyReady = true } = {}) {
     enterCoursePage() {
       coursePageReady = true;
     },
-    completeReload(nextCount) {
+    initializeGrid() {
+      element.grid = { hDiv: { loading: false } };
+    },
+    completeReload(nextCount, totalCount = nextCount) {
       data = Array.from({ length: nextCount }, (_, index) => ({
         kch: `P${index}`,
         kcmc: `Plan ${index}`,
       }));
-      records = nextCount;
-      assert.ok(loadComplete, 'script did not subscribe to jqGridLoadComplete');
-      loadComplete();
+      records = totalCount;
+      lastPage = nextCount ? Math.ceil(totalCount / nextCount) : 0;
+      const callback = loadComplete;
+      loadComplete = undefined;
+      if (callback) callback();
+      element.grid.hDiv.loading = false;
     },
   };
 }
@@ -249,6 +270,59 @@ test('teaching-plan capture also waits for its full grid reload', () => {
   const success = harness.reports.find((payload) => payload.status === 'ok');
   assert.ok(success, 'did not report the teaching plan after reload completed');
   assert.equal(success.courses.length, 40);
+});
+
+test('teaching-plan capture reloads automatically after an in-flight first page finishes', () => {
+  const harness = createTeachingPlanHarness({ initiallyLoading: true });
+  harness.tick();
+  harness.completeReload(15, 40);
+  harness.tick();
+  assert.equal(
+    harness.requests.length,
+    1,
+    'full reload was lost during the initial load; manual pagination is required',
+  );
+  assert.equal(harness.requests[0].rowNum, 5000);
+  assert.equal(harness.reports.some((payload) => payload.status === 'ok'), false);
+  harness.completeReload(40);
+  harness.tick();
+  assert.equal(harness.reports.find((payload) => payload.status === 'ok')?.courses.length, 40);
+});
+
+test('teaching-plan capture waits for jqGrid initialization before starting reload', () => {
+  const harness = createTeachingPlanHarness({ initiallyInitialized: false });
+  harness.tick();
+  harness.initializeGrid();
+  harness.tick();
+  assert.equal(harness.requests.length, 1);
+  harness.completeReload(40);
+  harness.tick();
+  assert.equal(harness.reports.find((payload) => payload.status === 'ok')?.courses.length, 40);
+});
+
+test('teaching-plan capture reports a stuck initial request instead of waiting forever', () => {
+  const harness = createTeachingPlanHarness({ initiallyLoading: true });
+  for (let index = 0; index < 122; index++) harness.tick();
+  assert.equal(harness.requests.length, 0);
+  assert.ok(harness.reports.some((payload) => payload.status === 'error'));
+});
+
+test('teaching-plan capture reports an empty completed reload instead of waiting forever', () => {
+  const harness = createTeachingPlanHarness();
+  harness.tick();
+  harness.completeReload(0);
+  for (let index = 0; index < 122; index++) harness.tick();
+  assert.ok(harness.reports.some((payload) => payload.status === 'error'));
+  assert.equal(harness.reports.some((payload) => payload.status === 'ok'), false);
+});
+
+test('teaching-plan capture rejects a reload that still contains only the first page', () => {
+  const harness = createTeachingPlanHarness();
+  harness.tick();
+  harness.completeReload(15, 40);
+  for (let index = 0; index < 122; index++) harness.tick();
+  assert.equal(harness.reports.some((payload) => payload.status === 'ok'), false);
+  assert.ok(harness.reports.some((payload) => payload.status === 'error'));
 });
 
 test('teaching-plan reload timeout starts after the user reaches the course page', () => {

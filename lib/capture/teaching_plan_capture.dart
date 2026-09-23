@@ -36,7 +36,7 @@ const teachingPlanCaptureScript = r'''
     if (window.__zfjwPlanRunId !== runId) return;
     try { window.flutter_inappwebview.callHandler('zfjwTeachingPlanCapture', p); } catch (_) {}
   }
-  var ticks = 0, reloadTicks = 0, sent = false;
+  var ticks = 0, readyTicks = 0, reloadTicks = 0, sent = false;
   var timer = window.__zfjwPlanTimer = setInterval(function () {
     if (sent) return clearInterval(timer);
     ticks++;
@@ -44,12 +44,22 @@ const teachingPlanCaptureScript = r'''
     var grid = document.getElementById('kcxxGrid');
     var coursePanel = document.getElementById('messages');
     var courseTabIsActive = coursePanel && /(^|\s)active(\s|$)/.test(coursePanel.className);
-    if (!grid || !courseTabIsActive || !$ || !$.fn.jqGrid) {
+    if (!grid || !courseTabIsActive || !$ || !$.fn || !$.fn.jqGrid) {
       if (ticks > 600) { clearInterval(timer); report({status:'error', message:'请选定教学计划并打开“课程信息”页'}); }
       return;
     }
     var q = $('#kcxxGrid');
     if (!window.__zfjwPlanExpanded) {
+      // 表格 DOM 出现不代表 jqGrid 已初始化；初次请求仍在进行时，
+      // jqGrid 会忽略 reloadGrid。必须等它空闲后再标记并发起全量重载。
+      if (!grid.p || !grid.grid || !grid.grid.hDiv || grid.grid.hDiv.loading) {
+        readyTicks++;
+        if (readyTicks > 120) {
+          clearInterval(timer);
+          report({status:'error', message:'等待课程表初始化或首次加载超时，请重新采集'});
+        }
+        return;
+      }
       window.__zfjwPlanExpanded = true;
       reloadTicks = 0;
       report({status:'progress', message:'正在采集全部课程信息…'});
@@ -93,12 +103,14 @@ const teachingPlanCaptureScript = r'''
       }
     }
     if (!rows.length) {
-      if (reloadTicks > 120 && window.__zfjwPlanIncomplete) {
+      if (reloadTicks > 120) {
         var partial = window.__zfjwPlanIncomplete;
         clearInterval(timer);
         report({
           status:'error',
-          message:'课程尚未完整加载：已加载 ' + partial.actual + ' / ' + partial.expected + ' 门，请重新采集'
+          message:partial
+            ? '课程尚未完整加载：已加载 ' + partial.actual + ' / ' + partial.expected + ' 门，请重新采集'
+            : '课程表加载完成但无课程数据，请确认已选定教学计划后重新采集'
         });
       }
       return;
