@@ -22,7 +22,7 @@ function field(label, value, { textContent = true } = {}) {
   };
 }
 
-function timetableDocument({ heading = '2026-2027学年第1学期', rows = [{}], emptyText = '', optionTextContent = true } = {}) {
+function timetableDocument({ heading = '2026-2027学年第1学期', rows = [{}], emptyText = '', optionTextContent = true, weekdayText } = {}) {
   const yearOption = optionTextContent ? { textContent: '2026-2027' } : { text: '2026-2027' };
   const termOption = optionTextContent ? { textContent: '1' } : { text: '1' };
   const year = { value: '2026', selectedOptions: [yearOption] };
@@ -43,7 +43,7 @@ function timetableDocument({ heading = '2026-2027学年第1学期', rows = [{}],
   const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
   const table = {
     textContent: emptyText,
-    rows: [{ cells: weekdays.map((d) => ({ textContent: `星期${d}` })) }],
+    rows: [{ cells: weekdays.map((d) => ({ textContent: weekdayText?.(d) ?? `星期${d}` })) }],
     querySelector: (selector) => selector === 'h6' ? { textContent: heading } : null,
     querySelectorAll: (selector) => selector === '.timetable_con' ? blocks : [],
   };
@@ -84,6 +84,13 @@ test('tolerates WebView text proxies without textContent', () => {
   const result = context.extractTimetable(doc);
   assert.equal(result.label, '2026-2027学年第1学期');
   assert.equal(result.rows[0].time, '(11-13节)7-9周');
+});
+
+test('accepts weekday headers whose markup inserts whitespace and helper text', () => {
+  const result = context.extractTimetable(timetableDocument({
+    weekdayText: (day) => ` 星\n期 ${day} 课程列 `,
+  }));
+  assert.equal(result.rows[0].day, 4);
 });
 
 test('rejects a stale table whose heading differs from selected term', () => {

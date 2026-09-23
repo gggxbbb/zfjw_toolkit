@@ -16,10 +16,15 @@ function extractTimetable(doc) {
   const heading = textOf(table.querySelector('h6')).replace(/\s/g, '');
   const expected = `${yearText}学年第${termText}学期`;
   if (!heading || heading !== expected) throw new Error('选择的学期与课表不一致，请点击查询并等待加载');
-  const headerRow = Array.from(table.rows).find(r =>
-    Array.from(r.cells).some(c => textOf(c) === '星期一'));
-  if (!headerRow || !['一','二','三','四','五','六','日'].every(d =>
-      Array.from(headerRow.cells).some(c => textOf(c) === `星期${d}`))) {
+  const weekdays = ['一','二','三','四','五','六','日'];
+  const tableRows = table.rows ? Array.from(table.rows) :
+    Array.from(table.querySelectorAll('tr'));
+  const cellsOf = row => row.cells ? Array.from(row.cells) :
+    Array.from(row.querySelectorAll('th,td'));
+  const headerRow = tableRows.find(row => weekdays.every(day =>
+    cellsOf(row).some(cell =>
+      textOf(cell).replace(/\s/g, '').includes(`星期${day}`))));
+  if (!headerRow) {
     throw new Error('无法确认课表星期表头');
   }
   const rows = Array.from(table.querySelectorAll('.timetable_con')).map(block => {
