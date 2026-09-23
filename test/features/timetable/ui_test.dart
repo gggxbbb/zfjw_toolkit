@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zfjw_toolkit/app/theme.dart';
+import 'package:zfjw_toolkit/features/timetable/dialogs.dart';
+import 'package:zfjw_toolkit/features/timetable/diff.dart';
+import 'package:zfjw_toolkit/features/timetable/history_page.dart';
 import 'package:zfjw_toolkit/features/timetable/model.dart';
 import 'package:zfjw_toolkit/features/timetable/page.dart';
 import 'package:zfjw_toolkit/features/timetable/providers.dart';
@@ -99,5 +103,72 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('历史快照'), findsOneWidget);
     expect(find.text('刷新课表'), findsOneWidget);
+  });
+  testWidgets('差异页使用正式排版并合并连续周的同类课次', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    ClassSession added(int week) => ClassSession(
+      name: '临床技能学1',
+      week: week,
+      day: 1,
+      start: 6,
+      end: 8,
+      location: '实验中心',
+      teacher: '教师甲',
+    );
+    const subtitle = '2026-2027学年第1学期 · 3 次课 · 首次采集';
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: TimetableDiffPage(
+          subtitle: subtitle,
+          confirm: true,
+          changes: [
+            for (var week = 2; week <= 4; week++)
+              SessionChange(after: added(week)),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.text('3 新增'), findsOneWidget);
+    expect(find.text('临床技能学1'), findsOneWidget);
+    expect(find.text('第 2–4 周 · 周一 · 6–8 节'), findsOneWidget);
+    expect(find.text('使用新课表'), findsOneWidget);
+    final subtitleText = tester.widget<Text>(find.text(subtitle));
+    expect(subtitleText.style?.decoration, TextDecoration.none);
+    expect(subtitleText.style?.color, AppTokens.light.labelPrimary);
+  });
+  testWidgets('历史页使用正式排版展示版本摘要', (tester) async {
+    final snapshot = TimetableSnapshot(
+      id: 'v',
+      term: term.id,
+      capturedAt: DateTime(2026, 9, 22, 8, 30),
+      sessions: const [s],
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          timetableHistoryProvider(
+            term.id,
+          ).overrideWithValue(AsyncData([snapshot])),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          home: TimetableHistoryPage(term: term),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.text('当前仅保留 1 个版本'), findsOneWidget);
+    expect(find.text('当前版本'), findsOneWidget);
+    expect(find.text('1 次课'), findsOneWidget);
+    final termText = tester.widget<Text>(find.text(term.label));
+    expect(termText.style?.decoration, TextDecoration.none);
+    expect(termText.style?.color, AppTokens.light.labelPrimary);
   });
 }

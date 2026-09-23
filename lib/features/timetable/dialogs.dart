@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show SelectableText;
 import '../../ui/kit/kit.dart';
 import 'diff.dart';
 import 'model.dart';
@@ -172,47 +171,356 @@ class TimetableDiffPage extends StatelessWidget {
   final String subtitle;
   final bool confirm;
   @override
-  Widget build(BuildContext context) => AppGlassScaffold(
-    extendBody: false,
-    appBar: AppGlassAppBar(
-      title: const Text('课表差异'),
-      leading: AppGlassIconButton(
-        icon: CupertinoIcons.back,
-        onTap: () => Navigator.pop(context, false),
+  Widget build(BuildContext context) {
+    final tokens = AppTokens.of(context);
+    final groups = _groupChanges(changes);
+    final added = changes.where((c) => c.before == null).length;
+    final removed = changes.where((c) => c.after == null).length;
+    final modified = changes.length - added - removed;
+    return AppGlassScaffold(
+      extendBody: false,
+      appBar: AppGlassAppBar(
+        title: const Text('课表差异'),
+        leading: AppGlassIconButton(
+          icon: CupertinoIcons.back,
+          onTap: () => Navigator.pop(context, false),
+        ),
       ),
-    ),
-    body: SafeArea(
-      child: Column(
-        children: [
-          Padding(padding: const EdgeInsets.all(16), child: Text(subtitle)),
-          Expanded(
-            child: changes.isEmpty
-                ? const Center(child: Text('课表无变化'))
-                : ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: changes.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 12),
-                    itemBuilder: (_, i) => Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: AppTokens.of(context).accentSubtle,
-                        borderRadius: BorderRadius.circular(12),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: changes.isEmpty
+                  ? Center(
+                      child: Text(
+                        '课表无变化',
+                        style: AppText.body.copyWith(
+                          color: tokens.labelSecondary,
+                        ),
                       ),
-                      child: SelectableText(changes[i].description),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                      itemCount: groups.length + 1,
+                      separatorBuilder: (_, _) =>
+                          const SizedBox(height: AppTokens.space3),
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return _DiffOverview(
+                            subtitle: subtitle,
+                            added: added,
+                            removed: removed,
+                            modified: modified,
+                          );
+                        }
+                        return _ChangeCard(group: groups[index - 1]);
+                      },
                     ),
-                  ),
-          ),
-          if (confirm)
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: AppGlassButton(
-                label: '使用新课表',
-                expand: true,
-                onTap: () => Navigator.pop(context, true),
-              ),
             ),
+            if (confirm)
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: tokens.cardBackground,
+                  border: Border(
+                    top: BorderSide(color: tokens.separator, width: .5),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: AppGlassButton(
+                    label: '使用新课表',
+                    expand: true,
+                    onTap: () => Navigator.pop(context, true),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+enum _ChangeKind { added, removed, modified }
+
+class _ChangeGroup {
+  const _ChangeGroup(this.kind, this.changes);
+  final _ChangeKind kind;
+  final List<SessionChange> changes;
+  ClassSession get session => changes.first.after ?? changes.first.before!;
+}
+
+List<_ChangeGroup> _groupChanges(List<SessionChange> changes) {
+  final buckets = <String, List<SessionChange>>{};
+  final kinds = <String, _ChangeKind>{};
+  for (var index = 0; index < changes.length; index++) {
+    final change = changes[index];
+    final kind = change.before == null
+        ? _ChangeKind.added
+        : change.after == null
+        ? _ChangeKind.removed
+        : _ChangeKind.modified;
+    final session = change.after ?? change.before!;
+    final key = kind == _ChangeKind.modified
+        ? 'modified/$index'
+        : [
+            kind.name,
+            session.name,
+            session.type,
+            session.day,
+            session.start,
+            session.end,
+            session.teacher,
+            session.location,
+            session.group,
+            session.adjusted,
+          ].join('\u001f');
+    buckets.putIfAbsent(key, () => []).add(change);
+    kinds[key] = kind;
+  }
+  return [
+    for (final entry in buckets.entries)
+      _ChangeGroup(kinds[entry.key]!, entry.value),
+  ];
+}
+
+class _DiffOverview extends StatelessWidget {
+  const _DiffOverview({
+    required this.subtitle,
+    required this.added,
+    required this.removed,
+    required this.modified,
+  });
+  final String subtitle;
+  final int added, removed, modified;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = AppTokens.of(context);
+    return AppGlassCard(
+      glass: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            subtitle,
+            style: AppText.title.copyWith(color: tokens.labelPrimary),
+          ),
+          const SizedBox(height: AppTokens.space3),
+          Wrap(
+            spacing: AppTokens.space2,
+            runSpacing: AppTokens.space2,
+            children: [
+              if (added > 0)
+                _SummaryChip(label: '$added 新增', color: tokens.success),
+              if (removed > 0)
+                _SummaryChip(label: '$removed 取消', color: tokens.danger),
+              if (modified > 0)
+                _SummaryChip(label: '$modified 调整', color: tokens.accent),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _SummaryChip extends StatelessWidget {
+  const _SummaryChip({required this.label, required this.color});
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    decoration: BoxDecoration(
+      color: color.withAlpha(24),
+      borderRadius: BorderRadius.circular(AppTokens.radiusPill),
+    ),
+    child: Text(
+      label,
+      style: AppText.footnote.copyWith(
+        color: color,
+        fontWeight: FontWeight.w600,
       ),
     ),
   );
+}
+
+class _ChangeCard extends StatelessWidget {
+  const _ChangeCard({required this.group});
+  final _ChangeGroup group;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = AppTokens.of(context);
+    final color = switch (group.kind) {
+      _ChangeKind.added => tokens.success,
+      _ChangeKind.removed => tokens.danger,
+      _ChangeKind.modified => tokens.accent,
+    };
+    final label = switch (group.kind) {
+      _ChangeKind.added => '新增',
+      _ChangeKind.removed => '取消',
+      _ChangeKind.modified => '调整',
+    };
+    final session = group.session;
+    return AppGlassCard(
+      glass: false,
+      padding: EdgeInsets.zero,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: 4,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: const BorderRadius.horizontal(
+                  left: Radius.circular(AppTokens.radiusCard),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        _SummaryChip(label: label, color: color),
+                        const SizedBox(width: AppTokens.space2),
+                        Expanded(
+                          child: Text(
+                            session.name,
+                            style: AppText.title.copyWith(
+                              color: tokens.labelPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppTokens.space2),
+                    if (group.kind == _ChangeKind.modified)
+                      _ModifiedFields(change: group.changes.single)
+                    else ...[
+                      Text(
+                        '${_weekLabel(group.changes.map((c) => (c.after ?? c.before!).week))}'
+                        ' · 周${'一二三四五六日'[session.day - 1]}'
+                        ' · ${session.start}–${session.end} 节',
+                        style: AppText.subhead.copyWith(
+                          color: tokens.labelSecondary,
+                        ),
+                      ),
+                      if (_sessionDetails(session).isNotEmpty) ...[
+                        const SizedBox(height: AppTokens.space1),
+                        Text(
+                          _sessionDetails(session),
+                          style: AppText.footnote.copyWith(
+                            color: tokens.labelTertiary,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+String _weekLabel(Iterable<int> source) {
+  final weeks = source.toSet().toList()..sort();
+  final ranges = <String>[];
+  var start = weeks.first, end = weeks.first;
+  void addRange() {
+    ranges.add(start == end ? '$start' : '$start–$end');
+  }
+
+  for (final week in weeks.skip(1)) {
+    if (week == end + 1) {
+      end = week;
+    } else {
+      addRange();
+      start = end = week;
+    }
+  }
+  addRange();
+  return '第 ${ranges.join('、')} 周';
+}
+
+String _sessionDetails(ClassSession session) => [
+  if (session.type.isNotEmpty) session.type,
+  if (session.adjusted) '调课',
+  if (session.location.isNotEmpty) session.location,
+  if (session.teacher.isNotEmpty) session.teacher,
+].join(' · ');
+
+class _ModifiedFields extends StatelessWidget {
+  const _ModifiedFields({required this.change});
+  final SessionChange change;
+
+  @override
+  Widget build(BuildContext context) {
+    final before = change.before!, after = change.after!;
+    final rows = <(String, String, String)>[
+      if (before.slotKey != after.slotKey) ('时间', before.when, after.when),
+      if (before.teacher != after.teacher)
+        ('教师', before.teacher, after.teacher),
+      if (before.location != after.location)
+        ('地点', before.location, after.location),
+      if (before.group != after.group) ('教学班', before.group, after.group),
+      if (before.adjusted != after.adjusted)
+        ('调课标记', before.adjusted ? '有' : '无', after.adjusted ? '有' : '无'),
+    ];
+    return Column(
+      children: [
+        for (var index = 0; index < rows.length; index++) ...[
+          if (index > 0) const SizedBox(height: AppTokens.space2),
+          _ChangedField(
+            label: rows[index].$1,
+            before: rows[index].$2,
+            after: rows[index].$3,
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _ChangedField extends StatelessWidget {
+  const _ChangedField({
+    required this.label,
+    required this.before,
+    required this.after,
+  });
+  final String label, before, after;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = AppTokens.of(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 52,
+          child: Text(
+            label,
+            style: AppText.caption.copyWith(color: tokens.labelTertiary),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            '${before.isEmpty ? '未提供' : before}  →  ${after.isEmpty ? '未提供' : after}',
+            style: AppText.subhead.copyWith(color: tokens.labelSecondary),
+          ),
+        ),
+      ],
+    );
+  }
 }
