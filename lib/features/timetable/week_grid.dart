@@ -62,8 +62,17 @@ class TimetableWeekGrid extends StatelessWidget {
     final tokens = AppTokens.of(context);
     final current = today ?? DateTime.now();
     final visible = sessions.where((s) => s.week == week).toList();
+    final counts = <String, int>{};
+    final ordinals = <ClassSession, int>{};
+    for (final session in sessions.toList()..sort(compareSessions)) {
+      ordinals[session] = counts.update(
+        session.courseKey,
+        (value) => value + 1,
+        ifAbsent: () => 1,
+      );
+    }
     final periods = visible.fold(13, (n, s) => math.max(n, s.end));
-    const rowHeight = 78.0;
+    const rowHeight = 96.0;
     const gutter = 42.0;
     const headerHeight = 48.0;
     return LayoutBuilder(
@@ -97,7 +106,7 @@ class TimetableWeekGrid extends StatelessWidget {
                         child: Text(
                           '${'一二三四五六日'[day - 1]}\n${term.dateFor(week, day).month}/${term.dateFor(week, day).day}',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: AppText.caption.copyWith(
                             fontSize: 11,
                             color: tokens.labelPrimary,
                           ),
@@ -121,7 +130,7 @@ class TimetableWeekGrid extends StatelessWidget {
                   child: Text(
                     '$period\n${periodTime(period)}\n${periodTime(period, end: true)}',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: AppText.caption.copyWith(
                       fontSize: 10,
                       height: 1.6,
                       color: tokens.labelSecondary,
@@ -154,12 +163,14 @@ class TimetableWeekGrid extends StatelessWidget {
                           padding: const EdgeInsets.all(3),
                           clipBehavior: Clip.antiAlias,
                           decoration: BoxDecoration(
-                            color: tokens.accent.withAlpha(32),
+                            color: tokens
+                                .courseColors(p.session.name)
+                                .background,
                             borderRadius: BorderRadius.circular(7),
                             border: Border.all(
                               color: p.lanes > 1
                                   ? tokens.danger
-                                  : tokens.accent.withAlpha(100),
+                                  : tokens.courseColors(p.session.name).border,
                             ),
                           ),
                           child: SingleChildScrollView(
@@ -168,21 +179,46 @@ class TimetableWeekGrid extends StatelessWidget {
                               children: [
                                 Text(
                                   p.session.name,
-                                  style: TextStyle(
+                                  style: AppText.caption.copyWith(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
                                     color: tokens.labelPrimary,
                                   ),
                                 ),
-                                if (p.session.type.isNotEmpty)
-                                  _Tag(p.session.type),
-                                if (p.session.adjusted) const _Tag('调课'),
-                                if (p.lanes > 1) const _Tag('时间冲突'),
+                                Wrap(
+                                  spacing: AppTokens.space1,
+                                  children: [
+                                    if (p.session.type.isNotEmpty)
+                                      _Tag(p.session.type),
+                                    _Tag('第 ${ordinals[p.session]} 次'),
+                                    if (p.session.adjusted) const _Tag('调课'),
+                                    if (p.lanes > 1) const _Tag('时间冲突'),
+                                  ],
+                                ),
                                 if (p.session.location.isNotEmpty)
                                   Text(
                                     p.session.location,
-                                    style: TextStyle(
-                                      fontSize: 10,
+                                    style: AppText.caption.copyWith(
+                                      color: tokens.labelPrimary,
+                                    ),
+                                  ),
+                                Text(
+                                  '${periodTime(p.session.start)}–${periodTime(p.session.end, end: true)}',
+                                  style: AppText.caption.copyWith(
+                                    color: tokens.labelSecondary,
+                                  ),
+                                ),
+                                if (p.session.teacher.isNotEmpty)
+                                  Text(
+                                    p.session.teacher,
+                                    style: AppText.caption.copyWith(
+                                      color: tokens.labelPrimary,
+                                    ),
+                                  ),
+                                if (p.session.group.isNotEmpty)
+                                  Text(
+                                    p.session.group,
+                                    style: AppText.caption.copyWith(
                                       color: tokens.labelSecondary,
                                     ),
                                   ),
@@ -215,7 +251,7 @@ class _Tag extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: TextStyle(
+        style: AppText.caption.copyWith(
           fontSize: 9,
           color: AppTokens.of(context).labelPrimary,
         ),

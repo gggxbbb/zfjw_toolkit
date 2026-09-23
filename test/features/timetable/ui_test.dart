@@ -12,6 +12,16 @@ import 'package:zfjw_toolkit/features/timetable/week_grid.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 void main() {
+  test('课程配色稳定且适配明暗主题', () {
+    final first = AppTokens.light.courseColors('内科学');
+    expect(first, AppTokens.light.courseColors(' 内科学 '));
+    expect(first, isNot(AppTokens.light.courseColors('儿科学')));
+    expect(first.background.computeLuminance(), greaterThan(.65));
+    expect(
+      AppTokens.dark.courseColors('内科学').background.computeLuminance(),
+      lessThan(.15),
+    );
+  });
   final term = TimetableTerm(
     id: 't',
     label: '测试学期',
@@ -30,6 +40,8 @@ void main() {
     rawTitle: '【调】内科学★',
     rawTime: '(1-2节)1-16周',
     location: '教室一',
+    teacher: '教师甲',
+    group: '教学班一',
   );
   test('冲突布局分组、并排、独立课次不挤占宽度', () {
     final items = layoutDay([
@@ -66,6 +78,10 @@ void main() {
     expect(find.text('一\n9/7'), findsOneWidget);
     expect(find.text('日\n9/13'), findsOneWidget);
     expect(find.text('15\n22:20\n23:00'), findsOneWidget);
+    expect(find.text('教师甲'), findsOneWidget);
+    expect(find.text('教学班一'), findsOneWidget);
+    expect(find.text('第 1 次'), findsNWidgets(2));
+    expect(find.text('08:00–09:30'), findsOneWidget);
     await tester.tap(find.text('内科学'));
     await tester.pumpAndSettle();
     expect(find.textContaining('原始标题：【调】内科学★'), findsOneWidget);

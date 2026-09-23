@@ -12,6 +12,25 @@ import 'package:flutter/material.dart';
 /// 用法：`AppTokens.of(context).labelPrimary`。所有字段随明暗自动切换，
 /// 业务代码不再出现任何硬编码颜色。
 class AppTokens {
+  /// Stable course identity colors: independent of week, ordering and snapshot.
+  ({Color background, Color border}) courseColors(String name) {
+    var hash = 2166136261;
+    for (final unit in name.trim().runes) {
+      hash = ((hash ^ unit) * 16777619) & 0xffffffff;
+    }
+    final hue = (hash % 360).toDouble();
+    final dark = brightness == Brightness.dark;
+    return (
+      background: HSLColor.fromAHSL(
+        1,
+        hue,
+        dark ? .30 : .52,
+        dark ? .20 : .91,
+      ).toColor(),
+      border: HSLColor.fromAHSL(1, hue, .42, dark ? .52 : .65).toColor(),
+    );
+  }
+
   const AppTokens._({
     required this.brightness,
     required this.canvas,

@@ -129,12 +129,24 @@ Future<void> showTimetableMessage(
 ) => showCupertinoDialog<void>(
   context: context,
   builder: (c) => CupertinoAlertDialog(
-    title: Text(title),
-    content: Text(text),
+    title: Text(
+      title,
+      style: AppText.title.copyWith(color: AppTokens.of(c).labelPrimary),
+    ),
+    content: Padding(
+      padding: const EdgeInsets.only(top: AppTokens.space2),
+      child: Text(
+        text,
+        style: AppText.subhead.copyWith(color: AppTokens.of(c).labelPrimary),
+      ),
+    ),
     actions: [
       CupertinoDialogAction(
         onPressed: () => Navigator.pop(c),
-        child: const Text('知道了'),
+        child: Text(
+          '知道了',
+          style: AppText.body.copyWith(color: AppTokens.of(c).accent),
+        ),
       ),
     ],
   ),
