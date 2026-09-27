@@ -72,11 +72,17 @@ class TimetableWeekGrid extends StatelessWidget {
       );
     }
     final periods = visible.fold(13, (n, s) => math.max(n, s.end));
-    const rowHeight = 96.0;
-    const gutter = 42.0;
-    const headerHeight = 48.0;
+    const gutter = AppTokens.space6;
+    const headerHeight = AppTokens.space6 + AppTokens.space4;
     return LayoutBuilder(
       builder: (context, constraints) {
+        final availableHeight = constraints.hasBoundedHeight
+            ? constraints.maxHeight
+            : MediaQuery.sizeOf(context).height * .7;
+        final rowHeight = math.max(
+          1.0,
+          (availableHeight - headerHeight) / periods,
+        );
         final dayWidth = (constraints.maxWidth - gutter) / 7;
         return SizedBox(
           height: headerHeight + periods * rowHeight,
@@ -102,12 +108,13 @@ class TimetableWeekGrid extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppTokens.space1,
+                        ),
                         child: Text(
                           '${'一二三四五六日'[day - 1]}\n${term.dateFor(week, day).month}/${term.dateFor(week, day).day}',
                           textAlign: TextAlign.center,
                           style: AppText.caption.copyWith(
-                            fontSize: 11,
                             color: tokens.labelPrimary,
                           ),
                         ),
@@ -126,14 +133,17 @@ class TimetableWeekGrid extends StatelessWidget {
                 Positioned(
                   left: 0,
                   width: gutter - 2,
-                  top: headerHeight + (period - 1) * rowHeight + 6,
-                  child: Text(
-                    '$period\n${periodTime(period)}\n${periodTime(period, end: true)}',
-                    textAlign: TextAlign.center,
-                    style: AppText.caption.copyWith(
-                      fontSize: 10,
-                      height: 1.6,
-                      color: tokens.labelSecondary,
+                  top: headerHeight + (period - 1) * rowHeight,
+                  height: rowHeight,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      '$period\n${periodTime(period)}\n${periodTime(period, end: true)}',
+                      textAlign: TextAlign.center,
+                      style: AppText.caption.copyWith(
+                        height: 1.1,
+                        color: tokens.labelSecondary,
+                      ),
                     ),
                   ),
                 ),
@@ -160,70 +170,25 @@ class TimetableWeekGrid extends StatelessWidget {
                         onTap: () =>
                             showSessionDetails(context, p.session, term),
                         child: Container(
-                          padding: const EdgeInsets.all(3),
+                          padding: const EdgeInsets.all(AppTokens.space1 / 2),
                           clipBehavior: Clip.antiAlias,
                           decoration: BoxDecoration(
                             color: tokens
                                 .courseColors(p.session.name)
                                 .background,
-                            borderRadius: BorderRadius.circular(7),
+                            borderRadius: BorderRadius.circular(
+                              AppTokens.radiusControl / 2,
+                            ),
                             border: Border.all(
                               color: p.lanes > 1
                                   ? tokens.danger
                                   : tokens.courseColors(p.session.name).border,
                             ),
                           ),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  p.session.name,
-                                  style: AppText.caption.copyWith(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    color: tokens.labelPrimary,
-                                  ),
-                                ),
-                                Wrap(
-                                  spacing: AppTokens.space1,
-                                  children: [
-                                    if (p.session.type.isNotEmpty)
-                                      _Tag(p.session.type),
-                                    _Tag('第 ${ordinals[p.session]} 次'),
-                                    if (p.session.adjusted) const _Tag('调课'),
-                                    if (p.lanes > 1) const _Tag('时间冲突'),
-                                  ],
-                                ),
-                                if (p.session.location.isNotEmpty)
-                                  Text(
-                                    p.session.location,
-                                    style: AppText.caption.copyWith(
-                                      color: tokens.labelPrimary,
-                                    ),
-                                  ),
-                                Text(
-                                  '${periodTime(p.session.start)}–${periodTime(p.session.end, end: true)}',
-                                  style: AppText.caption.copyWith(
-                                    color: tokens.labelSecondary,
-                                  ),
-                                ),
-                                if (p.session.teacher.isNotEmpty)
-                                  Text(
-                                    p.session.teacher,
-                                    style: AppText.caption.copyWith(
-                                      color: tokens.labelPrimary,
-                                    ),
-                                  ),
-                                if (p.session.group.isNotEmpty)
-                                  Text(
-                                    p.session.group,
-                                    style: AppText.caption.copyWith(
-                                      color: tokens.labelSecondary,
-                                    ),
-                                  ),
-                              ],
-                            ),
+                          child: _FittedSessionText(
+                            session: p.session,
+                            ordinal: ordinals[p.session]!,
+                            conflict: p.lanes > 1,
                           ),
                         ),
                       ),
@@ -237,25 +202,93 @@ class TimetableWeekGrid extends StatelessWidget {
   }
 }
 
-class _Tag extends StatelessWidget {
-  const _Tag(this.text);
-  final String text;
+/// Fit the complete content, including long locations and class identifiers,
+/// into the actual slot. Measurement and painting share the same text scaler.
+class _FittedSessionText extends StatelessWidget {
+  const _FittedSessionText({
+    required this.session,
+    required this.ordinal,
+    required this.conflict,
+  });
+  final ClassSession session;
+  final int ordinal;
+  final bool conflict;
+
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 2),
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
-      decoration: BoxDecoration(
-        color: AppTokens.of(context).accentSubtle,
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(
-        text,
-        style: AppText.caption.copyWith(
-          fontSize: 9,
-          color: AppTokens.of(context).labelPrimary,
-        ),
-      ),
-    ),
-  );
+  Widget build(BuildContext context) {
+    final tokens = AppTokens.of(context);
+    final scaler = MediaQuery.textScalerOf(context);
+    final direction = Directionality.of(context);
+    TextSpan content(double size) {
+      final base = AppText.caption.copyWith(
+        fontSize: size,
+        height: 1.05,
+        color: tokens.labelPrimary,
+      );
+      return TextSpan(
+        style: base,
+        children: [
+          TextSpan(
+            text: '${session.name}\n',
+            style: base.copyWith(fontWeight: FontWeight.w600),
+          ),
+          TextSpan(
+            text:
+                '${[if (session.type.isNotEmpty) session.type, '第 $ordinal 次'].join(' · ')}\n',
+          ),
+          if (session.adjusted || conflict)
+            TextSpan(
+              text:
+                  '${[if (session.adjusted) '调课', if (conflict) '时间冲突'].join(' · ')}\n',
+              style: base.copyWith(
+                color: conflict ? tokens.danger : tokens.accent,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          if (session.location.isNotEmpty)
+            TextSpan(text: '${session.location}\n'),
+          TextSpan(
+            text:
+                '${periodTime(session.start)}–${periodTime(session.end, end: true)}',
+            style: base.copyWith(color: tokens.labelSecondary),
+          ),
+          if (session.teacher.isNotEmpty)
+            TextSpan(text: '\n${session.teacher}'),
+          if (session.group.isNotEmpty)
+            TextSpan(
+              text: '\n${session.group}',
+              style: base.copyWith(color: tokens.labelSecondary),
+            ),
+        ],
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, bounds) {
+        var low = 0.01;
+        var high = AppText.caption.fontSize!;
+        final painter = TextPainter(
+          textDirection: direction,
+          textScaler: scaler,
+        );
+        for (var i = 0; i < 16; i++) {
+          final size = (low + high) / 2;
+          painter.text = content(size);
+          painter.layout(maxWidth: bounds.maxWidth);
+          if (painter.height <= bounds.maxHeight &&
+              painter.width <= bounds.maxWidth) {
+            low = size;
+          } else {
+            high = size;
+          }
+        }
+        painter.dispose();
+        return RichText(
+          text: content(low),
+          textScaler: scaler,
+          textDirection: direction,
+        );
+      },
+    );
+  }
 }

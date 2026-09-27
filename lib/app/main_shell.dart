@@ -66,7 +66,7 @@ class _MainShellState extends ConsumerState<MainShell> {
             // 顶部栏：小标题常显，与大标题做折叠联动。
             // 显式指定颜色——玻璃库默认的 Cupertino navTitleTextStyle 在本工程的
             // 无色 textTheme 下暗色解析不可靠（会渲染成暗色字）。
-            appBar: usesNavigationRail
+            appBar: usesNavigationRail || tab.id == 'timetable'
                 ? null
                 : AppGlassAppBar(
                     title: Text(

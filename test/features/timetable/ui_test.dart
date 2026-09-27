@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderParagraph;
+import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zfjw_toolkit/app/theme.dart';
@@ -59,6 +61,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
       MaterialApp(
+        theme: AppTheme.light,
         home: Scaffold(
           body: SingleChildScrollView(
             child: TimetableWeekGrid(
@@ -78,16 +81,96 @@ void main() {
     expect(find.text('一\n9/7'), findsOneWidget);
     expect(find.text('日\n9/13'), findsOneWidget);
     expect(find.text('15\n22:20\n23:00'), findsOneWidget);
-    expect(find.text('教师甲'), findsOneWidget);
-    expect(find.text('教学班一'), findsOneWidget);
-    expect(find.text('第 1 次'), findsNWidgets(2));
-    expect(find.text('08:00–09:30'), findsOneWidget);
-    await tester.tap(find.text('内科学'));
+    expect(find.textContaining('教师甲', findRichText: true), findsOneWidget);
+    expect(find.textContaining('教学班一', findRichText: true), findsOneWidget);
+    expect(find.textContaining('第 1 次', findRichText: true), findsNWidgets(2));
+    expect(
+      find.textContaining('08:00–09:30', findRichText: true),
+      findsOneWidget,
+    );
+    await tester.tap(find.textContaining('内科学', findRichText: true));
     await tester.pumpAndSettle();
     expect(find.textContaining('原始标题：【调】内科学★'), findsOneWidget);
     expect(find.textContaining('原始节次/周次：(1-2节)1-16周'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+  for (final size in [const Size(390, 844), const Size(1200, 800)]) {
+    for (final dark in [false, true]) {
+      testWidgets('完整课次适配 $size / dark=$dark', (tester) async {
+        tester.view.physicalSize = size;
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: dark ? AppTheme.dark : AppTheme.light,
+            home: Scaffold(
+              body: Padding(
+                padding: const EdgeInsets.only(top: 80, bottom: 104),
+                child: TimetableWeekGrid(
+                  term: term,
+                  week: 1,
+                  sessions: const [
+                    s,
+                    ClassSession(
+                      name: '超长课程名称临床综合实践',
+                      week: 1,
+                      day: 1,
+                      start: 2,
+                      end: 2,
+                      location: '徐州市中心医院教学楼六号楼三楼304示教室',
+                      teacher: '教师甲、教师乙、教师丙',
+                      group: '临床综合实践教学班2026-0005',
+                      teachingType: TeachingType.clerkship,
+                      adjusted: true,
+                    ),
+                    ClassSession(
+                      name: '晚间课程',
+                      week: 1,
+                      day: 7,
+                      start: 13,
+                      end: 13,
+                      location: '九大（西区）',
+                      teacher: '教师丁',
+                      group: '教学班一',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        final cards = find.byWidgetPredicate(
+          (w) => w is RichText && w.text.toPlainText().contains('第 1 次'),
+        );
+        expect(cards, findsNWidgets(3));
+        for (final element in cards.evaluate()) {
+          final paragraph = element.renderObject! as RenderParagraph;
+          final painter = TextPainter(
+            text: paragraph.text,
+            textDirection: paragraph.textDirection,
+            textScaler: paragraph.textScaler,
+          )..layout(maxWidth: paragraph.size.width);
+          expect(
+            painter.height,
+            lessThanOrEqualTo(paragraph.size.height + .01),
+          );
+          expect(painter.width, lessThanOrEqualTo(paragraph.size.width + .01));
+          painter.dispose();
+          expect(
+            tester.getRect(find.byWidget(element.widget)).bottom,
+            lessThanOrEqualTo(size.height - 104),
+          );
+        }
+        await tester.tap(find.textContaining('晚间课程', findRichText: true));
+        await tester.pumpAndSettle();
+        expect(find.textContaining('第 1 周 周日 13–13 节'), findsWidgets);
+        expect(tester.takeException(), isNull);
+      });
+    }
+  }
   testWidgets('课表首页窄屏显示周导航和历史入口无溢出', (tester) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
@@ -111,12 +194,19 @@ void main() {
           ),
         ],
         child: MaterialApp(
+          theme: AppTheme.light,
           home: Scaffold(body: TimetablePage(titleController: title)),
         ),
       ),
     );
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
+    expect(
+      tester.getRect(find.byType(TimetableWeekGrid)).bottom,
+      lessThanOrEqualTo(844 - AppGlassMetrics.tabBarHeight),
+    );
+    await tester.tap(find.byIcon(CupertinoIcons.ellipsis));
+    await tester.pumpAndSettle();
     expect(find.text('历史快照'), findsOneWidget);
     expect(find.text('刷新课表'), findsOneWidget);
   });
