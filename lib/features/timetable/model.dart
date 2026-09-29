@@ -53,6 +53,7 @@ class ClassSession {
   String get courseKey =>
       jsonEncode([name, teachingType?.symbol ?? '', teachingType?.label ?? '']);
   String get slotKey => '$week/$day/$start/$end';
+  // 平台可能给整门课批量标记调课，比较实际安排时忽略该标记。
   String get semanticKey => jsonEncode([
     name,
     teachingType?.symbol ?? '',
@@ -63,7 +64,6 @@ class ClassSession {
     end,
     teacher,
     location,
-    adjusted,
     group,
   ]);
   String get when => '第 $week 周 周${'一二三四五六日'[day - 1]} $start–$end 节';

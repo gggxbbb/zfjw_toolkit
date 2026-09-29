@@ -236,12 +236,11 @@ class _FittedSessionText extends StatelessWidget {
             text:
                 '${[if (session.type.isNotEmpty) session.type, '第 $ordinal 次'].join(' · ')}\n',
           ),
-          if (session.adjusted || conflict)
+          if (conflict)
             TextSpan(
-              text:
-                  '${[if (session.adjusted) '调课', if (conflict) '时间冲突'].join(' · ')}\n',
+              text: '时间冲突\n',
               style: base.copyWith(
-                color: conflict ? tokens.danger : tokens.accent,
+                color: tokens.danger,
                 fontWeight: FontWeight.w600,
               ),
             ),

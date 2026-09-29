@@ -87,24 +87,22 @@ class _TimetablePageState extends ConsumerState<TimetablePage> {
             children: [
               Row(
                 children: [
-                  Text(
-                    '课表',
-                    style: AppText.title.copyWith(
-                      color: AppTokens.of(context).labelPrimary,
-                    ),
-                  ),
-                  const SizedBox(width: AppTokens.space2),
+                  const SizedBox(width: kMinInteractiveDimensionCupertino),
                   Expanded(
                     child: Text(
                       term.label,
+                      textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppText.caption.copyWith(
-                        color: AppTokens.of(context).labelSecondary,
+                      style: AppText.title.copyWith(
+                        color: AppTokens.of(context).labelPrimary,
                       ),
                     ),
                   ),
                   CupertinoButton(
+                    minimumSize: const Size.square(
+                      kMinInteractiveDimensionCupertino,
+                    ),
                     padding: const EdgeInsets.all(AppTokens.space1),
                     onPressed: () => showCupertinoModalPopup<void>(
                       context: context,

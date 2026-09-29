@@ -13,7 +13,6 @@ class SessionChange {
       if (a.teacher != b.teacher) '教师：${a.teacher} → ${b.teacher}',
       if (a.location != b.location) '地点：${a.location} → ${b.location}',
       if (a.group != b.group) '教学班：${a.group} → ${b.group}',
-      if (a.adjusted != b.adjusted) '平台调课标记：${b.adjusted ? '新增' : '移除'}',
     ];
     return '${b.name} · ${b.when}\n${changes.join('\n')}';
   }

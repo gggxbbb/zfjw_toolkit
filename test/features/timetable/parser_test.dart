@@ -89,14 +89,22 @@ void main() {
     expect(changes.single.before!.week, 2);
     expect(changes.single.after, isNull);
   });
-  test('单次教室变化和调课标记变化均可识别', () {
+  test('忽略平台调课标记，仍识别实际教室变化', () {
     final changes = diffTimetable(
       [session(1)],
       [session(1, room: '乙', adjusted: true)],
     );
     expect(changes, hasLength(1));
     expect(changes.single.description, contains('地点：甲 → 乙'));
-    expect(changes.single.description, contains('平台调课标记'));
+    expect(changes.single.description, isNot(contains('调课标记')));
+  });
+  test('整门课仅新增平台调课标记不产生差异或新指纹', () {
+    final before = [session(1), session(2), session(3)];
+    final after = [
+      for (var week = 1; week <= 3; week++) session(week, adjusted: true),
+    ];
+    expect(diffTimetable(before, after), isEmpty);
+    expect(timetableFingerprint(before), timetableFingerprint(after));
   });
   test('多次同名课程整体移动时按时间顺序配对', () {
     final changes = diffTimetable(

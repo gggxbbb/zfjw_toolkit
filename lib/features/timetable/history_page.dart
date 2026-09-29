@@ -235,7 +235,7 @@ class _SnapshotPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${s.name} · ${s.type}${s.adjusted ? ' · 调课' : ''}',
+                        '${s.name} · ${s.type}',
                         style: AppText.title.copyWith(
                           color: tokens.labelPrimary,
                         ),

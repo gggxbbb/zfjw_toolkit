@@ -208,8 +208,7 @@ Future<void> showSessionDetails(
     '教师：${s.teacher.isEmpty ? '未提供' : s.teacher}',
     '地点：${s.location.isEmpty ? '未提供' : s.location}',
     if (s.group.isNotEmpty) '教学班：${s.group}',
-    if (s.adjusted) '平台调课标记：有',
-    '原始标题：${s.rawTitle}',
+    '课程标题：${s.rawTitle.replaceAll('【调】', '').trim()}',
     if (s.rawTime.isNotEmpty) '原始节次/周次：${s.rawTime}',
   ].join('\n'),
 );
@@ -332,7 +331,6 @@ List<_ChangeGroup> _groupChanges(List<SessionChange> changes) {
             session.teacher,
             session.location,
             session.group,
-            session.adjusted,
           ].join('\u001f');
     buckets.putIfAbsent(key, () => []).add(change);
     kinds[key] = kind;
@@ -515,7 +513,6 @@ String _weekLabel(Iterable<int> source) {
 
 String _sessionDetails(ClassSession session) => [
   if (session.type.isNotEmpty) session.type,
-  if (session.adjusted) '调课',
   if (session.location.isNotEmpty) session.location,
   if (session.teacher.isNotEmpty) session.teacher,
 ].join(' · ');
@@ -534,8 +531,6 @@ class _ModifiedFields extends StatelessWidget {
       if (before.location != after.location)
         ('地点', before.location, after.location),
       if (before.group != after.group) ('教学班', before.group, after.group),
-      if (before.adjusted != after.adjusted)
-        ('调课标记', before.adjusted ? '有' : '无', after.adjusted ? '有' : '无'),
     ];
     return Column(
       children: [

@@ -90,7 +90,9 @@ void main() {
     );
     await tester.tap(find.textContaining('内科学', findRichText: true));
     await tester.pumpAndSettle();
-    expect(find.textContaining('原始标题：【调】内科学★'), findsOneWidget);
+    expect(find.textContaining('课程标题：内科学★'), findsOneWidget);
+    expect(find.textContaining('【调】', findRichText: true), findsNothing);
+    expect(find.textContaining('调课', findRichText: true), findsNothing);
     expect(find.textContaining('原始节次/周次：(1-2节)1-16周'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
