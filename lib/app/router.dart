@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import '../core/feature_flags/feature_flags.dart';
 
 import 'package:zfjw_toolkit/features/gpa/gpa_home_page.dart';
 import 'package:zfjw_toolkit/features/settings/settings_home_page.dart';
@@ -17,10 +18,12 @@ class AppTab {
     required this.icon,
     this.selectedIcon,
     required this.page,
+    this.featureFlag,
   });
 
   /// 稳定标识，用于路由/状态。
   final String id;
+  final FeatureFlag? featureFlag;
 
   /// 中文标签。
   final String label;
@@ -57,6 +60,7 @@ final List<AppTab> appTabs = [
   ),
   AppTab(
     id: 'timetable',
+    featureFlag: FeatureFlag.timetable,
     label: '课表',
     icon: CupertinoIcons.calendar,
     page: (_, title) => TimetablePage(titleController: title),

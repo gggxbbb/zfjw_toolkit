@@ -7,6 +7,7 @@ import 'package:zfjw_toolkit/features/settings/state/app_version.dart';
 import 'package:zfjw_toolkit/features/settings/state/build_metadata.dart';
 import 'package:zfjw_toolkit/features/settings/state/gpa_goals.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
+import 'feature_flags_card.dart';
 
 /// 设置功能域首页：目标 GPA、规则包信息、关于。
 ///
@@ -37,6 +38,7 @@ class SettingsHomePage extends ConsumerWidget {
             children: [
               AppResponsiveColumns(
                 children: [
+                  const FeatureFlagsCard(),
                   // ---- 目标/最低 GPA ----
                   _GpaGoalsCard(goals: goals),
 
@@ -168,7 +170,13 @@ class _LinkRow extends StatelessWidget {
               style: AppText.body.copyWith(color: tokens.labelPrimary),
             ),
           ),
-          Text(value, style: AppText.subhead.copyWith(color: tokens.accent)),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: AppText.subhead.copyWith(color: tokens.accent),
+            ),
+          ),
           const SizedBox(width: AppTokens.space2),
           Icon(
             CupertinoIcons.chevron_forward,

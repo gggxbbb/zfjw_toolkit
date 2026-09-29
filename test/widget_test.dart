@@ -1,4 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zfjw_toolkit/app/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,6 +11,7 @@ import 'package:zfjw_toolkit/features/settings/state/build_metadata.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 
 void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
   test('底部导航含成绩、目标分析、课表和设置', () {
     expect(appTabs, hasLength(4));
     expect(appTabs[0].label, '成绩');
@@ -26,7 +29,10 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: CupertinoApp(home: SettingsHomePage(titleController: title)),
+        child: MaterialApp(
+          theme: AppTheme.light,
+          home: SettingsHomePage(titleController: title),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -55,7 +61,10 @@ void main() {
             ),
           ),
         ],
-        child: CupertinoApp(home: SettingsHomePage(titleController: title)),
+        child: MaterialApp(
+          theme: AppTheme.light,
+          home: SettingsHomePage(titleController: title),
+        ),
       ),
     );
     await tester.pump();

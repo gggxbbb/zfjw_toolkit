@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:zfjw_toolkit/app/router.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
+import '../core/feature_flags/feature_flags.dart';
 
 /// 应用主壳：窄屏使用顶部/底部玻璃栏，宽屏切换为左侧导航栏。
 ///
@@ -23,7 +24,7 @@ class MainShell extends ConsumerStatefulWidget {
 }
 
 class _MainShellState extends ConsumerState<MainShell> {
-  var _index = 0;
+  String _selectedId = 'gpa';
 
   /// 每个 tab 一份大标题控制器（含各自的 ScrollController）。
   late final List<GlassLargeTitleController> _titleControllers = [
@@ -40,8 +41,24 @@ class _MainShellState extends ConsumerState<MainShell> {
 
   @override
   Widget build(BuildContext context) {
-    final tab = appTabs[_index];
-    final titleController = _titleControllers[_index];
+    final flags = ref.watch(featureFlagsProvider).value;
+    final tabs = appTabs
+        .where(
+          (tab) => tab.featureFlag == null || flags?[tab.featureFlag] == true,
+        )
+        .toList();
+    var index = tabs.indexWhere((tab) => tab.id == _selectedId);
+    if (index < 0) {
+      index = 0;
+      _selectedId = tabs.first.id;
+    }
+    final tab = tabs[index];
+    final titleController = _titleControllers[appTabs.indexOf(tab)];
+    void selectTab(int selected) {
+      if (tabs[selected].id == _selectedId) return;
+      setState(() => _selectedId = tabs[selected].id);
+    }
+
     final tokens = AppTokens.of(context);
     final width = MediaQuery.sizeOf(context).width;
     final usesNavigationRail = width >= AppBreakpoints.navigationRail;
@@ -79,7 +96,7 @@ class _MainShellState extends ConsumerState<MainShell> {
                 ? null
                 : AppGlassTabBar(
                     tabs: [
-                      for (final t in appTabs)
+                      for (final t in tabs)
                         GlassTab(
                           icon: Icon(t.icon),
                           activeIcon: t.selectedIcon == null
@@ -88,8 +105,8 @@ class _MainShellState extends ConsumerState<MainShell> {
                           label: t.label,
                         ),
                     ],
-                    selectedIndex: _index,
-                    onTabSelected: _selectTab,
+                    selectedIndex: index,
+                    onTabSelected: selectTab,
                   ),
             body: usesNavigationRail
                 ? Row(
@@ -98,8 +115,8 @@ class _MainShellState extends ConsumerState<MainShell> {
                         child: NavigationRail(
                           extended: extendsNavigationRail,
                           backgroundColor: Colors.transparent,
-                          selectedIndex: _index,
-                          onDestinationSelected: _selectTab,
+                          selectedIndex: index,
+                          onDestinationSelected: selectTab,
                           labelType: extendsNavigationRail
                               ? NavigationRailLabelType.none
                               : NavigationRailLabelType.all,
@@ -121,7 +138,7 @@ class _MainShellState extends ConsumerState<MainShell> {
                             color: tokens.labelSecondary,
                           ),
                           destinations: [
-                            for (final t in appTabs)
+                            for (final t in tabs)
                               NavigationRailDestination(
                                 icon: Icon(t.icon),
                                 selectedIcon: Icon(t.selectedIcon ?? t.icon),
@@ -153,10 +170,5 @@ class _MainShellState extends ConsumerState<MainShell> {
         ),
       ),
     );
-  }
-
-  void _selectTab(int index) {
-    if (index == _index) return;
-    setState(() => _index = index);
   }
 }
