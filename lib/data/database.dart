@@ -78,6 +78,24 @@ Map<String, dynamic> courseRecordToJson(CourseRecord r) => {
   'xqmmc': r.xqmmc,
 };
 
+/// Stored records have already passed capture/edit validation. Do not clean
+/// them again: history and backup must preserve nulls and literal text.
+CourseRecord courseRecordFromStoredJson(Map<String, dynamic> json) =>
+    CourseRecord(
+      kch: json['kch'] as String?,
+      kcmc: json['kcmc'] as String?,
+      xf: json['xf'] as String?,
+      jd: json['jd'] as String?,
+      bfzcj: json['bfzcj'] as String?,
+      cj: json['cj'] as String?,
+      cjbz: json['cjbz'] as String?,
+      sfxwkc: json['sfxwkc'] as String?,
+      xnm: json['xnm'] as String?,
+      xqm: json['xqm'] as String?,
+      xnmmc: json['xnmmc'] as String?,
+      xqmmc: json['xqmmc'] as String?,
+    );
+
 /// [List<CourseRecord>] 与存储 JSON 字符串之间的转换。
 class CourseRecordListConverter
     extends TypeConverter<List<CourseRecord>, String> {
@@ -86,7 +104,7 @@ class CourseRecordListConverter
   @override
   List<CourseRecord> fromSql(String fromDb) =>
       (jsonDecode(fromDb) as List<dynamic>)
-          .map((e) => CourseRecord.fromJson(e as Map<String, dynamic>))
+          .map((e) => courseRecordFromStoredJson(e as Map<String, dynamic>))
           .toList();
 
   @override
@@ -120,16 +138,26 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
+
+  Future<void> _createBackupJournal() => customStatement(
+    'CREATE TABLE backup_restore_journal ('
+    'id INTEGER PRIMARY KEY CHECK (id = 1), committed INTEGER NOT NULL, '
+    'before_json TEXT NOT NULL, after_json TEXT NOT NULL)',
+  );
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-    onCreate: (m) async => m.createAll(),
+    onCreate: (m) async {
+      await m.createAll();
+      await _createBackupJournal();
+    },
     onUpgrade: (m, from, to) async {
       if (from < 2) {
         await m.createTable(timetableTerms);
         await m.createTable(timetableVersions);
       }
+      if (from < 3) await _createBackupJournal();
     },
   );
 }

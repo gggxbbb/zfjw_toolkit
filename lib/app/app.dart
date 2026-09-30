@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:zfjw_toolkit/app/main_shell.dart';
 import 'package:zfjw_toolkit/app/theme.dart';
+import 'package:zfjw_toolkit/features/backup/recovery_gate.dart';
 
 /// 应用根组件：Material 主题（承载色板与明暗）+ 玻璃主壳。
 ///
@@ -13,11 +14,11 @@ class ZfjwApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: '正方教务工具箱',
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        themeMode: ThemeMode.system,
-        debugShowCheckedModeBanner: false,
-        home: const MainShell(),
-      );
+    title: '正方教务工具箱',
+    theme: AppTheme.light,
+    darkTheme: AppTheme.dark,
+    themeMode: ThemeMode.system,
+    debugShowCheckedModeBanner: false,
+    home: const BackupRecoveryGate(child: MainShell()),
+  );
 }

@@ -8,6 +8,7 @@ import 'package:zfjw_toolkit/features/settings/state/build_metadata.dart';
 import 'package:zfjw_toolkit/features/settings/state/gpa_goals.dart';
 import 'package:zfjw_toolkit/ui/kit/kit.dart';
 import 'feature_flags_card.dart';
+import '../backup/backup_page.dart';
 
 /// 设置功能域首页：目标 GPA、规则包信息、关于。
 ///
@@ -38,6 +39,19 @@ class SettingsHomePage extends ConsumerWidget {
             children: [
               AppResponsiveColumns(
                 children: [
+                  AppGlassGroupedCard(
+                    title: '数据',
+                    child: AppGlassButton(
+                      label: '数据与备份',
+                      icon: CupertinoIcons.archivebox,
+                      onTap: () => Navigator.push(
+                        context,
+                        CupertinoPageRoute<void>(
+                          builder: (_) => const BackupPage(),
+                        ),
+                      ),
+                    ),
+                  ),
                   const FeatureFlagsCard(),
                   // ---- 目标/最低 GPA ----
                   _GpaGoalsCard(goals: goals),

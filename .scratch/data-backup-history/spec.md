@@ -114,6 +114,23 @@ CSV 是面向表格分析的有损导出，不作为完整恢复格式。
 
 ## Further Notes
 
+### 2026-09-29 导入导出实施范围
+
+- 本轮聚焦完整 JSON 导入导出和当前／历史成绩 CSV 导出。历史快照切换、删除另按原任务推进。
+- 完整备份新增课表学期配置、全部课表快照和功能开关；课表入口关闭时仍导出已有课表。
+- 合并采用保守策略：相同 ID 内容不同、或已有教学计划／修改／设置与备份不同，均展示冲突并阻止合并。用户可改用二次确认的完整替换。
+- 导入必须先校验并展示数量与冲突；确认时再次核对本机数据，防止预览期间的修改被覆盖。
+- SQLite 保存恢复日志并作为提交标记；启动恢复完成前不开放业务页面。失败及中断恢复覆盖数据库与本地设置。
+- Android 真机验收由用户负责；代理负责自动化检查及 Windows 构建检查。
+
+### 2026-09-30 收尾验证
+
+- 最终导入导出专项测试 31 项通过，包含恢复日志清理失败回滚。
+- 最终 `flutter analyze --no-pub`、`flutter build windows --debug --no-pub` 通过。
+- 此前全套 Flutter 测试 182 项通过；最后的日志事务修复随后由上述专项测试覆盖。采集脚本测试 13 项通过。
+- Windows 实际窗口已检查入口、页面与导出确认，系统保存窗口成功生成完整 JSON。最终构建已更新；Android 真机验收由用户负责。
+- 导入导出任务 03–06 为 `ready-for-human`；成绩历史切换与删除仍属于后续任务。代码未提交或推送。
+
 - The existing HTML import remains a capture source that creates a new grade snapshot. It must not be relabeled as complete backup restore.
 - Grade records and teaching plans are personal academic data. Export copy should recommend storing files only in locations controlled by the user.
 - The first implementation frontier contains tickets 01 and 03, which can proceed independently. Import work begins only after the exported format is fixed by ticket 03.
